@@ -23,12 +23,11 @@ public class ChargerObject {
         this.price = 0.0;
         this.powerOutput = 0.0;
         this.isRapid = false;
-        this.chargingLog = new HashMap<Long, Boolean>();
+        this.chargingLog = new HashMap<>();
     }
 
-    private HtmlPage getHtmlPage(WebClient client) throws IOException {
+    public HtmlPage getHtmlPage(WebClient client) throws IOException {
         String url = "https://polar-network.com/charge-point-information/" + id;
-        client = new WebClient();
         client.getOptions().setCssEnabled(false);
         client.getOptions().setJavaScriptEnabled(true);
         client.getOptions().setDownloadImages(false);
@@ -37,17 +36,17 @@ public class ChargerObject {
         return client.getPage(url);
     }
 
-    public void fetchDetails(WebClient client) throws IOException {
-        HtmlPage doc = getHtmlPage(client);
-
-        DomNode nameNode = doc.getElementById("cp-name").getFirstChild();
-        if(nameNode != null){
-            this.name = nameNode.getNodeValue();
-        }
-
+    public void fetchDetailsFromPage(HtmlPage doc) {
         DomNode addressNode = doc.getElementById("cp-address").getFirstChild();
         if(addressNode != null){
             this.address = addressNode.getNodeValue();
+        }
+
+        DomNode nameNode = doc.getElementById("cp-name").getFirstChild();
+        if(nameNode == null){
+            this.name = this.address.split(",")[0];
+        } else {
+            this.name = nameNode.getNodeValue();
         }
 
         DomNode postcodeNode = doc.getElementById("cp-postcode").getFirstChild();
@@ -69,7 +68,11 @@ public class ChargerObject {
 
         DomNode additionalNode = doc.getElementById("additional").getFirstChild();
         if(additionalNode != null){
-            this.additionalInfo += "\n" + additionalNode.getNodeValue();
+            if(this.additionalInfo.equals("")){
+                this.additionalInfo += additionalNode.getNodeValue();
+            } else {
+                this.additionalInfo += "\n" + additionalNode.getNodeValue();
+            }
         }
 
         DomNode typeNode;
@@ -95,8 +98,7 @@ public class ChargerObject {
         }
     }
 
-    public void logCurrent(WebClient client) throws IOException {
-        HtmlPage doc = getHtmlPage(client);
+    public void logCurrent(HtmlPage doc) {
         DomNode statusNode = doc.getElementById("connector" + designator + "Status").getFirstChild();
         if(statusNode.getNodeValue().equals("Charging")){
             chargingLog.put(System.currentTimeMillis(),true);

@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class MenuPanel extends JPanel {
+class MenuPanel extends JPanel {
 
     private DefaultListModel<String> selectorModel;
     private JList<String> selectorList;
@@ -9,9 +9,9 @@ public class MenuPanel extends JPanel {
 
     MenuPanel(Application app){
         this.app = app;
-        selectorModel = new DefaultListModel<String>();
+        selectorModel = new DefaultListModel<>();
         selectorModel.addElement("None");
-        selectorList = new JList<String>(selectorModel);
+        selectorList = new JList<>(selectorModel);
         init();
     }
 
@@ -60,9 +60,13 @@ public class MenuPanel extends JPanel {
                     String newText = "NAME: " + selectedCharger.getName();
                     newText+= "\nPRICE: " + selectedCharger.getPrice() +"p";
                     newText+= "\nOUTPUT: " + selectedCharger.getPowerOutput()+"kW";
-                    newText+= "\nRAPID: " + selectedCharger.isRapid();
+                    if(selectedCharger.isRapid()){
+                        newText+= "\nRAPID: Yes";
+                    } else {
+                        newText+= "\nRAPID: No";
+                    }
                     newText+= "\nADDRESS: " + selectedCharger.getAddress();
-                    newText+= "\nINFO: " + selectedCharger.getAdditionalInfo().substring(1);
+                    newText+= "\nINFO: " + selectedCharger.getAdditionalInfo();
                     infoArea.setText(newText);
                 }
             }

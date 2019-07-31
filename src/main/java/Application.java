@@ -37,7 +37,6 @@ public class Application extends JFrame {
         splitPane.setBorder(BorderFactory.createMatteBorder(1,1,1,1,new Color(42, 42, 42)));
 
         this.add(splitPane,BorderLayout.CENTER);
-        //this.add(menuPanel, BorderLayout.WEST);
 
         JPanel notificationPanel = new JPanel();
         notificationPanel.setLayout(new FlowLayout(FlowLayout.LEADING,7,2));
@@ -82,23 +81,23 @@ public class Application extends JFrame {
         }
     }
 
-    public WebClient getWebClient(){
+    public synchronized WebClient getWebClient(){
         return client;
     }
 
-    public DataModel getDataModel(){
+    public synchronized DataModel getDataModel(){
         return dataModel;
     }
 
-    public CustomMenuBar getCustomMenuBar() {
+    public synchronized CustomMenuBar getCustomMenuBar() {
         return menuBar;
     }
 
-    public GraphPanel getGraphPanel() {
+    public synchronized GraphPanel getGraphPanel() {
         return graphPanel;
     }
 
-    public MenuPanel getMenuPanel() {
+    public synchronized MenuPanel getMenuPanel() {
         return menuPanel;
     }
 }
