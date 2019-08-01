@@ -49,8 +49,11 @@ public class Application extends JFrame {
         notificationPanel.add(NotificationLogger.logger.getLabel());
         notificationPanel.add(Box.createHorizontalGlue());
 
-        statusLabel = new JLabel("Logging Status: INACTIVE");
+        JLabel statusTextLabel = new JLabel("Logging Status: ");
+        notificationPanel.add(statusTextLabel);
+        statusLabel = new JLabel("");
         notificationPanel.add(statusLabel);
+        this.setLogging(false);
         notificationPanel.add(Box.createRigidArea(new Dimension(10,1)));
 
         this.add(notificationPanel, BorderLayout.SOUTH);
@@ -59,6 +62,41 @@ public class Application extends JFrame {
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+    }
+
+    public synchronized WebClient getWebClient(){
+        return client;
+    }
+
+    public synchronized DataModel getDataModel(){
+        return dataModel;
+    }
+
+    public synchronized CustomMenuBar getCustomMenuBar() {
+        return menuBar;
+    }
+
+    public synchronized GraphPanel getGraphPanel() {
+        return graphPanel;
+    }
+
+    public synchronized MenuPanel getMenuPanel() {
+        return menuPanel;
+    }
+
+    public synchronized void setLogging(boolean isLogging){
+        this.isLogging = isLogging;
+        if(isLogging){
+            statusLabel.setText("ACTIVE");
+            statusLabel.setForeground(new Color(66, 155, 58));
+        } else {
+            statusLabel.setText("INACTIVE");
+            statusLabel.setForeground(new Color(163, 0, 9));
+        }
+    }
+
+    public synchronized boolean isLogging(){
+        return isLogging;
     }
 
     private void setLookAndFeel(){
@@ -88,38 +126,5 @@ public class Application extends JFrame {
         } catch (Exception e) {
             System.out.println("Nimbus not available, using default 'Metal'");
         }
-    }
-
-    public synchronized WebClient getWebClient(){
-        return client;
-    }
-
-    public synchronized DataModel getDataModel(){
-        return dataModel;
-    }
-
-    public synchronized CustomMenuBar getCustomMenuBar() {
-        return menuBar;
-    }
-
-    public synchronized GraphPanel getGraphPanel() {
-        return graphPanel;
-    }
-
-    public synchronized MenuPanel getMenuPanel() {
-        return menuPanel;
-    }
-
-    public synchronized void setLogging(boolean isLogging){
-        this.isLogging = isLogging;
-        if(isLogging){
-            statusLabel.setText("Logging Status: ACTIVE");
-        } else {
-            statusLabel.setText("Logging Status: INACTIVE");
-        }
-    }
-
-    public synchronized boolean isLogging(){
-        return isLogging;
     }
 }
