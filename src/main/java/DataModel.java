@@ -2,25 +2,18 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class DataModel {
 
-    private List<String> ids;
+    private Set<String> ids;
     private Map<String,ChargerObject> chargers;
     private Application app;
 
     DataModel(Application app){
-        this.ids = new ArrayList<String>();
+        this.ids = new HashSet<>();
         this.chargers = new HashMap<>();
         this.app = app;
-    }
-
-    public void addId(String id){
-        ids.add(id);
     }
 
     /**
@@ -53,6 +46,7 @@ class DataModel {
                         doc = newCharger.getHtmlPage(app.getWebClient());
                     }
                     newCharger.fetchDetailsFromPage(doc);
+                    newCharger.logCurrent(doc);
 
                     //Put it in the internal map and update the previous charger
                     chargers.put(id,newCharger);
@@ -81,11 +75,29 @@ class DataModel {
         webThread.start();
     }
 
-    public List<String> getIds(){
+    public Set<String> getIds(){
         return ids;
     }
 
     public ChargerObject getChargeObject(String id){
         return chargers.get(id);
     }
+
+    public void clearIds(){
+        ids.clear();
+    }
+
+    public void clearChargers(){
+        chargers.clear();
+    }
+
+    public void addId(String newId){
+        ids.add(newId);
+    }
+
+    public void addCharger(String chargerId, ChargerObject charger){
+        chargers.put(chargerId,charger);
+    }
+
+
 }

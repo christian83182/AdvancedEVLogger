@@ -101,10 +101,14 @@ public class ChargerObject {
 
     public void logCurrent(HtmlPage doc) {
         DomNode statusNode = doc.getElementById("connector" + designator + "Status").getFirstChild();
-        if(statusNode.getNodeValue().equals("Charging")){
-            chargingLog.put(System.currentTimeMillis(),true);
+        if(statusNode != null){
+            if(statusNode.getNodeValue().equals("Charging")){
+                chargingLog.put(System.currentTimeMillis(),true);
+            } else {
+                chargingLog.put(System.currentTimeMillis(),false);
+            }
         } else {
-            chargingLog.put(System.currentTimeMillis(),false);
+            NotificationLogger.logger.addToLog("[ERROR] Could not make log entry for '" + this.id+":"+this.designator+"'");
         }
     }
 
@@ -114,6 +118,10 @@ public class ChargerObject {
 
     public Boolean getEntryInLog(Long key){
         return chargingLog.get(key);
+    }
+
+    public void addLogEntry(Long time, Boolean value){
+        chargingLog.put(time,value);
     }
 
     public boolean isRapid(){
@@ -146,5 +154,37 @@ public class ChargerObject {
 
     public String getName() {
         return name;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setPowerOutput(Double powerOutput) {
+        this.powerOutput = powerOutput;
+    }
+
+    public void setDesignator(Integer designator) {
+        this.designator = designator;
+    }
+
+    public void setRapid(boolean rapid) {
+        isRapid = rapid;
     }
 }
