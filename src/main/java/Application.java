@@ -37,7 +37,7 @@ public class Application extends JFrame {
         graphPanel = new GraphPanel(this);
 
         JSplitPane splitPane = new JSplitPane();
-        splitPane.setDividerSize(2);
+        splitPane.setDividerSize(3);
         splitPane.setLeftComponent(menuPanel);
         splitPane.setRightComponent(graphPanel);
         splitPane.setBorder(BorderFactory.createMatteBorder(1,1,1,1,new Color(42, 42, 42)));

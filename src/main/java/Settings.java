@@ -10,8 +10,7 @@ public class Settings {
     static Color BACKGROUND_COLOUR = new Color(44, 44, 44);
     static Color GRAPH_COLOUR = new Color(48, 48, 48);
 
-    static Font TITLE_FONT = new Font("SansSerif", Font.PLAIN, 18);
-    static Font MENU_BAR_DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 15);
+    static Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 15);
 
     static String[] FAST_CHARGERS = {"CHAdeMO","DC Combo Type 2"};
 

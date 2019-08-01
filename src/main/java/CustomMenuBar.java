@@ -17,59 +17,59 @@ public class CustomMenuBar extends JMenuBar {
 
     private void init(){
         JMenu dataMenu = new JMenu("File");
-        dataMenu.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        dataMenu.setFont(Settings.DEFAULT_FONT);
         this.add(dataMenu);
 
         JMenu exportMenu = new JMenu("Tools");
-        exportMenu.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        exportMenu.setFont(Settings.DEFAULT_FONT);
         this.add(exportMenu);
 
         JMenu helpMenu = new JMenu("Help");
-        helpMenu.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        helpMenu.setFont(Settings.DEFAULT_FONT);
         this.add(helpMenu);
 
         JMenuItem importIdsMenu = new JMenuItem("Import EV Charger's IDs");
-        importIdsMenu.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        importIdsMenu.setFont(Settings.DEFAULT_FONT);
         dataMenu.add(importIdsMenu);
         importIdsMenu.addActionListener(e -> importIds());
 
         JMenuItem importConfiguration = new JMenuItem("Import Program Configuration");
-        importConfiguration.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        importConfiguration.setFont(Settings.DEFAULT_FONT);
         dataMenu.add(importConfiguration);
         importConfiguration.addActionListener(e -> importConfig());
 
         dataMenu.addSeparator();
 
         JMenuItem exportConfiguration = new JMenuItem("Export Full Program Configuration");
-        exportConfiguration.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        exportConfiguration.setFont(Settings.DEFAULT_FONT);
         dataMenu.add(exportConfiguration);
         exportConfiguration.addActionListener(e -> exportConfig(true));
 
         JMenuItem exporWithoutLog = new JMenuItem("Export Configuration Without Log");
-        exporWithoutLog.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        exporWithoutLog.setFont(Settings.DEFAULT_FONT);
         dataMenu.add(exporWithoutLog);
         exporWithoutLog.addActionListener(e -> exportConfig(false));
 
         JMenuItem exportCSV = new JMenuItem("Export Data as CSV");
-        exportCSV.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        exportCSV.setFont(Settings.DEFAULT_FONT);
         dataMenu.add(exportCSV);
 
         JMenuItem exportGraph = new JMenuItem("Export View");
-        exportGraph.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        exportGraph.setFont(Settings.DEFAULT_FONT);
         dataMenu.add(exportGraph);
 
         JMenuItem downloadData = new JMenuItem("Download EV Charger's Data");
-        downloadData.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        downloadData.setFont(Settings.DEFAULT_FONT);
         exportMenu.add(downloadData);
         downloadData.addActionListener(e-> app.getDataModel().downloadIdData());
 
         JMenuItem startLoggingMenu = new JMenuItem("EV Data Logging - Start");
-        startLoggingMenu.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        startLoggingMenu.setFont(Settings.DEFAULT_FONT);
         exportMenu.add(startLoggingMenu);
 
         JMenuItem stopLoggingMenu = new JMenuItem("EV Data Logging - Stop");
         stopLoggingMenu.setEnabled(false);
-        stopLoggingMenu.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        stopLoggingMenu.setFont(Settings.DEFAULT_FONT);
         exportMenu.add(stopLoggingMenu);
 
         startLoggingMenu.addActionListener(e -> {
@@ -92,7 +92,7 @@ public class CustomMenuBar extends JMenuBar {
                 "TXT (*.txt)", "txt");
         fileChooser.setFileFilter(filter);
         fileChooser.setDialogTitle("Import EV Charger's IDs");
-        fileChooser.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        fileChooser.setFont(Settings.DEFAULT_FONT);
         int returnVal = fileChooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
             try {
@@ -118,7 +118,7 @@ public class CustomMenuBar extends JMenuBar {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "TXT (*.txt)", "txt");
         fileChooser.setFileFilter(filter);
-        fileChooser.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        fileChooser.setFont(Settings.DEFAULT_FONT);
         int returnVal = fileChooser.showSaveDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
             try{
@@ -180,7 +180,7 @@ public class CustomMenuBar extends JMenuBar {
                 "TXT (*.txt)", "txt");
         fileChooser.setFileFilter(filter);
         fileChooser.setDialogTitle("Import Program Configuration");
-        fileChooser.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        fileChooser.setFont(Settings.DEFAULT_FONT);
         int returnVal = fileChooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
             NotificationLogger.logger.addToLog("Importing new program configuration");

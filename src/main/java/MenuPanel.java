@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 class MenuPanel extends JPanel {
@@ -16,40 +17,92 @@ class MenuPanel extends JPanel {
     }
 
     private void init(){
-        this.setPreferredSize(new Dimension(350,100));
+        this.setPreferredSize(new Dimension(370,100));
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c;
 
-        JLabel title = new JLabel("EV CHARGERS");
-        title.setFont(Settings.TITLE_FONT);
+        JPanel controlPanel = new JPanel();
+        TitledBorder controlBorder = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.GRAY,1),"Control Panel",0,2,
+                Settings.DEFAULT_FONT,Color.WHITE);
+        controlBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 18));
+        controlPanel.setBorder(controlBorder);
+        controlPanel.setLayout(new GridBagLayout());
+
+        JPanel selectionPanel = new JPanel();
+        TitledBorder selectionBorder = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.GRAY,1),"Selection Panel",0,2,
+                Settings.DEFAULT_FONT,Color.WHITE);
+        selectionBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 18));
+        selectionPanel.setBorder(selectionBorder);
+        selectionPanel.setLayout(new GridBagLayout());
+
+        c = new GridBagConstraints(); c.gridx = 0; c.gridy = 0; c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10,10,25,10);
+        this.add(controlPanel,c);
+
+        c = new GridBagConstraints(); c.gridx = 0; c.gridy = 1; c.weighty =1; c.weightx = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(0,10,25,10);
+        this.add(selectionPanel,c);
+
+        JLabel xAxisScaleLabel = new JLabel("Horizontal Scale:");
+        xAxisScaleLabel.setFont(Settings.DEFAULT_FONT);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 0;
-        c.anchor = GridBagConstraints.CENTER;
-        c.insets = new Insets(5,0,5,0);
-        this.add(title,c);
+        c.insets = new Insets(10,15,0,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(xAxisScaleLabel,c);
+
+        SpinnerModel spinnerModel = new SpinnerNumberModel(100,1,9999,1);
+        JSpinner scaleSpinner = new JSpinner(spinnerModel);
+        c = new GridBagConstraints();
+        c.gridx = 1; c.gridy = 0; c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(10,15,15,10);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(scaleSpinner,c);
+
+        JCheckBox includeRapid = new JCheckBox("Include Level 3 Chargers");
+        includeRapid.setFont(Settings.DEFAULT_FONT);
+        includeRapid.setSelected(true);
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 1; c.weightx = 1; c.gridwidth = 2;
+        c.insets = new Insets(0,10,0,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(includeRapid,c);
+
+        JCheckBox includeFast = new JCheckBox("Include Level 2 Chargers");
+        includeFast.setFont(Settings.DEFAULT_FONT);
+        includeFast.setSelected(true);
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 2; c.weightx = 1; c.gridwidth = 2;
+        c.insets = new Insets(0,10,10,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(includeFast,c);
 
         selectorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectorList.setLayoutOrientation(JList.VERTICAL);
         selectorList.setSelectedIndex(0);
         JScrollPane selectorPanel = new JScrollPane(selectorList);
-
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 1; c.weightx = 1; c.weighty = 1;
+        c.gridx = 0; c.gridy = 1; c.weighty = 1; c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0,20,10,20);
-        this.add(selectorPanel,c);
+        c.insets = new Insets(10,10,0,10);
+        selectionPanel.add(selectorPanel,c);
 
-        JTextArea infoArea = new JTextArea(1,1);
-        infoArea.setPreferredSize(new Dimension(10,300));
+        JTextArea infoArea = new JTextArea();
         infoArea.setEditable(false);
         infoArea.setLineWrap(true);
-
+        JScrollPane infoScroller = new JScrollPane(infoArea);
+        infoScroller.setPreferredSize(new Dimension(0,200));
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 2;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0,20,20,20);
-        this.add(infoArea,c);
+        c.gridx = 0; c.gridy = 2; c.weightx = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(0,10,10,10);
+        selectionPanel.add(infoScroller,c);
 
         selectorList.addListSelectionListener(e -> {
             app.repaint();
