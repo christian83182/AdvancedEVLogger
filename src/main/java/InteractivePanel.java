@@ -13,9 +13,12 @@ public abstract class InteractivePanel extends JPanel {
     //Variable used to keep track of the current level of zoom.
     private Double globalZoom;
 
-    InteractivePanel(Point globalPan, Double globalZoom){
+    private Application app;
+
+    InteractivePanel(Point globalPan, Double globalZoom, Application app){
         this.globalPan = globalPan;
         this.globalZoom = globalZoom;
+        this.app = app;
 
         PanAndZoomListener panListener = new PanAndZoomListener();
         this.addMouseWheelListener(panListener);
@@ -84,25 +87,28 @@ public abstract class InteractivePanel extends JPanel {
     }
 
     public void paintScale(Graphics2D g2){
-        String label = "100 m";
-        Double scaleLength = 100 * getZoom();
+        String label = "1 Hour";
+        Double scaleLength = app.getMenuPanel().getScale() * getZoom();
 
         //Different size options should be added from largest to smallest.
-        if(scaleLength < 20){
-            scaleLength = scaleLength*5;
-            label = "500 m";
+        if(scaleLength < 4) {
+            scaleLength = app.getMenuPanel().getScale() * getZoom() * 24;
+            label = "1 Day";
+        } else if(scaleLength < 20){
+            scaleLength = app.getMenuPanel().getScale() * getZoom()*5;
+            label = "5 Hours";
         } else if (scaleLength <50){
-            scaleLength = scaleLength*2;
-            label= "200 m";
+            scaleLength = app.getMenuPanel().getScale() * getZoom()*2;
+            label= "2 Hours";
         }
 
         //Different size options should be added from smallest to largest.
         if (scaleLength > 400) {
-            scaleLength = scaleLength / 4;
-            label = "25 m ";
+            scaleLength = app.getMenuPanel().getScale() * getZoom() / 4;
+            label = "15 Minutes";
         }else if (scaleLength > 200){
-            scaleLength = scaleLength/2;
-            label = "50 m ";
+            scaleLength = app.getMenuPanel().getScale() * getZoom()/2;
+            label = "30 Minutes";
         }
 
         Point scaleStart = new Point(20,getHeight()-10);
@@ -135,20 +141,25 @@ public abstract class InteractivePanel extends JPanel {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            getPan().x = (int)(originalGlobalPan.x + (e.getX() - startPoint.x)/getZoom());
-            getPan().y = (int)(originalGlobalPan.y + (e.getY() - startPoint.y)/getZoom());
+            int newPanX = (int)(originalGlobalPan.x + (e.getX() - startPoint.x)/getZoom());
+            if(newPanX < 0){
+                getPan().x = (int)(originalGlobalPan.x + (e.getX() - startPoint.x)/getZoom());
+            } else {
+                getPan().x = 0;
+            }
+            //getPan().y = (int)(originalGlobalPan.y + (e.getY() - startPoint.y)/getZoom());
             InteractivePanel.this.repaint();
         }
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
-            Integer scaleFactor = e.getWheelRotation();
+            int scaleFactor = e.getWheelRotation();
             Double maxZoom = Settings.MAX_ZOOM;
             Double minZoom = Settings.MIN_ZOOM;
             if(scaleFactor < 0 & getZoom() * 1/0.95 < maxZoom ){
-                setZoom(getZoom() * 1/0.95);
+                //setZoom(getZoom() * 1/0.95);
             } else  if (scaleFactor > 0 & getZoom() * 0.95 > minZoom){
-                setZoom(getZoom()*0.95);
+                //setZoom(getZoom()*0.95);
             } else {
                 return;
             }

@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +9,7 @@ public class GraphPanel extends InteractivePanel {
     private Application app;
 
     GraphPanel(Application app) {
-        super(Settings.DEFAULT_PAN, Settings.DEFAULT_ZOOM);
+        super(Settings.DEFAULT_PAN, Settings.DEFAULT_ZOOM, app);
         this.app = app;
         this.setPreferredSize(new Dimension(1500,900));
     }
@@ -22,6 +23,9 @@ public class GraphPanel extends InteractivePanel {
         } else {
 
         }
+
+        g2.setTransform(new AffineTransform());
+        paintScale(g2);
     }
 
     private void paintTotalChargersGraph(Graphics2D g2){
@@ -32,10 +36,11 @@ public class GraphPanel extends InteractivePanel {
 
         if(!times.isEmpty()){
             long startTime  = times.get(0);
+            Integer xStep = app.getMenuPanel().getScale();
             for(int i = 0; i < times.size()-1 ; i++){
-                int x1 = (int)(long)(times.get(i) - startTime)/5000;
+                int x1 = (int)(long)(times.get(i) - startTime)/(3600000/xStep);
                 int y1 = -app.getDataModel().getTotalChargersAtTime(times.get(i))*100;
-                int x2 = (int)(long)(times.get(i+1) - startTime)/5000;
+                int x2 = (int)(long)(times.get(i+1) - startTime)/(3600000/xStep);
                 int y2 = -app.getDataModel().getTotalChargersAtTime(times.get(i+1))*100;
                 g2.drawLine(x1,y1,x2,y2);
 
@@ -49,8 +54,8 @@ public class GraphPanel extends InteractivePanel {
         g2.drawLine(0,50,0,-100000);
         g2.drawLine(100000,0,-50,0);
 
-        Integer xStep = 100;
-        Integer yStep = 100;
+        Integer xStep = app.getMenuPanel().getScale();
+        int yStep = 100;
 
         for(int i = 0; i < 500; i++){
             g2.drawLine(i*xStep,-10,i*xStep,0);

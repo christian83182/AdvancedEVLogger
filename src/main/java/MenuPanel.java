@@ -8,6 +8,8 @@ class MenuPanel extends JPanel {
     private JList<String> selectorList;
     private Application app;
 
+    private JSpinner scaleSpinner;
+
     MenuPanel(Application app){
         this.app = app;
         selectorModel = new DefaultListModel<>();
@@ -52,12 +54,12 @@ class MenuPanel extends JPanel {
         xAxisScaleLabel.setFont(Settings.DEFAULT_FONT);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 0;
-        c.insets = new Insets(10,15,0,0);
+        c.insets = new Insets(10,15,15,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(xAxisScaleLabel,c);
 
-        SpinnerModel spinnerModel = new SpinnerNumberModel(100,1,9999,1);
-        JSpinner scaleSpinner = new JSpinner(spinnerModel);
+        SpinnerModel spinnerModel = new SpinnerNumberModel(100,1,10000,1);
+        scaleSpinner = new JSpinner(spinnerModel);
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 0; c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -126,6 +128,8 @@ class MenuPanel extends JPanel {
                 }
             }
         });
+
+        spinnerModel.addChangeListener(e -> {app.repaint();});
     }
 
     public synchronized void addMenuItem(String item){
@@ -135,6 +139,10 @@ class MenuPanel extends JPanel {
 
     public String getSelectedOption(){
         return selectorList.getSelectedValue();
+    }
+
+    public Integer getScale(){
+        return (Integer)scaleSpinner.getValue();
     }
 
 }
