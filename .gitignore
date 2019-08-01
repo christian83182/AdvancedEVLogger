@@ -4,3 +4,4 @@ AdvancedEVLogger.iml
 src/main/resources/
 src/test/
 target/
+*.MF
