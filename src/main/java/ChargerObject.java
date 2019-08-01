@@ -5,6 +5,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ChargerObject {
 
@@ -105,6 +106,14 @@ public class ChargerObject {
         } else {
             chargingLog.put(System.currentTimeMillis(),false);
         }
+    }
+
+    public Set<Long> getLogTimes(){
+        return chargingLog.keySet();
+    }
+
+    public Boolean getEntryInLog(Long key){
+        return chargingLog.get(key);
     }
 
     public boolean isRapid(){

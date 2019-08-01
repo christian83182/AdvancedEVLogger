@@ -1,10 +1,10 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class CustomMenuBar extends JMenuBar {
 
@@ -43,6 +43,7 @@ public class CustomMenuBar extends JMenuBar {
         JMenuItem exportConfiguration = new JMenuItem("Export Program Configuration");
         exportConfiguration.setFont(Settings.MENU_BAR_DEFAULT_FONT);
         dataMenu.add(exportConfiguration);
+        exportConfiguration.addActionListener(e -> exportConfig());
 
         JMenuItem exportCSV = new JMenuItem("Export Data as CSV");
         exportCSV.setFont(Settings.MENU_BAR_DEFAULT_FONT);
@@ -66,7 +67,7 @@ public class CustomMenuBar extends JMenuBar {
         fileChooser.setFileFilter(filter);
         fileChooser.setDialogTitle("Import EV Charger's IDs");
         fileChooser.setFont(Settings.MENU_BAR_DEFAULT_FONT);
-        int returnVal = fileChooser.showSaveDialog(null);
+        int returnVal = fileChooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(fileChooser.getSelectedFile()));
@@ -80,6 +81,56 @@ public class CustomMenuBar extends JMenuBar {
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void exportConfig(){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setDialogTitle("Export Configuration");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "TXT (*.txt)", "txt");
+        fileChooser.setFileFilter(filter);
+        fileChooser.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        int returnVal = fileChooser.showSaveDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION){
+            try{
+                NotificationLogger.logger.addToLog("");
+                NotificationLogger.logger.addToLog("Exporting Program Configuration");
+                FileWriter writer = new FileWriter(fileChooser.getSelectedFile()+".txt");
+
+                NotificationLogger.logger.addToLog("Exporting ID list");
+                String ids = "IDLIST";
+                for(String id : app.getDataModel().getIds()){
+                    ids += "|" + id;
+                }
+                writer.write(ids +"\n");
+
+                NotificationLogger.logger.addToLog("Exporting EV Charger Info");
+                for(String id : app.getDataModel().getIds()){
+                    NotificationLogger.logger.addToLog("Exporting data for '" + id + "'");
+                    ChargerObject charger = app.getDataModel().getChargeObject(id);
+                    StringBuilder output = new StringBuilder("CHARGERINFO");
+                    if(charger != null){
+                        output.append("|" + charger.getId());
+                        output.append("|" + charger.getDesignator());
+                        output.append("|" + charger.getAddress());
+                        output.append("|" + charger.getAdditionalInfo());
+                        output.append("|" + charger.getName());
+                        output.append("|" + charger.getPrice());
+                        output.append("|" + charger.getPowerOutput());
+                        output.append("|" + charger.isRapid());
+                        for (long timeOfLog : charger.getLogTimes()){
+                            output.append("|" + timeOfLog + ":" + charger.getEntryInLog(timeOfLog));
+                        }
+                        writer.write(output+"\n");
+                    }
+                }
+                NotificationLogger.logger.addToLog("Export Complete");
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
