@@ -33,9 +33,9 @@ public class GraphPanel extends InteractivePanel {
         if(!times.isEmpty()){
             long startTime  = times.get(0);
             for(int i = 0; i < times.size()-1 ; i++){
-                int x1 = (int)(long)(times.get(i) - startTime)/1000;
+                int x1 = (int)(long)(times.get(i) - startTime)/5000;
                 int y1 = -app.getDataModel().getTotalChargersAtTime(times.get(i))*100;
-                int x2 = (int)(long)(times.get(i+1) - startTime)/1000;
+                int x2 = (int)(long)(times.get(i+1) - startTime)/5000;
                 int y2 = -app.getDataModel().getTotalChargersAtTime(times.get(i+1))*100;
                 g2.drawLine(x1,y1,x2,y2);
 

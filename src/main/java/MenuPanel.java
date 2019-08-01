@@ -52,6 +52,7 @@ class MenuPanel extends JPanel {
         this.add(infoArea,c);
 
         selectorList.addListSelectionListener(e -> {
+            app.repaint();
             if(e.getValueIsAdjusting()){
                 if(selectorList.getSelectedIndex() == 0){
                     infoArea.setText("");

@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /*
  * A class designed to act as a logger for notifications given by the program. It uses the singleton design pattern: the constructor
@@ -26,7 +28,8 @@ public class NotificationLogger {
         if(notification.equals("")){
             log.append("\n");
         } else {
-            log.append("- "+ notification + "\n");
+            DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+            log.append(simple.format(System.currentTimeMillis()) +" - " + notification +"\n");
             logLabel.setText(notification);
             logLabel.repaint();
         }

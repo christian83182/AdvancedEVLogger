@@ -23,6 +23,8 @@ public class LoggingThread extends Thread {
                     NotificationLogger.logger.addToLog("Starting logging process...");
                     HtmlPage doc = null;
                     String previousId = "";
+                    Long startTime = System.currentTimeMillis();
+
                     for(String id : app.getDataModel().getIds()){
                         ChargerObject currentCharger = app.getDataModel().getChargeObject(id);
                         if(!currentCharger.getId().equals(previousId)){
@@ -42,9 +44,12 @@ public class LoggingThread extends Thread {
                         }
                     }
                     app.getDataModel().addTotalChargersLog(System.currentTimeMillis(),totalChargers);
+                    app.repaint();
+                    NotificationLogger.logger.addToLog(
+                            "Logging completed in " +(System.currentTimeMillis() - startTime)/1000
+                                    +"s. Total Chargers in Use: " + totalChargers);
 
-                    NotificationLogger.logger.addToLog("Logging complete. Total Chargers in Use: " + totalChargers);
-                    Thread.sleep(600000 );
+                    Thread.sleep(900000 - System.currentTimeMillis() + startTime);
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }

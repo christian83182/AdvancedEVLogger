@@ -1,0 +1,106 @@
+3203 1 Park & Ride
+3203 2 
+
+3229 1 Park & Ride
+3229 2
+
+24198 1 Holiday Inn
+24198 2
+24198 3
+
+3782 1 Hotel ibis Budget 
+3782 2
+
+24585 1 Brandshatch Place Hotel & Spa
+24585 2
+24585 3
+
+1647 1 Lewisham Shopping Centre Car Park
+1647 2
+
+24107 1 Holiday Inn Newport
+24107 2
+24107 3
+
+24488 1 Holiday Inn Express Newport
+24488 2
+24488 3
+
+2786 1 Leinster Gardens
+2786 2
+
+1412 1 Clifton Villas
+1412 2
+
+1214 1 115-127, Fifth Avenue (London residential area)
+1214 2
+
+24548 1 Devonshire Park Hotel
+24548 2
+24548 3
+
+24543 1 Hydro Hotel Eastbourne
+24543 2 
+24543 3
+
+4525 1 The Burlington Hotel5-9
+4525 2
+
+24183 1 Rhinefield House 
+24183 2
+24183 3 
+
+11735 1 Captains Club Hotel & Spa
+11735 2
+
+24164 1 The Headland Hotel and Spa
+24164 2
+24164 3
+
+24360 1 Crown Hotel
+24360 2
+24360 3
+
+24361 1 North Shore Hotel & Golf Course
+24361 2
+24361 3 
+
+24273 1 Holiday Inn Express Lincoln City Centre
+24273 2
+24273 3
+
+24042 1 Holiday Inn Express 
+24042 2 
+24042 3
+
+24256 1 Novotel Manchester West Hotel
+24256 2
+24256 3
+
+24107 1 Holiday Inn Newport
+24107 2
+24107 3
+
+24108 1 Hotel ibis Swansea
+
+10136 1 The Metropole Hotel 
+10136 2
+
+24042 1 Holiday Inn Express Hoylake
+24042 2
+24042 3
+
+24475 1 Bliss Hotels Ltd
+24475 2
+24475 3 
+
+11893 1 Union Road, BB5 3DA
+11893 2
+
+24098 1 Holiday Inn Rotherham
+24098 2
+24098 3
+
+24273 1 Holiday Inn Express Lincoln City Centre
+24273 2
+24273 3

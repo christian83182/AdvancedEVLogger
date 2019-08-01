@@ -131,7 +131,7 @@ public class CustomMenuBar extends JMenuBar {
                 for(String id : app.getDataModel().getIds()){
                     ids.append("|").append(id);
                 }
-                writer.write(ids +"\n");
+                writer.write(ids.toString() +"\n");
 
                 if(includeLog){
                     StringBuilder output = new StringBuilder("TOTALCHARGERS");
@@ -226,6 +226,7 @@ public class CustomMenuBar extends JMenuBar {
                     }
                 }
                 NotificationLogger.logger.addToLog("Import Successful");
+                app.repaint();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -47,7 +47,7 @@ public class Application extends JFrame {
         JPanel notificationPanel = new JPanel();
         notificationPanel.setLayout(new BoxLayout(notificationPanel,BoxLayout.LINE_AXIS));
         JButton logButton = new JButton("");
-        logButton.addActionListener(e -> new ScrollableTextWindow("Notification History", new Dimension(450,500), NotificationLogger.logger.getAllLog()));
+        logButton.addActionListener(e -> new ScrollableTextWindow("Notification History", new Dimension(900,700), NotificationLogger.logger.getAllLog()));
         notificationPanel.add(logButton);
         notificationPanel.add(NotificationLogger.logger.getLabel());
         notificationPanel.add(Box.createHorizontalGlue());
