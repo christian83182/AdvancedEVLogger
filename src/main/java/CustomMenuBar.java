@@ -57,6 +57,27 @@ public class CustomMenuBar extends JMenuBar {
         downloadData.setFont(Settings.MENU_BAR_DEFAULT_FONT);
         exportMenu.add(downloadData);
         downloadData.addActionListener(e-> app.getDataModel().downloadIdData());
+
+        JMenuItem startLoggingMenu = new JMenuItem("EV Data Logging - Start");
+        startLoggingMenu.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        exportMenu.add(startLoggingMenu);
+
+        JMenuItem stopLoggingMenu = new JMenuItem("EV Data Logging - Stop");
+        stopLoggingMenu.setEnabled(false);
+        stopLoggingMenu.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        exportMenu.add(stopLoggingMenu);
+
+        startLoggingMenu.addActionListener(e -> {
+            app.setLogging(true);
+            stopLoggingMenu.setEnabled(true);
+            startLoggingMenu.setEnabled(false);
+        });
+
+        stopLoggingMenu.addActionListener(e -> {
+            app.setLogging(false);
+            startLoggingMenu.setEnabled(true);
+            stopLoggingMenu.setEnabled(false);
+        });
     }
 
     private void importIds(){

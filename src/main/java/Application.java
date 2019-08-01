@@ -10,11 +10,14 @@ public class Application extends JFrame {
     private MenuPanel menuPanel;
     private WebClient client;
     private DataModel dataModel;
+    private volatile boolean isLogging;
+    JLabel statusLabel;
 
     Application(){
         super("Advanced EV Charging Logger");
         NotificationLogger.logger.addToLog("Starting Web Client...");
         this.client = new WebClient();
+        this.isLogging = false;
         this.dataModel = new DataModel(this);
         init();
     }
@@ -39,13 +42,18 @@ public class Application extends JFrame {
         this.add(splitPane,BorderLayout.CENTER);
 
         JPanel notificationPanel = new JPanel();
-        notificationPanel.setLayout(new FlowLayout(FlowLayout.LEADING,7,2));
+        notificationPanel.setLayout(new BoxLayout(notificationPanel,BoxLayout.LINE_AXIS));
         JButton logButton = new JButton("");
         logButton.addActionListener(e -> new ScrollableTextWindow("Notification History", new Dimension(450,500), NotificationLogger.logger.getAllLog()));
         notificationPanel.add(logButton);
         notificationPanel.add(NotificationLogger.logger.getLabel());
-        this.add(notificationPanel, BorderLayout.SOUTH);
+        notificationPanel.add(Box.createHorizontalGlue());
 
+        statusLabel = new JLabel("Logging Status: INACTIVE");
+        notificationPanel.add(statusLabel);
+        notificationPanel.add(Box.createRigidArea(new Dimension(10,1)));
+
+        this.add(notificationPanel, BorderLayout.SOUTH);
         this.setJMenuBar(menuBar);
 
         this.pack();
@@ -68,6 +76,7 @@ public class Application extends JFrame {
         UIManager.put("List.background",new Color(80, 80, 80));
         UIManager.put("List[Selected].textForeground",new Color(250, 251, 255));
         UIManager.put("Slider.tickColor",new Color(250, 251, 255));
+        UIManager.put("nimbusDisabledText",new Color(83, 83, 83));
 
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -99,5 +108,18 @@ public class Application extends JFrame {
 
     public synchronized MenuPanel getMenuPanel() {
         return menuPanel;
+    }
+
+    public synchronized void setLogging(boolean isLogging){
+        this.isLogging = isLogging;
+        if(isLogging){
+            statusLabel.setText("Logging Status: ACTIVE");
+        } else {
+            statusLabel.setText("Logging Status: INACTIVE");
+        }
+    }
+
+    public synchronized boolean isLogging(){
+        return isLogging;
     }
 }
