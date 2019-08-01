@@ -36,7 +36,7 @@ class MenuPanel extends JPanel {
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 1; c.weightx = 1; c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0,20,5,20);
+        c.insets = new Insets(0,20,10,20);
         this.add(selectorPanel,c);
 
         JTextArea infoArea = new JTextArea(1,1);

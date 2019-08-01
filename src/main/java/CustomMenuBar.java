@@ -40,10 +40,15 @@ public class CustomMenuBar extends JMenuBar {
 
         dataMenu.addSeparator();
 
-        JMenuItem exportConfiguration = new JMenuItem("Export Program Configuration");
+        JMenuItem exportConfiguration = new JMenuItem("Export Full Program Configuration");
         exportConfiguration.setFont(Settings.MENU_BAR_DEFAULT_FONT);
         dataMenu.add(exportConfiguration);
-        exportConfiguration.addActionListener(e -> exportConfig());
+        exportConfiguration.addActionListener(e -> exportConfig(true));
+
+        JMenuItem exporWithoutLog = new JMenuItem("Export Configuration Without Log");
+        exporWithoutLog.setFont(Settings.MENU_BAR_DEFAULT_FONT);
+        dataMenu.add(exporWithoutLog);
+        exporWithoutLog.addActionListener(e -> exportConfig(false));
 
         JMenuItem exportCSV = new JMenuItem("Export Data as CSV");
         exportCSV.setFont(Settings.MENU_BAR_DEFAULT_FONT);
@@ -106,7 +111,7 @@ public class CustomMenuBar extends JMenuBar {
         }
     }
 
-    public void exportConfig(){
+    public void exportConfig(boolean includeLog){
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setDialogTitle("Export Configuration");
@@ -119,12 +124,12 @@ public class CustomMenuBar extends JMenuBar {
             try{
                 NotificationLogger.logger.addToLog("");
                 NotificationLogger.logger.addToLog("Exporting Program Configuration");
-                FileWriter writer = new FileWriter(fileChooser.getSelectedFile());
+                FileWriter writer = new FileWriter(fileChooser.getSelectedFile()+".txt");
 
                 NotificationLogger.logger.addToLog("Exporting ID list");
-                String ids = "IDLIST";
+                StringBuilder ids = new StringBuilder("IDLIST");
                 for(String id : app.getDataModel().getIds()){
-                    ids += "|" + id;
+                    ids.append("|").append(id);
                 }
                 writer.write(ids +"\n");
 
@@ -134,18 +139,21 @@ public class CustomMenuBar extends JMenuBar {
                     ChargerObject charger = app.getDataModel().getChargeObject(id);
                     StringBuilder output = new StringBuilder("CHARGERINFO");
                     if(charger != null){
-                        output.append("|" + charger.getId());
-                        output.append("|" + charger.getDesignator());
-                        output.append("|" + charger.getAddress());
-                        output.append("|" + charger.getAdditionalInfo());
-                        output.append("|" + charger.getName());
-                        output.append("|" + charger.getPrice());
-                        output.append("|" + charger.getPowerOutput());
-                        output.append("|" + charger.isRapid());
-                        for (long timeOfLog : charger.getLogTimes()){
-                            output.append("|" + timeOfLog + ":" + charger.getEntryInLog(timeOfLog));
+                        output.append("|").append(charger.getId());
+                        output.append("|").append(charger.getDesignator());
+                        output.append("|").append(charger.getAddress());
+                        output.append("|").append(charger.getAdditionalInfo());
+                        output.append("|").append(charger.getName());
+                        output.append("|").append(charger.getPrice());
+                        output.append("|").append(charger.getPowerOutput());
+                        output.append("|").append(charger.isRapid());
+
+                        if(includeLog){
+                            for (long timeOfLog : charger.getLogTimes()){
+                                output.append("|").append(timeOfLog).append(":").append(charger.getEntryInLog(timeOfLog));
+                            }
+                            writer.write(output.toString()+"\n");
                         }
-                        writer.write(output.toString()+"\n");
                     }
                 }
                 NotificationLogger.logger.addToLog("Export Complete");
@@ -166,6 +174,7 @@ public class CustomMenuBar extends JMenuBar {
         fileChooser.setFont(Settings.MENU_BAR_DEFAULT_FONT);
         int returnVal = fileChooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
+            NotificationLogger.logger.addToLog("Importing new program configuration");
             try {
                 app.getDataModel().clearChargers();
                 app.getDataModel().clearIds();
@@ -177,6 +186,7 @@ public class CustomMenuBar extends JMenuBar {
                         for(int i = 1; i < data.length; i++){
                             app.getDataModel().addId(data[i]);
                         }
+                        NotificationLogger.logger.addToLog("Imported ID List from File");
                     } else if(data[0].equals("CHARGERINFO")){
                         ChargerObject newCharger = new ChargerObject(data[1],Integer.parseInt(data[2]));
                         newCharger.setAddress(data[3]);
@@ -191,15 +201,20 @@ public class CustomMenuBar extends JMenuBar {
                             Boolean value = Boolean.parseBoolean(logEntry.split(":")[1]);
                             newCharger.addLogEntry(time,value);
                         }
+
                         app.getDataModel().addCharger(newCharger.getId()+":"+newCharger.getDesignator(),newCharger);
+                        app.getMenuPanel().addMenuItem(newCharger.getId()+":"+newCharger.getDesignator() +" - " + newCharger.getName());
+
+                        NotificationLogger.logger.addToLog("Imported Charger '" +data[1]+":"+data[2] +"' from file" );
                     } else {
                         NotificationLogger.logger.addToLog("Invalid entry found, ignoring data...");
                     }
+                    NotificationLogger.logger.addToLog("Import Successful");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println();
+
         }
     }
 }

@@ -11,7 +11,7 @@ class DataModel {
     private Application app;
 
     DataModel(Application app){
-        this.ids = new HashSet<>();
+        this.ids = new TreeSet<>();
         this.chargers = new HashMap<>();
         this.app = app;
     }
@@ -19,7 +19,7 @@ class DataModel {
     /**
      * Downloads the details for all the chargers in the 'ids' list in DataModel
      */
-    public void downloadIdData() {
+    public synchronized void downloadIdData() {
         //Clear the previous map
         chargers.clear();
         NotificationLogger.logger.addToLog("");
@@ -75,27 +75,27 @@ class DataModel {
         webThread.start();
     }
 
-    public Set<String> getIds(){
+    public synchronized Set<String> getIds(){
         return ids;
     }
 
-    public ChargerObject getChargeObject(String id){
+    public synchronized ChargerObject getChargeObject(String id){
         return chargers.get(id);
     }
 
-    public void clearIds(){
+    public synchronized void clearIds(){
         ids.clear();
     }
 
-    public void clearChargers(){
+    public synchronized void clearChargers(){
         chargers.clear();
     }
 
-    public void addId(String newId){
+    public synchronized void addId(String newId){
         ids.add(newId);
     }
 
-    public void addCharger(String chargerId, ChargerObject charger){
+    public synchronized void addCharger(String chargerId, ChargerObject charger){
         chargers.put(chargerId,charger);
     }
 

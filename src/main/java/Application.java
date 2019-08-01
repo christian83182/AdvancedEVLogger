@@ -11,7 +11,8 @@ public class Application extends JFrame {
     private WebClient client;
     private DataModel dataModel;
     private volatile boolean isLogging;
-    JLabel statusLabel;
+    private JLabel statusLabel;
+    private LoggingThread loggingThread;
 
     Application(){
         super("Advanced EV Charging Logger");
@@ -19,6 +20,7 @@ public class Application extends JFrame {
         this.client = new WebClient();
         this.isLogging = false;
         this.dataModel = new DataModel(this);
+        this.loggingThread = new LoggingThread(this);
         init();
     }
 
@@ -89,9 +91,11 @@ public class Application extends JFrame {
         if(isLogging){
             statusLabel.setText("ACTIVE");
             statusLabel.setForeground(new Color(66, 155, 58));
+            NotificationLogger.logger.addToLog("Logging started...");
         } else {
             statusLabel.setText("INACTIVE");
             statusLabel.setForeground(new Color(163, 0, 9));
+            NotificationLogger.logger.addToLog("Logging stopped...");
         }
     }
 
