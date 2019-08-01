@@ -33,8 +33,8 @@ public class Application extends JFrame {
         setLookAndFeel();
 
         menuBar = new CustomMenuBar(this);
-        graphPanel = new GraphPanel(this);
         menuPanel = new MenuPanel(this);
+        graphPanel = new GraphPanel(this);
 
         JSplitPane splitPane = new JSplitPane();
         splitPane.setDividerSize(2);

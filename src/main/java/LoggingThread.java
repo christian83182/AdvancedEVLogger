@@ -44,7 +44,7 @@ public class LoggingThread extends Thread {
                     app.getDataModel().addTotalChargersLog(System.currentTimeMillis(),totalChargers);
 
                     NotificationLogger.logger.addToLog("Logging complete. Total Chargers in Use: " + totalChargers);
-                    Thread.sleep(60000 );
+                    Thread.sleep(600000 );
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }

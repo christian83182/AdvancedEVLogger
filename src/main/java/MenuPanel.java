@@ -31,6 +31,7 @@ class MenuPanel extends JPanel {
 
         selectorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectorList.setLayoutOrientation(JList.VERTICAL);
+        selectorList.setSelectedIndex(0);
         JScrollPane selectorPanel = new JScrollPane(selectorList);
 
         c = new GridBagConstraints();
