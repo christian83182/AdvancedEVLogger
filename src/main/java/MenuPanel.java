@@ -10,7 +10,7 @@ class MenuPanel extends JPanel {
     MenuPanel(Application app){
         this.app = app;
         selectorModel = new DefaultListModel<>();
-        selectorModel.addElement("None");
+        selectorModel.addElement("Show All");
         selectorList = new JList<>(selectorModel);
         init();
     }
@@ -76,6 +76,10 @@ class MenuPanel extends JPanel {
     public synchronized void addMenuItem(String item){
         selectorModel.addElement(item);
         this.repaint();
+    }
+
+    public String getSelectedOption(){
+        return selectorList.getSelectedValue();
     }
 
 }

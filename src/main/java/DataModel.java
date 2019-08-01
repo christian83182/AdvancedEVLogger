@@ -9,11 +9,13 @@ class DataModel {
     private Set<String> ids;
     private Map<String,ChargerObject> chargers;
     private Application app;
+    private Map<Long,Integer> totalChargersLog;
 
     DataModel(Application app){
         this.ids = new TreeSet<>();
         this.chargers = new HashMap<>();
         this.app = app;
+        this.totalChargersLog = new HashMap<>();
     }
 
     /**
@@ -46,7 +48,6 @@ class DataModel {
                         doc = newCharger.getHtmlPage(app.getWebClient());
                     }
                     newCharger.fetchDetailsFromPage(doc);
-                    newCharger.logCurrent(doc);
 
                     //Put it in the internal map and update the previous charger
                     chargers.put(id,newCharger);
@@ -99,5 +100,19 @@ class DataModel {
         chargers.put(chargerId,charger);
     }
 
+    public synchronized Set<Long> getTotalChargersKeySet(){
+        return totalChargersLog.keySet();
+    }
 
+    public synchronized Integer getTotalChargersAtTime(Long time){
+        return totalChargersLog.get(time);
+    }
+
+    public synchronized void clearTotalChargersLog(){
+        totalChargersLog.clear();
+    }
+
+    public synchronized void addTotalChargersLog(Long time, Integer quantity){
+        totalChargersLog.put(time,quantity);
+    }
 }

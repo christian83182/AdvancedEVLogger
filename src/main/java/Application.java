@@ -10,9 +10,10 @@ public class Application extends JFrame {
     private MenuPanel menuPanel;
     private WebClient client;
     private DataModel dataModel;
-    private volatile boolean isLogging;
-    private JLabel statusLabel;
     private LoggingThread loggingThread;
+
+    private JLabel statusLabel;
+    private volatile boolean isLogging;
 
     Application(){
         super("Advanced EV Charging Logger");

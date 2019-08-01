@@ -133,6 +133,15 @@ public class CustomMenuBar extends JMenuBar {
                 }
                 writer.write(ids +"\n");
 
+                if(includeLog){
+                    StringBuilder output = new StringBuilder("TOTALCHARGERS");
+                    for(Long time : app.getDataModel().getTotalChargersKeySet()){
+                        output.append("|").append(time);
+                        output.append(":").append(app.getDataModel().getTotalChargersAtTime(time));
+                    }
+                    writer.write(output.toString()+"\n");
+                }
+
                 NotificationLogger.logger.addToLog("Exporting EV Charger Info");
                 for(String id : app.getDataModel().getIds()){
                     NotificationLogger.logger.addToLog("Exporting data for '" + id + "'");
@@ -206,11 +215,17 @@ public class CustomMenuBar extends JMenuBar {
                         app.getMenuPanel().addMenuItem(newCharger.getId()+":"+newCharger.getDesignator() +" - " + newCharger.getName());
 
                         NotificationLogger.logger.addToLog("Imported Charger '" +data[1]+":"+data[2] +"' from file" );
+                    } else if(data[0].equals("TOTALCHARGERS")){
+                        for(int i = 1; i < data.length; i++){
+                            Long time = Long.parseLong(data[i].split(":")[0]);
+                            Integer quantity = Integer.parseInt(data[i].split(":")[1]);
+                            app.getDataModel().addTotalChargersLog(time,quantity);
+                        }
                     } else {
                         NotificationLogger.logger.addToLog("Invalid entry found, ignoring data...");
                     }
-                    NotificationLogger.logger.addToLog("Import Successful");
                 }
+                NotificationLogger.logger.addToLog("Import Successful");
             } catch (IOException e) {
                 e.printStackTrace();
             }

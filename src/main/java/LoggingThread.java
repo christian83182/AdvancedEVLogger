@@ -1,6 +1,7 @@
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
+import java.util.Collections;
 
 public class LoggingThread extends Thread {
 
@@ -31,8 +32,19 @@ public class LoggingThread extends Thread {
                         previousId = currentCharger.getId();
                         NotificationLogger.logger.addToLog("Log Successful for '"+id+"'");
                     }
-                    NotificationLogger.logger.addToLog("Logging complete. Thread sleeping for 15m");
-                    Thread.sleep(300000);
+
+                    Integer totalChargers = 0;
+                    for(String id : app.getDataModel().getIds()){
+                        ChargerObject charger = app.getDataModel().getChargeObject(id);
+                        Long latestLogTime = Collections.max(charger.getLogTimes());
+                        if(charger.getEntryInLog(latestLogTime)){
+                            totalChargers++;
+                        }
+                    }
+                    app.getDataModel().addTotalChargersLog(System.currentTimeMillis(),totalChargers);
+
+                    NotificationLogger.logger.addToLog("Logging complete. Total Chargers in Use: " + totalChargers);
+                    Thread.sleep(60000 );
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
