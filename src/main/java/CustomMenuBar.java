@@ -286,9 +286,26 @@ public class CustomMenuBar extends JMenuBar {
             Node chargerRapidNode = chargerObjectElement.getElementsByTagName("IsChargerRapid").item(0);
             chargerObject.setRapid(Boolean.parseBoolean(chargerRapidNode.getTextContent()));
 
+            //iterate over log and extract
+            Element chargerLogElement = (Element) chargerObjectElement.getElementsByTagName("ChargerLog").item(0);
+            NodeList chargerLogNodes = chargerLogElement.getElementsByTagName("LogEntry");
+            for(int j = 0; j< chargerLogNodes.getLength(); j++){
+                Element logEntryElement = (Element) chargerLogNodes.item(j);
+
+                Node logEntryTimeNode = logEntryElement.getElementsByTagName("EntryTime").item(0);
+                Long timeEntry = Long.parseLong(logEntryTimeNode.getTextContent());
+                Node logEntryStatusNode = logEntryElement.getElementsByTagName("EntryStatus").item(0);
+                Boolean statusEntry = Boolean.parseBoolean(logEntryStatusNode.getTextContent());
+
+                chargerObject.addLogEntry(timeEntry,statusEntry);
+            }
+
             String chargerObjectId = chargerObject.getId() +":" + chargerObject.getDesignator();
             app.getDataModel().addCharger(chargerObjectId,chargerObject);
+            app.getDataModel().rebuiltGeneralModel();
             app.getMenuPanel().addMenuItem(chargerObjectId + " - " + chargerObject.getName());
+            app.getGraphPanel().fitToWindow();
+            app.repaint();
         }
 
         System.out.println();
