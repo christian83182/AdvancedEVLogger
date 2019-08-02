@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -21,9 +19,11 @@ public abstract class InteractivePanel extends JPanel {
         this.app = app;
 
         PanAndZoomListener panListener = new PanAndZoomListener();
+        WindowListener windowListener = new WindowListener();
         this.addMouseWheelListener(panListener);
         this.addMouseListener(panListener);
         this.addMouseMotionListener(panListener);
+        this.addComponentListener(windowListener);
     }
 
     public abstract void paintView(Graphics2D g2);
@@ -142,16 +142,23 @@ public abstract class InteractivePanel extends JPanel {
         @Override
         public void mouseDragged(MouseEvent e) {
             int newPanX = (int)(originalGlobalPan.x + (e.getX() - startPoint.x)/getZoom());
-            if(newPanX < 0){
+            if(newPanX < 300){
                 getPan().x = (int)(originalGlobalPan.x + (e.getX() - startPoint.x)/getZoom());
             } else {
-                getPan().x = 0;
+                getPan().x = 300;
             }
             //getPan().y = (int)(originalGlobalPan.y + (e.getY() - startPoint.y)/getZoom());
             InteractivePanel.this.repaint();
         }
 
         @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            super.mouseWheelMoved(e);
+            app.getMenuPanel().setScale(app.getMenuPanel().getScale() + e.getWheelRotation());
+            app.repaint();
+        }
+
+        /*@Override
         public void mouseWheelMoved(MouseWheelEvent e) {
             int scaleFactor = e.getWheelRotation();
             Double maxZoom = Settings.MAX_ZOOM;
@@ -164,6 +171,14 @@ public abstract class InteractivePanel extends JPanel {
                 return;
             }
             InteractivePanel.this.repaint();
+        }*/
+    }
+
+    private class WindowListener extends ComponentAdapter{
+        @Override
+        public void componentResized(ComponentEvent e) {
+            super.componentResized(e);
+            getPan().y = getHeight()-100;
         }
     }
 

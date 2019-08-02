@@ -145,4 +145,11 @@ class MenuPanel extends JPanel {
         return (Integer)scaleSpinner.getValue();
     }
 
+    public void setScale(Integer newValue){
+        if(newValue >1 && newValue < 10000){
+            scaleSpinner.setValue(newValue);
+            app.repaint();
+        }
+    }
+
 }

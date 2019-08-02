@@ -4,8 +4,8 @@ public class Settings {
 
     static Double MAX_ZOOM = 5.0;
     static Double MIN_ZOOM = 0.05;
-    static Point DEFAULT_PAN = new Point(-194, 983);
-    static Double DEFAULT_ZOOM = 0.735;
+    static Point DEFAULT_PAN = new Point(100, 983);
+    static Double DEFAULT_ZOOM = 1.0;
 
     static Color BACKGROUND_COLOUR = new Color(44, 44, 44);
     static Color GRAPH_COLOUR = new Color(48, 48, 48);
