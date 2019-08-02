@@ -17,7 +17,6 @@ public class GraphPanel extends InteractivePanel {
     @Override
     public void paintView(Graphics2D g2) {
         paintBackground(g2);
-        //System.out.println(getPan().x +"," + getPan().y);
         if(app.getMenuPanel().getSelectedOption().equals("Show All")){
             paintTotalChargersGraph(g2);
         } else {
@@ -30,16 +29,20 @@ public class GraphPanel extends InteractivePanel {
     }
 
     private void paintSingleChargerGraph(Graphics2D g2, String id){
+        //paint graph background
+        g2.setColor(Settings.GRAPH_COLOUR);
+        g2.fillRect(0,-getHeight()+130,1000000,getHeight()-150);
+
+        //paint axis, and yaxis markers
         g2.setColor(Color.WHITE);
-        g2.drawLine(0,0,0,-getHeight()+50);
-        g2.drawLine(100000,0,0,0);
+        g2.drawLine(0,0,0,-getHeight()+130);
+        g2.drawLine(0,-getHeight()+130,10,-getHeight()+130);
+        g2.drawLine(0,0,1000000,0);
 
+        //paint xaxis markers
         Integer xStep = app.getMenuPanel().getScale();
-        int yStep = 100;
-
         for(int i = 0; i < 500; i++){
-            g2.drawLine(i*xStep,-10,i*xStep,0);
-            g2.drawLine(0,i*-yStep,10,i*-yStep);
+            g2.drawLine(i*xStep,-15,i*xStep,0);
         }
 
         g2.setColor(new Color(164, 121, 58));
@@ -54,12 +57,12 @@ public class GraphPanel extends InteractivePanel {
                 int x2 = (int)(long)(times.get(i+1) - startTime)/(3600000/xStep);
                 int y1,y2;
                 if(charger.getEntryInLog(times.get(i))){
-                    y1 = -1000;
+                    y1 = -getHeight()+130;
                 } else {
                     y1= 0;
                 }
                 if(charger.getEntryInLog(times.get(i+1))){
-                    y2 = -1000;
+                    y2 = -getHeight()+130;
                 } else {
                     y2= 0;
                 }
@@ -85,7 +88,7 @@ public class GraphPanel extends InteractivePanel {
         int yStep = 100;
 
         for(int i = 0; i < 500; i++){
-            g2.drawLine(i*xStep,-10,i*xStep,0);
+            g2.drawLine(i*xStep,-15,i*xStep,0);
             g2.drawLine(0,i*-yStep,10,i*-yStep);
         }
 
@@ -117,7 +120,5 @@ public class GraphPanel extends InteractivePanel {
     private void paintBackground(Graphics2D g2){
         g2.setColor(Settings.BACKGROUND_COLOUR);
         g2.fillRect(-100000,-100000,200000,200000);
-        g2.setColor(Settings.GRAPH_COLOUR);
-        g2.fillRect(0,-100000,100000,100000);
     }
 }

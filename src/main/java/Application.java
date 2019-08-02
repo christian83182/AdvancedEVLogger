@@ -53,8 +53,10 @@ public class Application extends JFrame {
         notificationPanel.add(Box.createHorizontalGlue());
 
         JLabel statusTextLabel = new JLabel("Logging Status: ");
+        statusTextLabel.setFont(Settings.DEFAULT_FONT);
         notificationPanel.add(statusTextLabel);
         statusLabel = new JLabel("");
+        statusLabel.setFont(Settings.DEFAULT_FONT);
         notificationPanel.add(statusLabel);
         this.setLogging(false);
         notificationPanel.add(Box.createRigidArea(new Dimension(10,1)));

@@ -58,6 +58,7 @@ public class NotificationLogger {
      */
     public JLabel getLabel(){
         this.logLabel = new JLabel("Starting Console...");
+        this.logLabel.setFont(Settings.DEFAULT_FONT);
         return logLabel;
     }
 
