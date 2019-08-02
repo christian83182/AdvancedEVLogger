@@ -88,26 +88,26 @@ public abstract class InteractivePanel extends JPanel {
 
     public void paintScale(Graphics2D g2){
         String label = "1 Hour";
-        Double scaleLength = app.getMenuPanel().getScale() * getZoom();
+        Double scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom();
 
         //Different size options should be added from largest to smallest.
         if(scaleLength < 4) {
-            scaleLength = app.getMenuPanel().getScale() * getZoom() * 24;
+            scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom() * 24;
             label = "1 Day";
         } else if(scaleLength < 20){
-            scaleLength = app.getMenuPanel().getScale() * getZoom()*5;
+            scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom()*5;
             label = "5 Hours";
         } else if (scaleLength <50){
-            scaleLength = app.getMenuPanel().getScale() * getZoom()*2;
+            scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom()*2;
             label= "2 Hours";
         }
 
         //Different size options should be added from smallest to largest.
         if (scaleLength > 400) {
-            scaleLength = app.getMenuPanel().getScale() * getZoom() / 4;
+            scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom() / 4;
             label = "15 Minutes";
         }else if (scaleLength > 200){
-            scaleLength = app.getMenuPanel().getScale() * getZoom()/2;
+            scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom()/2;
             label = "30 Minutes";
         }
 
@@ -154,7 +154,7 @@ public abstract class InteractivePanel extends JPanel {
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
             super.mouseWheelMoved(e);
-            app.getMenuPanel().setScale(app.getMenuPanel().getScale() + e.getWheelRotation());
+            app.getMenuPanel().setHorizontalScale(app.getMenuPanel().getHorizontalScale() + e.getWheelRotation());
             app.repaint();
         }
 

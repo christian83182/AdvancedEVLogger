@@ -1,6 +1,9 @@
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 class MenuPanel extends JPanel {
 
@@ -8,7 +11,8 @@ class MenuPanel extends JPanel {
     private JList<String> selectorList;
     private Application app;
 
-    private JSpinner scaleSpinner;
+    private JSpinner spinnerHorizontal;
+    private JSpinner spinnerVertical;
 
     MenuPanel(Application app){
         this.app = app;
@@ -42,36 +46,53 @@ class MenuPanel extends JPanel {
 
         c = new GridBagConstraints(); c.gridx = 0; c.gridy = 0; c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10,10,25,10);
+        c.insets = new Insets(10,20,20,20);
         this.add(controlPanel,c);
 
         c = new GridBagConstraints(); c.gridx = 0; c.gridy = 1; c.weighty =1; c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0,10,25,10);
+        c.insets = new Insets(0,20,20,20);
         this.add(selectionPanel,c);
 
         JLabel xAxisScaleLabel = new JLabel("Horizontal Scale:");
         xAxisScaleLabel.setFont(Settings.DEFAULT_FONT);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 0;
-        c.insets = new Insets(10,15,15,0);
+        c.insets = new Insets(10,15,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(xAxisScaleLabel,c);
 
-        SpinnerModel spinnerModel = new SpinnerNumberModel(100,1,10000,1);
-        scaleSpinner = new JSpinner(spinnerModel);
+        SpinnerModel spinnerModelHorizontal = new SpinnerNumberModel(100,1,10000,1);
+        spinnerHorizontal = new JSpinner(spinnerModelHorizontal);
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 0; c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10,15,15,10);
+        c.insets = new Insets(10,15,0,10);
         c.anchor = GridBagConstraints.LINE_START;
-        controlPanel.add(scaleSpinner,c);
+        controlPanel.add(spinnerHorizontal,c);
+
+        JLabel yAxisScaleLabel = new JLabel("Vertical Scale:");
+        yAxisScaleLabel.setFont(Settings.DEFAULT_FONT);
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 1;
+        c.insets = new Insets(0,15,15,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(yAxisScaleLabel,c);
+
+        SpinnerModel spinnerModelVertical = new SpinnerNumberModel(10,1,1000,1);
+        spinnerVertical = new JSpinner(spinnerModelVertical);
+        c = new GridBagConstraints();
+        c.gridx = 1; c.gridy = 1; c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0,15,15,10);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(spinnerVertical,c);
 
         JCheckBox includeRapid = new JCheckBox("Include Level 3 Chargers");
         includeRapid.setFont(Settings.DEFAULT_FONT);
         includeRapid.setSelected(true);
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 1; c.weightx = 1; c.gridwidth = 2;
+        c.gridx = 0; c.gridy = 2; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeRapid,c);
@@ -80,7 +101,7 @@ class MenuPanel extends JPanel {
         includeFast.setFont(Settings.DEFAULT_FONT);
         includeFast.setSelected(true);
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 2; c.weightx = 1; c.gridwidth = 2;
+        c.gridx = 0; c.gridy = 3; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,10,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeFast,c);
@@ -103,8 +124,15 @@ class MenuPanel extends JPanel {
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 2; c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0,10,10,10);
+        c.insets = new Insets(0,10,0,10);
         selectionPanel.add(infoScroller,c);
+
+        JButton openInBrowserButton = new JButton("Open in Browser");
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 3; c.weightx=1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0,10,10,10);
+        selectionPanel.add(openInBrowserButton,c);
 
         selectorList.addListSelectionListener(e -> {
             app.repaint();
@@ -129,7 +157,24 @@ class MenuPanel extends JPanel {
             }
         });
 
-        spinnerModel.addChangeListener(e -> {app.repaint();});
+        spinnerModelHorizontal.addChangeListener(e -> {app.repaint();});
+
+        spinnerModelVertical.addChangeListener(e -> {app.repaint();});
+
+        openInBrowserButton.addActionListener(e -> {
+            String id = getSelectedOption().split(":")[0];
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                try{
+                    if(id.equals("Show All")){
+                        Desktop.getDesktop().browse(new URI("https://polar-network.com/live-map/"));
+                    } else {
+                        Desktop.getDesktop().browse(new URI("https://polar-network.com/charge-point-information/" + id +"/"));
+                    }
+                } catch (URISyntaxException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
 
     public synchronized void addMenuItem(String item){
@@ -141,13 +186,24 @@ class MenuPanel extends JPanel {
         return selectorList.getSelectedValue();
     }
 
-    public Integer getScale(){
-        return (Integer)scaleSpinner.getValue();
+    public Integer getHorizontalScale(){
+        return (Integer)spinnerHorizontal.getValue();
     }
 
-    public void setScale(Integer newValue){
+    public void setHorizontalScale(Integer newValue){
         if(newValue >1 && newValue < 10000){
-            scaleSpinner.setValue(newValue);
+            spinnerHorizontal.setValue(newValue);
+            app.repaint();
+        }
+    }
+
+    public Integer getVerticalScale(){
+        return (Integer)spinnerVertical.getValue();
+    }
+
+    public void setVeticalScale(Integer newValue){
+        if(newValue >= 1 && newValue < 1000){
+            spinnerVertical.setValue(newValue);
             app.repaint();
         }
     }
