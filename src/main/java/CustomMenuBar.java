@@ -147,9 +147,9 @@ public class CustomMenuBar extends JMenuBar {
 
                 if(includeLog){
                     StringBuilder output = new StringBuilder("TOTALCHARGERS");
-                    for(Long time : app.getDataModel().getTotalChargersKeySet()){
+                    for(Long time : app.getDataModel().getGeneralLogKey()){
                         output.append("|").append(time);
-                        output.append(":").append(app.getDataModel().getTotalChargersAtTime(time));
+                        output.append(":").append(app.getDataModel().getGeneralLogEntry(time));
                     }
                     writer.write(output.toString()+"\n");
                 }
@@ -225,21 +225,16 @@ public class CustomMenuBar extends JMenuBar {
 
                         app.getDataModel().addCharger(newCharger.getId()+":"+newCharger.getDesignator(),newCharger);
                         app.getMenuPanel().addMenuItem(newCharger.getId()+":"+newCharger.getDesignator() +" - " + newCharger.getName());
-
                         NotificationLogger.logger.addToLog("Imported Charger '" +data[1]+":"+data[2] +"' from file" );
-                    } else if(data[0].equals("TOTALCHARGERS")){
-                        for(int i = 1; i < data.length; i++){
-                            Long time = Long.parseLong(data[i].split(":")[0]);
-                            Integer quantity = Integer.parseInt(data[i].split(":")[1]);
-                            app.getDataModel().addTotalChargersLog(time,quantity);
-                        }
                     } else {
                         NotificationLogger.logger.addToLog("Invalid entry found, ignoring data...");
                     }
                 }
                 NotificationLogger.logger.addToLog("Import Successful");
+                app.getDataModel().rebuiltGeneralModel();
                 app.getGraphPanel().fitToWindow();
                 app.repaint();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

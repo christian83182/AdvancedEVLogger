@@ -1,5 +1,3 @@
-import org.omg.CORBA.INTERNAL;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.text.DateFormat;
@@ -40,7 +38,7 @@ public class GraphPanel extends InteractivePanel {
         paintScale(g2);
     }
     public void fitToWindow(){
-        List<Long> times = new ArrayList<>(app.getDataModel().getTotalChargersKeySet());
+        List<Long> times = new ArrayList<>(app.getDataModel().getGeneralLogKey());
         Collections.sort(times);
         if(!times.isEmpty()){
             Integer adjustedWidth = (int)(this.getWidth()*0.85);
@@ -49,8 +47,8 @@ public class GraphPanel extends InteractivePanel {
 
             Integer maxValue = 0;
             for(Long time : times){
-                if(app.getDataModel().getTotalChargersAtTime(time) > maxValue){
-                    maxValue = app.getDataModel().getTotalChargersAtTime(time);
+                if(app.getDataModel().getGeneralLogEntry(time) > maxValue){
+                    maxValue = app.getDataModel().getGeneralLogEntry(time);
                 }
             }
             app.getMenuPanel().setVeticalScale(maxValue+1);
@@ -210,7 +208,7 @@ public class GraphPanel extends InteractivePanel {
         Integer xStep = app.getMenuPanel().getHorizontalScale();
         Integer yStep = app.getMenuPanel().getVerticalScale();
         Integer yIncrement = (getHeight()-130)/yStep;
-        List<Long> times = new ArrayList<>(app.getDataModel().getTotalChargersKeySet());
+        List<Long> times = new ArrayList<>(app.getDataModel().getGeneralLogKey());
         Collections.sort(times);
 
         //paint graph background
@@ -341,9 +339,9 @@ public class GraphPanel extends InteractivePanel {
             long startTime  = times.get(0);
             for(int i = 0; i < times.size()-1 ; i++){
                 int x1 = (int)(long)(times.get(i) - startTime)/(3600000/xStep);
-                int y1 = -app.getDataModel().getTotalChargersAtTime(times.get(i))*yIncrement;
+                int y1 = -app.getDataModel().getGeneralLogEntry(times.get(i))*yIncrement;
                 int x2 = (int)(long)(times.get(i+1) - startTime)/(3600000/xStep);
-                int y2 = -app.getDataModel().getTotalChargersAtTime(times.get(i+1))*yIncrement;
+                int y2 = -app.getDataModel().getGeneralLogEntry(times.get(i+1))*yIncrement;
 
                 if(xStep < 200){
                     g2.setStroke(new BasicStroke((int)((xStep/200.0) * 4)+1));

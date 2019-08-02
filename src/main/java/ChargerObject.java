@@ -1,5 +1,6 @@
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.HtmlData;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
@@ -99,17 +100,21 @@ public class ChargerObject {
         }
     }
 
-    public void logCurrent(HtmlPage doc) {
+    public void logCurrent(HtmlPage doc, Long time){
         DomNode statusNode = doc.getElementById("connector" + designator + "Status").getFirstChild();
         if(statusNode != null){
             if(statusNode.getNodeValue().equals("Charging")){
-                chargingLog.put(System.currentTimeMillis(),true);
+                chargingLog.put(time,true);
             } else {
-                chargingLog.put(System.currentTimeMillis(),false);
+                chargingLog.put(time,false);
             }
         } else {
             NotificationLogger.logger.addToLog("[ERROR] Could not make log entry for '" + this.id+":"+this.designator+"'");
         }
+    }
+
+    public void logCurrent(HtmlPage doc) {
+        logCurrent(doc, System.currentTimeMillis());
     }
 
     public Set<Long> getLogTimes(){

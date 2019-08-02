@@ -9,13 +9,13 @@ class DataModel {
     private Set<String> ids;
     private Map<String,ChargerObject> chargers;
     private Application app;
-    private Map<Long,Integer> totalChargersLog;
+    private Map<Long,Integer> generalChargingLog;
 
     DataModel(Application app){
         this.ids = new TreeSet<>();
         this.chargers = new HashMap<>();
         this.app = app;
-        this.totalChargersLog = new HashMap<>();
+        this.generalChargingLog = new HashMap<>();
     }
 
     /**
@@ -76,6 +76,27 @@ class DataModel {
         webThread.start();
     }
 
+    public synchronized void rebuiltGeneralModel(){
+        this.generalChargingLog.clear();
+        for(ChargerObject charger : chargers.values()){
+            if(isValidCharger(charger)){
+                for(Long time : charger.getLogTimes()){
+                    if(charger.getEntryInLog(time)){
+                        if(generalChargingLog.containsKey(time)){
+                            generalChargingLog.put(time, generalChargingLog.get(time)+1);
+                        } else {
+                            generalChargingLog.put(time,1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isValidCharger(ChargerObject charger){
+        return true;
+    }
+
     public synchronized Set<String> getIds(){
         return ids;
     }
@@ -100,19 +121,19 @@ class DataModel {
         chargers.put(chargerId,charger);
     }
 
-    public synchronized Set<Long> getTotalChargersKeySet(){
-        return totalChargersLog.keySet();
+    public synchronized Set<Long> getGeneralLogKey(){
+        return generalChargingLog.keySet();
     }
 
-    public synchronized Integer getTotalChargersAtTime(Long time){
-        return totalChargersLog.get(time);
+    public synchronized Integer getGeneralLogEntry(Long time){
+        return generalChargingLog.get(time);
     }
 
-    public synchronized void clearTotalChargersLog(){
-        totalChargersLog.clear();
+    public synchronized void clearGeneralLogEntries(){
+        generalChargingLog.clear();
     }
 
-    public synchronized void addTotalChargersLog(Long time, Integer quantity){
-        totalChargersLog.put(time,quantity);
+    public synchronized void addToGeneralLog(Long time, Integer quantity){
+        generalChargingLog.put(time,quantity);
     }
 }

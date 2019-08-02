@@ -30,24 +30,16 @@ public class LoggingThread extends Thread {
                         if(!currentCharger.getId().equals(previousId)){
                             doc = currentCharger.getHtmlPage(app.getWebClient());
                         }
-                        currentCharger.logCurrent(doc);
+                        currentCharger.logCurrent(doc,startTime);
                         previousId = currentCharger.getId();
                         NotificationLogger.logger.addToLog("Log Successful for '"+id+"'");
                     }
 
-                    Integer totalChargers = 0;
-                    for(String id : app.getDataModel().getIds()){
-                        ChargerObject charger = app.getDataModel().getChargeObject(id);
-                        Long latestLogTime = Collections.max(charger.getLogTimes());
-                        if(charger.getEntryInLog(latestLogTime)){
-                            totalChargers++;
-                        }
-                    }
-                    app.getDataModel().addTotalChargersLog(System.currentTimeMillis(),totalChargers);
+                    app.getDataModel().rebuiltGeneralModel();
                     app.repaint();
                     NotificationLogger.logger.addToLog(
                             "Logging completed in " +(System.currentTimeMillis() - startTime)/1000
-                                    +"s. Total Chargers in Use: " + totalChargers);
+                                    +"s. Total Chargers in Use: " + app.getDataModel().getGeneralLogEntry(startTime));
 
                     Thread.sleep(900000 - System.currentTimeMillis() + startTime);
                 } catch (IOException | InterruptedException e) {
