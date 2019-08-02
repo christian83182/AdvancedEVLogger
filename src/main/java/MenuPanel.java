@@ -23,7 +23,7 @@ class MenuPanel extends JPanel {
     }
 
     private void init(){
-        this.setPreferredSize(new Dimension(370,100));
+        this.setPreferredSize(new Dimension(400,100));
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c;

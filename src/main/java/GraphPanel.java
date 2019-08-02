@@ -37,26 +37,35 @@ public class GraphPanel extends InteractivePanel {
     }
 
     private void paintSingleChargerGraph(Graphics2D g2, String id){
+        Integer xStep = app.getMenuPanel().getHorizontalScale();
+        Integer yStep = app.getMenuPanel().getVerticalScale();
+        Integer yIncrement = (getHeight()-130)/yStep;
+
         //paint graph background
         g2.setColor(Settings.GRAPH_COLOUR);
-        g2.fillRect(0,-getHeight()+130,1000000,getHeight()-130);
+        g2.fillRect(0,-yStep*yIncrement,1000000,yStep*yIncrement);
 
-        //paint axis, and yaxis markers
+        //paint xaxis and markers
         g2.setColor(Color.WHITE);
-        g2.drawLine(0,0,0,-getHeight()+130);
         g2.drawLine(0,0,1000000,0);
-
-        //paint xaxis markers
-        Integer xStep = app.getMenuPanel().getHorizontalScale();
         for(int i = 0; i < 500; i++){
             g2.drawLine(i*xStep,-15,i*xStep,0);
         }
 
-        //paint yaxis markers
-        Integer yStep = app.getMenuPanel().getVerticalScale();
-        Integer yIncrement = (getHeight()-130)/yStep;
+        //paint yaxis and markers
+        g2.setColor(Color.WHITE);
+        g2.drawLine(0,0,0,-yStep*yIncrement);
         for(int i = 1; i <= yStep; i++){
             g2.drawLine(0,-yIncrement*i,15,-yIncrement*i);
+        }
+
+        //paint yaxis labels
+        g2.setFont(Settings.DEFAULT_FONT);
+        FontMetrics fontMetrics = g2.getFontMetrics();
+        for(int i = 1; i <= yStep; i++){
+            Integer labelLength = fontMetrics.stringWidth(""+i);
+            Integer labelHeight = fontMetrics.getHeight();
+            g2.drawString(""+i,-labelLength-10,-yIncrement*i + labelHeight/2);
         }
 
         g2.setColor(new Color(164, 121, 58));
@@ -85,35 +94,35 @@ public class GraphPanel extends InteractivePanel {
     }
 
     private void paintTotalChargersGraph(Graphics2D g2){
-        //paint graph background
-        g2.setColor(Settings.GRAPH_COLOUR);
-        g2.fillRect(0,-getHeight()+130,1000000,getHeight()-130);
-
-        //paint axis lines
-        g2.setColor(Color.WHITE);
-        g2.drawLine(0,0,0,-getHeight()+130);
-        g2.drawLine(100000,0,0,0);
-
-        //paint graph background
-        g2.setColor(Settings.GRAPH_COLOUR);
-        g2.fillRect(0,-getHeight()+130,1000000,getHeight()-130);
-
-        //paint axis, and yaxis markers
-        g2.setColor(Color.WHITE);
-        g2.drawLine(0,0,0,-getHeight()+130);
-        g2.drawLine(0,0,1000000,0);
-
-        //paint xaxis markers
         Integer xStep = app.getMenuPanel().getHorizontalScale();
+        Integer yStep = app.getMenuPanel().getVerticalScale();
+        Integer yIncrement = (getHeight()-130)/yStep;
+
+        //paint graph background
+        g2.setColor(Settings.GRAPH_COLOUR);
+        g2.fillRect(0,-yStep*yIncrement,1000000,yStep*yIncrement);
+
+        //paint xaxis and markers
+        g2.setColor(Color.WHITE);
+        g2.drawLine(0,0,1000000,0);
         for(int i = 0; i < 500; i++){
             g2.drawLine(i*xStep,-15,i*xStep,0);
         }
 
-        //paint yaxis markers
-        Integer yStep = app.getMenuPanel().getVerticalScale();
-        Integer yIncrement = (getHeight()-130)/yStep;
+        //paint yaxis and markers
+        g2.setColor(Color.WHITE);
+        g2.drawLine(0,0,0,-yStep*yIncrement);
         for(int i = 1; i <= yStep; i++){
             g2.drawLine(0,-yIncrement*i,15,-yIncrement*i);
+        }
+
+        //paint yaxis labels
+        g2.setFont(Settings.DEFAULT_FONT);
+        FontMetrics fontMetrics = g2.getFontMetrics();
+        for(int i = 1; i <= yStep; i++){
+            Integer labelLength = fontMetrics.stringWidth(""+i);
+            Integer labelHeight = fontMetrics.getHeight();
+            g2.drawString(""+i,-labelLength-10,-yIncrement*i + labelHeight/2);
         }
 
         g2.setColor(new Color(32, 100, 164));
