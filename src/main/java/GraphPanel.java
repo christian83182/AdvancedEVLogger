@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,43 +37,144 @@ public class GraphPanel extends InteractivePanel {
         g2.setTransform(new AffineTransform());
         paintScale(g2);
     }
+    public void fitToWindow(){
+        List<Long> times = new ArrayList<>(app.getDataModel().getTotalChargersKeySet());
+        Collections.sort(times);
+        if(!times.isEmpty()){
+            Integer adjustedWidth = (int)(this.getWidth()*0.85);
+            Integer totalHours = (int)((times.get(times.size()-1) - times.get(0))/3600000.0);
+            app.getMenuPanel().setHorizontalScale(adjustedWidth/totalHours);
+        }
+    }
 
     private void paintSingleChargerGraph(Graphics2D g2, String id){
         Integer xStep = app.getMenuPanel().getHorizontalScale();
         Integer yStep = app.getMenuPanel().getVerticalScale();
         Integer yIncrement = (getHeight()-130)/yStep;
+        ChargerObject charger = app.getDataModel().getChargeObject(id);
+        List<Long> times = new ArrayList<>(charger.getLogTimes());
+        Collections.sort(times);
+        g2.setFont(Settings.DEFAULT_FONT);
+        FontMetrics fontMetrics = g2.getFontMetrics();
 
         //paint graph background
         g2.setColor(Settings.GRAPH_COLOUR);
         g2.fillRect(0,-yStep*yIncrement,1000000,yStep*yIncrement);
 
-        //paint xaxis and markers
-        g2.setColor(Color.WHITE);
-        g2.drawLine(0,0,1000000,0);
-        for(int i = 0; i < 500; i++){
-            g2.drawLine(i*xStep,-15,i*xStep,0);
-        }
-
-        //paint yaxis and markers
+        //paint yaxis and markers & labels
         g2.setColor(Color.WHITE);
         g2.drawLine(0,0,0,-yStep*yIncrement);
         for(int i = 1; i <= yStep; i++){
+            if(app.getMenuPanel().isShowGrid()){
+                g2.setColor(Settings.GRID_COLOUR);
+                g2.drawLine(0,-yIncrement*i,1000000,-yIncrement*i);
+            }
+            g2.setColor(Color.WHITE);
             g2.drawLine(0,-yIncrement*i,15,-yIncrement*i);
-        }
-
-        //paint yaxis labels
-        g2.setFont(Settings.DEFAULT_FONT);
-        FontMetrics fontMetrics = g2.getFontMetrics();
-        for(int i = 1; i <= yStep; i++){
             Integer labelLength = fontMetrics.stringWidth(""+i);
             Integer labelHeight = fontMetrics.getHeight();
             g2.drawString(""+i,-labelLength-10,-yIncrement*i + labelHeight/2);
         }
 
+        //draw x axis line
+        g2.setColor(Color.WHITE);
+        g2.drawLine(0,0,1000000,0);
+
+        //draw x axis labels and markers
+        DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm");
+        for(int i = 1; i < 10000; i++) {
+            if (!times.isEmpty()) {
+                String label = simple.format(times.get(0) + i * 900000);
+                Integer stringLength = fontMetrics.stringWidth(label);
+                Integer stringHeight = fontMetrics.getHeight();
+                Integer textXpos = (int)(i * xStep/4.0 - (stringLength / 2.0));
+                Integer tickXpos = (int)(i * xStep/4.0);
+
+                if(xStep < 4 && i %256 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 7 && xStep >= 4 && i %128 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 14 && xStep >= 7 && i %64 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 27 && xStep >= 14 && i %32 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if (xStep < 54 && xStep >= 27 && i % 16 == 0) {
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 104 && xStep >= 54 && i % 8 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 208 && xStep >= 104 && i % 4 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 416 && xStep >= 208 && i % 2 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep >= 416){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+                }
+            }
+        }
+
         g2.setColor(new Color(164, 121, 58));
-        ChargerObject charger = app.getDataModel().getChargeObject(id);
-        List<Long> times = new ArrayList<>(charger.getLogTimes());
-        Collections.sort(times);
 
         if(!times.isEmpty()){
             long startTime  = times.get(0);
@@ -97,28 +200,126 @@ public class GraphPanel extends InteractivePanel {
         Integer xStep = app.getMenuPanel().getHorizontalScale();
         Integer yStep = app.getMenuPanel().getVerticalScale();
         Integer yIncrement = (getHeight()-130)/yStep;
+        List<Long> times = new ArrayList<>(app.getDataModel().getTotalChargersKeySet());
+        Collections.sort(times);
 
         //paint graph background
         g2.setColor(Settings.GRAPH_COLOUR);
         g2.fillRect(0,-yStep*yIncrement,1000000,yStep*yIncrement);
 
-        //paint xaxis and markers
-        g2.setColor(Color.WHITE);
-        g2.drawLine(0,0,1000000,0);
-        for(int i = 0; i < 500; i++){
-            g2.drawLine(i*xStep,-15,i*xStep,0);
-        }
-
         //paint yaxis and markers
         g2.setColor(Color.WHITE);
         g2.drawLine(0,0,0,-yStep*yIncrement);
         for(int i = 1; i <= yStep; i++){
+            if(app.getMenuPanel().isShowGrid()){
+                g2.setColor(Settings.GRID_COLOUR);
+                g2.drawLine(0,-yIncrement*i,1000000,-yIncrement*i);
+            }
+            g2.setColor(Color.WHITE);
             g2.drawLine(0,-yIncrement*i,15,-yIncrement*i);
         }
 
-        //paint yaxis labels
+        //draw x axis line
+        g2.setColor(Color.WHITE);
+        g2.drawLine(0,0,1000000,0);
+
+        //draw x axis labels and markers
         g2.setFont(Settings.DEFAULT_FONT);
         FontMetrics fontMetrics = g2.getFontMetrics();
+        DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm");
+        for(int i = 1; i < 10000; i++) {
+            if (!times.isEmpty()) {
+                String label = simple.format(times.get(0) + i * 900000);
+                Integer stringLength = fontMetrics.stringWidth(label);
+                Integer stringHeight = fontMetrics.getHeight();
+                Integer textXpos = (int)(i * xStep/4.0 - (stringLength / 2.0));
+                Integer tickXpos = (int)(i * xStep/4.0);
+
+                if(xStep < 4 && i %256 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 7 && xStep >= 4 && i %128 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 14 && xStep >= 7 && i %64 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 27 && xStep >= 14 && i %32 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if (xStep < 54 && xStep >= 27 && i % 16 == 0) {
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 104 && xStep >= 54 && i % 8 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 208 && xStep >= 104 && i % 4 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep < 416 && xStep >= 208 && i % 2 == 0){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+
+                } else if(xStep >= 416){
+                    if(app.getMenuPanel().isShowGrid()){
+                        g2.setColor(Settings.GRID_COLOUR);
+                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+                    }
+                    g2.setColor(Color.WHITE);
+                    g2.drawString(label, textXpos, stringHeight + 10);
+                    g2.drawLine(tickXpos,0, tickXpos,-10);
+                }
+            }
+        }
+
+        //paint yaxis labels
         for(int i = 1; i <= yStep; i++){
             Integer labelLength = fontMetrics.stringWidth(""+i);
             Integer labelHeight = fontMetrics.getHeight();
@@ -126,9 +327,6 @@ public class GraphPanel extends InteractivePanel {
         }
 
         g2.setColor(new Color(32, 100, 164));
-        List<Long> times = new ArrayList<>(app.getDataModel().getTotalChargersKeySet());
-        Collections.sort(times);
-
         if(!times.isEmpty()){
             long startTime  = times.get(0);
             for(int i = 0; i < times.size()-1 ; i++){

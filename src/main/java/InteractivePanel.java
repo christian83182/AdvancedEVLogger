@@ -142,10 +142,10 @@ public abstract class InteractivePanel extends JPanel {
         @Override
         public void mouseDragged(MouseEvent e) {
             int newPanX = (int)(originalGlobalPan.x + (e.getX() - startPoint.x)/getZoom());
-            if(newPanX < 300){
+            if(newPanX < 70){
                 getPan().x = (int)(originalGlobalPan.x + (e.getX() - startPoint.x)/getZoom());
             } else {
-                getPan().x = 300;
+                getPan().x = 70;
             }
             //getPan().y = (int)(originalGlobalPan.y + (e.getY() - startPoint.y)/getZoom());
             InteractivePanel.this.repaint();
@@ -154,7 +154,12 @@ public abstract class InteractivePanel extends JPanel {
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
             super.mouseWheelMoved(e);
-            app.getMenuPanel().setHorizontalScale(app.getMenuPanel().getHorizontalScale() + e.getWheelRotation());
+            int newPan = getPan().x + e.getWheelRotation()*-20;
+            if(newPan < 70){
+                getPan().x = newPan;
+            } else {
+                getPan().x = 70;
+            }
             app.repaint();
         }
 

@@ -16,13 +16,13 @@ public class CustomMenuBar extends JMenuBar {
     }
 
     private void init(){
-        JMenu dataMenu = new JMenu("File");
-        dataMenu.setFont(Settings.DEFAULT_FONT);
-        this.add(dataMenu);
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setFont(Settings.DEFAULT_FONT);
+        this.add(fileMenu);
 
-        JMenu exportMenu = new JMenu("Tools");
-        exportMenu.setFont(Settings.DEFAULT_FONT);
-        this.add(exportMenu);
+        JMenu toolsMenu = new JMenu("Tools");
+        toolsMenu.setFont(Settings.DEFAULT_FONT);
+        this.add(toolsMenu);
 
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setFont(Settings.DEFAULT_FONT);
@@ -30,47 +30,54 @@ public class CustomMenuBar extends JMenuBar {
 
         JMenuItem importIdsMenu = new JMenuItem("Import EV Charger's IDs");
         importIdsMenu.setFont(Settings.DEFAULT_FONT);
-        dataMenu.add(importIdsMenu);
+        fileMenu.add(importIdsMenu);
         importIdsMenu.addActionListener(e -> importIds());
 
         JMenuItem importConfiguration = new JMenuItem("Import Program Configuration");
         importConfiguration.setFont(Settings.DEFAULT_FONT);
-        dataMenu.add(importConfiguration);
+        fileMenu.add(importConfiguration);
         importConfiguration.addActionListener(e -> importConfig());
 
-        dataMenu.addSeparator();
+        fileMenu.addSeparator();
 
         JMenuItem exportConfiguration = new JMenuItem("Export Full Program Configuration");
         exportConfiguration.setFont(Settings.DEFAULT_FONT);
-        dataMenu.add(exportConfiguration);
+        fileMenu.add(exportConfiguration);
         exportConfiguration.addActionListener(e -> exportConfig(true));
 
         JMenuItem exporWithoutLog = new JMenuItem("Export Configuration Without Log");
         exporWithoutLog.setFont(Settings.DEFAULT_FONT);
-        dataMenu.add(exporWithoutLog);
+        fileMenu.add(exporWithoutLog);
         exporWithoutLog.addActionListener(e -> exportConfig(false));
 
         JMenuItem exportCSV = new JMenuItem("Export Data as CSV");
         exportCSV.setFont(Settings.DEFAULT_FONT);
-        dataMenu.add(exportCSV);
+        fileMenu.add(exportCSV);
 
         JMenuItem exportGraph = new JMenuItem("Export View");
         exportGraph.setFont(Settings.DEFAULT_FONT);
-        dataMenu.add(exportGraph);
+        fileMenu.add(exportGraph);
 
         JMenuItem downloadData = new JMenuItem("Download EV Charger's Data");
         downloadData.setFont(Settings.DEFAULT_FONT);
-        exportMenu.add(downloadData);
+        toolsMenu.add(downloadData);
         downloadData.addActionListener(e-> app.getDataModel().downloadIdData());
+
+        JMenuItem fitGraph = new JMenuItem("Fit Graph Scale to Window");
+        fitGraph.setFont(Settings.DEFAULT_FONT);
+        toolsMenu.add(fitGraph);
+        fitGraph.addActionListener(e -> app.getGraphPanel().fitToWindow());
+
+        toolsMenu.addSeparator();
 
         JMenuItem startLoggingMenu = new JMenuItem("EV Data Logging - Start");
         startLoggingMenu.setFont(Settings.DEFAULT_FONT);
-        exportMenu.add(startLoggingMenu);
+        toolsMenu.add(startLoggingMenu);
 
         JMenuItem stopLoggingMenu = new JMenuItem("EV Data Logging - Stop");
         stopLoggingMenu.setEnabled(false);
         stopLoggingMenu.setFont(Settings.DEFAULT_FONT);
-        exportMenu.add(stopLoggingMenu);
+        toolsMenu.add(stopLoggingMenu);
 
         startLoggingMenu.addActionListener(e -> {
             app.setLogging(true);
@@ -226,6 +233,7 @@ public class CustomMenuBar extends JMenuBar {
                     }
                 }
                 NotificationLogger.logger.addToLog("Import Successful");
+                app.getGraphPanel().fitToWindow();
                 app.repaint();
             } catch (IOException e) {
                 e.printStackTrace();

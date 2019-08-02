@@ -13,6 +13,7 @@ class MenuPanel extends JPanel {
 
     private JSpinner spinnerHorizontal;
     private JSpinner spinnerVertical;
+    JCheckBox showGrid;
 
     MenuPanel(Application app){
         this.app = app;
@@ -106,6 +107,15 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeFast,c);
 
+        showGrid = new JCheckBox("Show Grid");
+        showGrid.setFont(Settings.DEFAULT_FONT);
+        showGrid.setSelected(true);
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 4; c.weightx = 1; c.gridwidth = 2;
+        c.insets = new Insets(0,10,10,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(showGrid,c);
+
         selectorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectorList.setLayoutOrientation(JList.VERTICAL);
         selectorList.setSelectedIndex(0);
@@ -157,9 +167,11 @@ class MenuPanel extends JPanel {
             }
         });
 
-        spinnerModelHorizontal.addChangeListener(e -> {app.repaint();});
+        spinnerModelHorizontal.addChangeListener(e -> app.repaint());
 
-        spinnerModelVertical.addChangeListener(e -> {app.repaint();});
+        spinnerModelVertical.addChangeListener(e -> app.repaint());
+
+        showGrid.addActionListener(e -> app.repaint());
 
         openInBrowserButton.addActionListener(e -> {
             String id = getSelectedOption().split(":")[0];
@@ -206,6 +218,10 @@ class MenuPanel extends JPanel {
             spinnerVertical.setValue(newValue);
             app.repaint();
         }
+    }
+
+    public boolean isShowGrid(){
+        return showGrid.isSelected();
     }
 
 }
