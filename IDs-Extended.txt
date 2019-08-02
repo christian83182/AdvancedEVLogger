@@ -1,0 +1,138 @@
+24198 1 Holiday Inn
+24198 2
+24198 3
+
+3782 1 Hotel ibis Budget 
+3782 2
+
+24585 1 Brandshatch Place Hotel & Spa
+24585 2
+24585 3
+
+24107 1 Holiday Inn Newport
+24107 2
+24107 3
+
+24488 1 Holiday Inn Express Newport
+24488 2
+24488 3
+
+1412 1 Clifton Villas
+1412 2
+
+24548 1 Devonshire Park Hotel
+24548 2
+24548 3
+
+24543 1 Hydro Hotel Eastbourne
+24543 2 
+24543 3
+
+4525 1 The Burlington Hotel5-9
+4525 2
+
+24183 1 Rhinefield House 
+24183 2
+24183 3 
+
+11735 1 Captains Club Hotel & Spa
+11735 2
+
+24164 1 The Headland Hotel and Spa
+24164 2
+24164 3
+
+24360 1 Crown Hotel
+24360 2
+24360 3
+
+24361 1 North Shore Hotel & Golf Course
+24361 2
+24361 3 
+
+24273 1 Holiday Inn Express Lincoln City Centre
+24273 2
+24273 3
+
+24042 1 Holiday Inn Express 
+24042 2 
+24042 3
+
+24256 1 Novotel Manchester West Hotel
+24256 2
+24256 3
+
+24108 1 Hotel ibis Swansea
+
+10136 1 The Metropole Hotel 
+10136 2
+
+24042 1 Holiday Inn Express Hoylake
+24042 2
+24042 3
+
+24475 1 Bliss Hotels Ltd
+24475 2
+24475 3 
+
+24098 1 Holiday Inn Rotherham
+24098 2
+24098 3
+
+24273 1 Holiday Inn Express Lincoln City Centre
+24273 2
+24273 3
+
+21045 1 The Belfry,Mellors Way (hotel)
+21045 2
+21045 3
+
+3783 1 Ibis Rotherham East (hotel)
+3783 2
+
+3780 1 Hotel ibis budget Sheffield Arena
+3780 2
+
+24154 3 Holiday Inn Doncaster
+
+24109 1 Holiday Inn Hull Marina
+24109 2 
+24109 3 
+
+24046 1 Holiday Inn Express Preston South Walton Summit
+24046 2
+24046 3
+
+4110 1 Travelodge,Layerthorpe
+4110 2
+
+24553 1 ibis York Centre Hotel
+24553 2
+24553 3
+
+11607 1 Crown Hotel, Drummond Road
+11607 2 
+
+24374 1 Holiday Inn Express Gatwick
+24374 2 
+24374 3
+
+24113 1 Holiday Inn Express CanterburyUpper Harbledown
+24113 2
+24113 3 
+
+1894 1 Hampshire Court Hotel
+1894 2 
+
+24507 1 Holiday Inn Washington, Emerson
+24507 2 
+24507 3
+
+24469 1 Wolfscastle Country Hotel
+24469 2 
+24469 3
+
+24101 1 Holiday Inn Express Colchester
+24101 2 
+24101 3 
+
