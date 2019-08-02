@@ -1,3 +1,5 @@
+import org.omg.CORBA.INTERNAL;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.text.DateFormat;
@@ -44,6 +46,14 @@ public class GraphPanel extends InteractivePanel {
             Integer adjustedWidth = (int)(this.getWidth()*0.85);
             Integer totalHours = (int)((times.get(times.size()-1) - times.get(0))/3600000.0);
             app.getMenuPanel().setHorizontalScale(adjustedWidth/totalHours);
+
+            Integer maxValue = 0;
+            for(Long time : times){
+                if(app.getDataModel().getTotalChargersAtTime(time) > maxValue){
+                    maxValue = app.getDataModel().getTotalChargersAtTime(time);
+                }
+            }
+            app.getMenuPanel().setVeticalScale(maxValue+1);
         }
     }
 

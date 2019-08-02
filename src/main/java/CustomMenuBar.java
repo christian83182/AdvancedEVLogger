@@ -131,7 +131,12 @@ public class CustomMenuBar extends JMenuBar {
             try{
                 NotificationLogger.logger.addToLog("");
                 NotificationLogger.logger.addToLog("Exporting Program Configuration");
-                FileWriter writer = new FileWriter(fileChooser.getSelectedFile()+".txt");
+
+                File fileToBeSaved = fileChooser.getSelectedFile();
+                if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".txt")){
+                    fileToBeSaved = new File(fileChooser.getSelectedFile() + ".txt");
+                }
+                FileWriter writer = new FileWriter(fileToBeSaved);
 
                 NotificationLogger.logger.addToLog("Exporting ID list");
                 StringBuilder ids = new StringBuilder("IDLIST");
