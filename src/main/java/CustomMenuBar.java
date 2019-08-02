@@ -1,9 +1,19 @@
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.io.*;
-import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class CustomMenuBar extends JMenuBar {
 
@@ -40,15 +50,10 @@ public class CustomMenuBar extends JMenuBar {
 
         fileMenu.addSeparator();
 
-        JMenuItem exportConfiguration = new JMenuItem("Export Full Program Configuration");
+        JMenuItem exportConfiguration = new JMenuItem("Export Program Configuration");
         exportConfiguration.setFont(Settings.DEFAULT_FONT);
         fileMenu.add(exportConfiguration);
-        exportConfiguration.addActionListener(e -> exportConfig(true));
-
-        JMenuItem exporWithoutLog = new JMenuItem("Export Configuration Without Log");
-        exporWithoutLog.setFont(Settings.DEFAULT_FONT);
-        fileMenu.add(exporWithoutLog);
-        exporWithoutLog.addActionListener(e -> exportConfig(false));
+        exportConfiguration.addActionListener(e -> exportConfig());
 
         JMenuItem exportCSV = new JMenuItem("Export Data as CSV");
         exportCSV.setFont(Settings.DEFAULT_FONT);
@@ -116,129 +121,176 @@ public class CustomMenuBar extends JMenuBar {
                 e.printStackTrace();
             }
         }
+        System.out.println();
     }
 
-    public void exportConfig(boolean includeLog){
+    public void exportConfig(){
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setDialogTitle("Export Configuration");
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "TXT (*.txt)", "txt");
-        fileChooser.setFileFilter(filter);
+        fileChooser.setDialogTitle("Export Program Configuration");
         fileChooser.setFont(Settings.DEFAULT_FONT);
         int returnVal = fileChooser.showSaveDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
-            try{
-                NotificationLogger.logger.addToLog("");
-                NotificationLogger.logger.addToLog("Exporting Program Configuration");
-
-                File fileToBeSaved = fileChooser.getSelectedFile();
-                if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(".txt")){
-                    fileToBeSaved = new File(fileChooser.getSelectedFile() + ".txt");
-                }
-                FileWriter writer = new FileWriter(fileToBeSaved);
-
-                NotificationLogger.logger.addToLog("Exporting ID list");
-                StringBuilder ids = new StringBuilder("IDLIST");
-                for(String id : app.getDataModel().getIds()){
-                    ids.append("|").append(id);
-                }
-                writer.write(ids.toString() +"\n");
-
-                if(includeLog){
-                    StringBuilder output = new StringBuilder("TOTALCHARGERS");
-                    for(Long time : app.getDataModel().getGeneralLogKey()){
-                        output.append("|").append(time);
-                        output.append(":").append(app.getDataModel().getGeneralLogEntry(time));
-                    }
-                    writer.write(output.toString()+"\n");
-                }
-
-                NotificationLogger.logger.addToLog("Exporting EV Charger Info");
-                for(String id : app.getDataModel().getIds()){
-                    NotificationLogger.logger.addToLog("Exporting data for '" + id + "'");
-                    ChargerObject charger = app.getDataModel().getChargeObject(id);
-                    StringBuilder output = new StringBuilder("CHARGERINFO");
-                    if(charger != null){
-                        output.append("|").append(charger.getId());
-                        output.append("|").append(charger.getDesignator());
-                        output.append("|").append(charger.getAddress());
-                        output.append("|").append(charger.getAdditionalInfo());
-                        output.append("|").append(charger.getName());
-                        output.append("|").append(charger.getPrice());
-                        output.append("|").append(charger.getPowerOutput());
-                        output.append("|").append(charger.isRapid());
-
-                        if(includeLog){
-                            for (long timeOfLog : charger.getLogTimes()){
-                                output.append("|").append(timeOfLog).append(":").append(charger.getEntryInLog(timeOfLog));
-                            }
-                            writer.write(output.toString()+"\n");
-                        }
-                    }
-                }
-                NotificationLogger.logger.addToLog("Export Complete");
-                writer.close();
-            } catch (IOException e) {
+            try {
+                exportHelper(fileChooser.getSelectedFile().getAbsolutePath());
+            } catch (ParserConfigurationException | TransformerException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void exportHelper(String path) throws ParserConfigurationException, TransformerException {
+        DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+        Document doc = documentBuilder.newDocument();
+
+        //Create the root
+        Element programConfigElement = doc.createElement("ProgramConfiguration");
+        doc.appendChild(programConfigElement);
+
+        //Iterate over all chargers and create a node for each of them
+        for(String chargerID : app.getDataModel().getIds()){
+            ChargerObject chargerObject = app.getDataModel().getCharger(chargerID);
+            if(chargerObject == null){
+                System.out.println(chargerID);
+            }
+
+            //append the base ChargerObject node.
+            Element chargerElement = doc.createElement("ChargerObject");
+            programConfigElement.appendChild(chargerElement);
+
+            //append the id to the ChargerObject
+            Element chargerIDElement = doc.createElement("ChargerID");
+            chargerElement.appendChild(chargerIDElement);
+            chargerIDElement.appendChild(doc.createTextNode(chargerObject.getId()));
+
+            //append the designator to the ChargerObject
+            Element chargerDesignatorElement = doc.createElement("ChargerDesignator");
+            chargerElement.appendChild(chargerDesignatorElement);
+            chargerDesignatorElement.appendChild(doc.createTextNode(chargerObject.getDesignator().toString()));
+
+            //append the name to the ChargerObject
+            Element chargerNameElement = doc.createElement("ChargerName");
+            chargerElement.appendChild(chargerNameElement);
+            chargerNameElement.appendChild(doc.createTextNode(chargerObject.getName()));
+
+            //append the address to the ChargerObject
+            Element chargerAddressElement = doc.createElement("ChargerAddress");
+            chargerElement.appendChild(chargerAddressElement);
+            chargerAddressElement.appendChild(doc.createTextNode(chargerObject.getAddress()));
+
+
+            //append the power to the ChargerObject
+            Element chargerPowerElement = doc.createElement("ChargerPower");
+            chargerElement.appendChild(chargerPowerElement);
+            chargerPowerElement.appendChild(doc.createTextNode(chargerObject.getPowerOutput().toString()));
+
+            //append the price to the ChargerObject
+            Element chargerPriceElement = doc.createElement("ChargerPrice");
+            chargerElement.appendChild(chargerPriceElement);
+            chargerPriceElement.appendChild(doc.createTextNode(chargerObject.getPrice().toString()));
+
+            //append the isRapid to the ChargerObject
+            Element chargerRapidElement = doc.createElement("IsChargerRapid");
+            chargerElement.appendChild(chargerRapidElement);
+            chargerRapidElement.appendChild(doc.createTextNode(chargerObject.isRapid().toString()));
+
+            //append the log to the ChargerObject
+            Element chargerLogElement = doc.createElement("ChargerLog");
+            chargerElement.appendChild(chargerLogElement);
+
+            //Iterate over all entries in the log and append them to the log element.
+            for(Long logEntry : chargerObject.getLogTimes()){
+                Element logEntryElement = doc.createElement("LogEntry");
+                chargerLogElement.appendChild(logEntryElement);
+
+                //append the time of the entry to the entry node.
+                Element timeAttributeElement = doc.createElement("EntryTime");
+                logEntryElement.appendChild(timeAttributeElement);
+                timeAttributeElement.appendChild(doc.createTextNode(logEntry.toString()));
+
+                //append the time of the entry to the entry node.
+                Element statusAttributeElement = doc.createElement("EntryStatus");
+                logEntryElement.appendChild(statusAttributeElement);
+                statusAttributeElement.appendChild(doc.createTextNode(chargerObject.getEntryInLog(logEntry).toString()));
+            }
+        }
+
+        //Create a transformer which creates an output stream from the document. Use this to output the file to the given path.
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        DOMSource domSource = new DOMSource(doc);
+        StreamResult streamResult = new StreamResult(path+".xml");
+        transformer.transform(domSource, streamResult);
     }
 
     public void importConfig(){
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "TXT (*.txt)", "txt");
-        fileChooser.setFileFilter(filter);
         fileChooser.setDialogTitle("Import Program Configuration");
         fileChooser.setFont(Settings.DEFAULT_FONT);
         int returnVal = fileChooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
-            NotificationLogger.logger.addToLog("Importing new program configuration");
             try {
-                app.getDataModel().clearChargers();
-                app.getDataModel().clearIds();
-                BufferedReader reader = new BufferedReader(new FileReader(fileChooser.getSelectedFile()));
-                String line;
-                while((line = reader.readLine()) != null){
-                    String[] data = line.split(Pattern.quote("|"));
-                    if(data[0].equals("IDLIST")){
-                        for(int i = 1; i < data.length; i++){
-                            app.getDataModel().addId(data[i]);
-                        }
-                        NotificationLogger.logger.addToLog("Imported ID List from File");
-                    } else if(data[0].equals("CHARGERINFO")){
-                        ChargerObject newCharger = new ChargerObject(data[1],Integer.parseInt(data[2]));
-                        newCharger.setAddress(data[3]);
-                        newCharger.setAdditionalInfo(data[4]);
-                        newCharger.setName(data[5]);
-                        newCharger.setRapid(Boolean.parseBoolean(data[8]));
-                        if(!data[6].equals("")) newCharger.setPrice(Double.parseDouble(data[6]));
-                        if(!data[7].equals("")) newCharger.setPowerOutput(Double.parseDouble(data[7]));
-                        String[] log = Arrays.copyOfRange(data,9,data.length);
-                        for(String logEntry : log){
-                            Long time = Long.parseLong(logEntry.split(":")[0]);
-                            Boolean value = Boolean.parseBoolean(logEntry.split(":")[1]);
-                            newCharger.addLogEntry(time,value);
-                        }
-
-                        app.getDataModel().addCharger(newCharger.getId()+":"+newCharger.getDesignator(),newCharger);
-                        app.getMenuPanel().addMenuItem(newCharger.getId()+":"+newCharger.getDesignator() +" - " + newCharger.getName());
-                        NotificationLogger.logger.addToLog("Imported Charger '" +data[1]+":"+data[2] +"' from file" );
-                    } else {
-                        NotificationLogger.logger.addToLog("Invalid entry found, ignoring data...");
-                    }
-                }
-                NotificationLogger.logger.addToLog("Import Successful");
-                app.getDataModel().rebuiltGeneralModel();
-                app.getGraphPanel().fitToWindow();
-                app.repaint();
-
-            } catch (IOException e) {
+                importConfigHelper(fileChooser.getSelectedFile().getAbsolutePath());
+            } catch (SAXException | ParserConfigurationException | IOException e) {
                 e.printStackTrace();
             }
-
         }
+    }
+
+    public void importConfigHelper(String path) throws IOException, SAXException, ParserConfigurationException {
+        app.getDataModel().clearChargers();
+
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.parse(new File(path));
+        document.getDocumentElement().normalize();
+
+        //Extract the root node
+        Element programConfigElement = document.getDocumentElement();
+
+        //iterate over all nodes
+        NodeList nodes = programConfigElement.getElementsByTagName("ChargerObject");
+        for(int i = 0; i < nodes.getLength(); i++){
+            Element chargerObjectElement = (Element) nodes.item(i);
+            ChargerObject chargerObject = new ChargerObject("",0);
+
+            //extract the ID
+            Node chargerIDNode = chargerObjectElement.getElementsByTagName("ChargerID").item(0);
+            chargerObject.setId(chargerIDNode.getTextContent());
+
+            //extract the designator
+            Node chargerDesignatorNode = chargerObjectElement.getElementsByTagName("ChargerDesignator").item(0);
+            chargerObject.setDesignator(Integer.parseInt(chargerDesignatorNode.getTextContent()));
+
+            //extract the name
+            Node chargerNameNode = chargerObjectElement.getElementsByTagName("ChargerName").item(0);
+            chargerObject.setName(chargerNameNode.getTextContent());
+
+            //extract the address
+            Node chargerAddressNode = chargerObjectElement.getElementsByTagName("ChargerAddress").item(0);
+            chargerObject.setAddress(chargerAddressNode.getTextContent());
+
+            //extract the power
+            Node chargerPowerNode = chargerObjectElement.getElementsByTagName("ChargerPower").item(0);
+            chargerObject.setPowerOutput(Double.parseDouble(chargerPowerNode.getTextContent()));
+
+            //extract the price
+            Node chargerPriceNode = chargerObjectElement.getElementsByTagName("ChargerPrice").item(0);
+            chargerObject.setPrice(Double.parseDouble(chargerPriceNode.getTextContent()));
+
+            //extract isRapid
+            Node chargerRapidNode = chargerObjectElement.getElementsByTagName("IsChargerRapid").item(0);
+            chargerObject.setRapid(Boolean.parseBoolean(chargerRapidNode.getTextContent()));
+
+            String chargerObjectId = chargerObject.getId() +":" + chargerObject.getDesignator();
+            app.getDataModel().addCharger(chargerObjectId,chargerObject);
+            app.getMenuPanel().addMenuItem(chargerObjectId + " - " + chargerObject.getName());
+        }
+
+        System.out.println();
     }
 }

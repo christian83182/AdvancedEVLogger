@@ -24,7 +24,7 @@ class MenuPanel extends JPanel {
     }
 
     private void init(){
-        this.setPreferredSize(new Dimension(400,100));
+        this.setPreferredSize(new Dimension(450,100));
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c;
@@ -63,7 +63,7 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(xAxisScaleLabel,c);
 
-        SpinnerModel spinnerModelHorizontal = new SpinnerNumberModel(100,1,10000,1);
+        SpinnerModel spinnerModelHorizontal = new SpinnerNumberModel(100,1,1000000,1);
         spinnerHorizontal = new JSpinner(spinnerModelHorizontal);
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 0; c.weightx = 1;
@@ -130,7 +130,7 @@ class MenuPanel extends JPanel {
         infoArea.setEditable(false);
         infoArea.setLineWrap(true);
         JScrollPane infoScroller = new JScrollPane(infoArea);
-        infoScroller.setPreferredSize(new Dimension(0,200));
+        infoScroller.setPreferredSize(new Dimension(10,200));
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 2; c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
@@ -151,7 +151,7 @@ class MenuPanel extends JPanel {
                     infoArea.setText("");
                 } else{
                     String selectedID = selectorList.getSelectedValue().split(" - ")[0];
-                    ChargerObject selectedCharger = app.getDataModel().getChargeObject(selectedID);
+                    ChargerObject selectedCharger = app.getDataModel().getCharger(selectedID);
                     String newText = "NAME: " + selectedCharger.getName();
                     newText+= "\nPRICE: " + selectedCharger.getPrice() +"p";
                     newText+= "\nOUTPUT: " + selectedCharger.getPowerOutput()+"kW";
@@ -161,7 +161,6 @@ class MenuPanel extends JPanel {
                         newText+= "\nRAPID: No";
                     }
                     newText+= "\nADDRESS: " + selectedCharger.getAddress();
-                    newText+= "\nINFO: " + selectedCharger.getAdditionalInfo();
                     infoArea.setText(newText);
                 }
             }
@@ -203,7 +202,7 @@ class MenuPanel extends JPanel {
     }
 
     public void setHorizontalScale(Integer newValue){
-        if(newValue >1 && newValue < 10000){
+        if(newValue >1 && newValue < 1000000){
             spinnerHorizontal.setValue(newValue);
             app.repaint();
         }

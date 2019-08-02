@@ -41,9 +41,9 @@ public class GraphPanel extends InteractivePanel {
         List<Long> times = new ArrayList<>(app.getDataModel().getGeneralLogKey());
         Collections.sort(times);
         if(!times.isEmpty()){
-            Integer adjustedWidth = (int)(this.getWidth()*0.85);
-            Integer totalHours = (int)((times.get(times.size()-1) - times.get(0))/3600000.0);
-            app.getMenuPanel().setHorizontalScale(adjustedWidth/totalHours);
+            Double adjustedWidth = this.getWidth()*0.85;
+            Double totalHours = (times.get(times.size()-1) - times.get(0))/3600000.0;
+            app.getMenuPanel().setHorizontalScale((int)(adjustedWidth/totalHours));
 
             Integer maxValue = 0;
             for(Long time : times){
@@ -59,7 +59,7 @@ public class GraphPanel extends InteractivePanel {
         Integer xStep = app.getMenuPanel().getHorizontalScale();
         Integer yStep = app.getMenuPanel().getVerticalScale();
         Integer yIncrement = (getHeight()-130)/yStep;
-        ChargerObject charger = app.getDataModel().getChargeObject(id);
+        ChargerObject charger = app.getDataModel().getCharger(id);
         List<Long> times = new ArrayList<>(charger.getLogTimes());
         Collections.sort(times);
         g2.setFont(Settings.DEFAULT_FONT);
