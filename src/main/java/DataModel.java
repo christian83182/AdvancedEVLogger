@@ -6,13 +6,11 @@ import java.util.*;
 
 class DataModel {
 
-    private Set<String> ids;
     private Map<String,ChargerObject> chargers;
     private Application app;
     private Map<Long,Integer> generalChargingLog;
 
     DataModel(Application app){
-        this.ids = new TreeSet<>();
         this.chargers = new HashMap<>();
         this.app = app;
         this.generalChargingLog = new HashMap<>();
@@ -22,9 +20,11 @@ class DataModel {
      * Downloads the details for all the chargers in the 'ids' list in DataModel
      */
     public synchronized void downloadIdData() {
-        //Clear the previous map
-        chargers.clear();
         NotificationLogger.logger.addToLog("");
+
+        //Clear any previous values
+        chargers.replaceAll((k,v) -> null);
+        System.out.println();
 
         //Create a new thread to run this on so that it can happen concurrently
         Thread webThread = new Thread(() -> {
@@ -34,7 +34,7 @@ class DataModel {
             long startTime = System.currentTimeMillis();
 
             //Iterate over all ids
-            for(String id : ids){
+            for(String id : getIds()){
                 NotificationLogger.logger.addToLog("Downloading data for '" + id + "'");
 
                 //Ids come in the form of "xxxx:x", where xxxx is the id and x is the designator
@@ -98,15 +98,11 @@ class DataModel {
     }
 
     public synchronized Set<String> getIds(){
-        return ids;
+        return new TreeSet<>(chargers.keySet());
     }
 
-    public synchronized ChargerObject getChargeObject(String id){
+    public synchronized ChargerObject getCharger(String id){
         return chargers.get(id);
-    }
-
-    public synchronized void clearIds(){
-        ids.clear();
     }
 
     public synchronized void clearChargers(){
@@ -114,7 +110,7 @@ class DataModel {
     }
 
     public synchronized void addId(String newId){
-        ids.add(newId);
+        chargers.put(newId,null);
     }
 
     public synchronized void addCharger(String chargerId, ChargerObject charger){

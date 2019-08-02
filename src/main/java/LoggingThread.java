@@ -1,7 +1,6 @@
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
-import java.util.Collections;
 
 public class LoggingThread extends Thread {
 
@@ -26,7 +25,7 @@ public class LoggingThread extends Thread {
                     Long startTime = System.currentTimeMillis();
 
                     for(String id : app.getDataModel().getIds()){
-                        ChargerObject currentCharger = app.getDataModel().getChargeObject(id);
+                        ChargerObject currentCharger = app.getDataModel().getCharger(id);
                         if(!currentCharger.getId().equals(previousId)){
                             doc = currentCharger.getHtmlPage(app.getWebClient());
                         }

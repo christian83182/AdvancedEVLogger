@@ -10,17 +10,16 @@ import java.util.Set;
 
 public class ChargerObject {
 
-    private String id,address, additionalInfo, name;
+    private String id,address, name;
     private Double price, powerOutput;
     private Integer designator;
-    private boolean isRapid;
+    private Boolean isRapid;
     private Map<Long,Boolean> chargingLog;
 
     ChargerObject(String id, Integer designator){
         this.id = id;
         this.designator = designator;
         this.address = "";
-        this.additionalInfo = "";
         this.name = "";
         this.price = 0.0;
         this.powerOutput = 0.0;
@@ -60,20 +59,6 @@ public class ChargerObject {
         if(priceNode != null){
             if(!(priceNode.getNodeValue().equals("No Cost") || priceNode.getNodeValue().equals("?"))){
                 this.price = Double.parseDouble(priceNode.getNodeValue());
-            }
-        }
-
-        DomNode locationNode = doc.getElementById("location").getFirstChild();
-        if(locationNode != null){
-            this.additionalInfo = locationNode.getNodeValue();
-        }
-
-        DomNode additionalNode = doc.getElementById("additional").getFirstChild();
-        if(additionalNode != null){
-            if(this.additionalInfo.equals("")){
-                this.additionalInfo += additionalNode.getNodeValue();
-            } else {
-                this.additionalInfo += "\n" + additionalNode.getNodeValue();
             }
         }
 
@@ -129,7 +114,7 @@ public class ChargerObject {
         chargingLog.put(time,value);
     }
 
-    public boolean isRapid(){
+    public Boolean isRapid(){
         return isRapid;
     }
 
@@ -143,10 +128,6 @@ public class ChargerObject {
 
     public String getAddress() {
         return address;
-    }
-
-    public String getAdditionalInfo() {
-        return additionalInfo;
     }
 
     public Double getPrice() {
@@ -167,10 +148,6 @@ public class ChargerObject {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
     }
 
     public void setName(String name) {
