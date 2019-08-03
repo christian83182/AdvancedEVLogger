@@ -34,9 +34,9 @@ public class CustomMenuBar extends JMenuBar {
         toolsMenu.setFont(Settings.DEFAULT_FONT);
         this.add(toolsMenu);
 
-        JMenu helpMenu = new JMenu("Help");
-        helpMenu.setFont(Settings.DEFAULT_FONT);
-        this.add(helpMenu);
+        JMenu debugMenu = new JMenu("Debug");
+        debugMenu.setFont(Settings.DEFAULT_FONT);
+        this.add(debugMenu);
 
         JMenuItem importIdsMenu = new JMenuItem("Import EV Charger's IDs");
         importIdsMenu.setFont(Settings.DEFAULT_FONT);
@@ -83,6 +83,13 @@ public class CustomMenuBar extends JMenuBar {
         stopLoggingMenu.setEnabled(false);
         stopLoggingMenu.setFont(Settings.DEFAULT_FONT);
         toolsMenu.add(stopLoggingMenu);
+
+        JMenuItem debugOption = new JMenuItem("Debug Button");
+        debugOption.setFont(Settings.DEFAULT_FONT);
+        debugMenu.add(debugOption);
+        debugOption.addActionListener(e -> {
+            //do something
+        });
 
         startLoggingMenu.addActionListener(e -> {
             app.setLogging(true);
