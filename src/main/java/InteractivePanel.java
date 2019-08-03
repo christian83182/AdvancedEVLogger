@@ -10,7 +10,7 @@ public abstract class InteractivePanel extends JPanel {
     private Point globalPan;
     //Variable used to keep track of the current level of zoom.
     private Double globalZoom;
-
+    //An instance of the app to which this panel belongs.
     private Application app;
 
     InteractivePanel(Point globalPan, Double globalZoom, Application app){
@@ -33,9 +33,7 @@ public abstract class InteractivePanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-
         BufferedImage img = generateSnapshot();
-
         g2d.drawImage(img,0,0,getWidth(),getHeight(),null);
     }
 
@@ -154,29 +152,23 @@ public abstract class InteractivePanel extends JPanel {
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
             super.mouseWheelMoved(e);
-            int newPan = getPan().x + e.getWheelRotation()*-20;
+            Integer newScale;
+            if(e.getWheelRotation() <0){
+                newScale = (int)Math.ceil(app.getMenuPanel().getHorizontalScale() * 1.011);
+            } else {
+                newScale = (int)Math.floor(app.getMenuPanel().getHorizontalScale() * 0.991);
+            }
+            app.getMenuPanel().setHorizontalScale(newScale);
+            app.repaint();
+
+            /*int newPan = getPan().x + e.getWheelRotation()*-20;
             if(newPan < 70){
                 getPan().x = newPan;
             } else {
                 getPan().x = 70;
-            }
-            app.repaint();
-        }
+            }*/
 
-        /*@Override
-        public void mouseWheelMoved(MouseWheelEvent e) {
-            int scaleFactor = e.getWheelRotation();
-            Double maxZoom = Settings.MAX_ZOOM;
-            Double minZoom = Settings.MIN_ZOOM;
-            if(scaleFactor < 0 & getZoom() * 1/0.95 < maxZoom ){
-                //setZoom(getZoom() * 1/0.95);
-            } else  if (scaleFactor > 0 & getZoom() * 0.95 > minZoom){
-                //setZoom(getZoom()*0.95);
-            } else {
-                return;
-            }
-            InteractivePanel.this.repaint();
-        }*/
+        }
     }
 
     private class WindowListener extends ComponentAdapter{
@@ -186,5 +178,4 @@ public abstract class InteractivePanel extends JPanel {
             getPan().y = getHeight()-100;
         }
     }
-
 }

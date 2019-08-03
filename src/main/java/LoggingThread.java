@@ -1,6 +1,8 @@
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class LoggingThread extends Thread {
 
@@ -24,6 +26,7 @@ public class LoggingThread extends Thread {
                     String previousId = "";
                     Long startTime = System.currentTimeMillis();
 
+                    Integer counter =0;
                     for(String id : app.getDataModel().getIds()){
                         ChargerObject currentCharger = app.getDataModel().getCharger(id);
                         if(!currentCharger.getId().equals(previousId)){
@@ -31,14 +34,18 @@ public class LoggingThread extends Thread {
                         }
                         currentCharger.logCurrent(doc,startTime);
                         previousId = currentCharger.getId();
-                        NotificationLogger.logger.addToLog("Log Successful for '"+id+"'");
+                        counter++;
+                        NotificationLogger.logger.addToLog("Log Successful for '"+id+
+                                "'    (" + counter +"/" +app.getDataModel().getIds().size() +")");
                     }
 
                     app.getDataModel().rebuiltGeneralModel();
                     app.repaint();
+                    DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
                     NotificationLogger.logger.addToLog(
                             "Logging completed in " +(System.currentTimeMillis() - startTime)/1000
-                                    +"s. Total Chargers in Use: " + app.getDataModel().getGeneralLogEntry(startTime));
+                                    +"s    Total Chargers in Use: " + app.getDataModel().getGeneralLogEntry(startTime)
+                                    +"    Next Log at " + simple.format(900000 - System.currentTimeMillis() + startTime));
 
                     Thread.sleep(900000 - System.currentTimeMillis() + startTime);
                 } catch (IOException | InterruptedException e) {

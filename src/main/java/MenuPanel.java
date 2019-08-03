@@ -13,6 +13,8 @@ class MenuPanel extends JPanel {
 
     private JSpinner spinnerHorizontal;
     private JSpinner spinnerVertical;
+    JCheckBox includeRapid;
+    JCheckBox includeFast;
     JCheckBox showGrid;
 
     MenuPanel(Application app){
@@ -89,7 +91,7 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(spinnerVertical,c);
 
-        JCheckBox includeRapid = new JCheckBox("Include Level 3 Chargers");
+        includeRapid = new JCheckBox("Include Level 3 Chargers");
         includeRapid.setFont(Settings.DEFAULT_FONT);
         includeRapid.setSelected(true);
         c = new GridBagConstraints();
@@ -98,7 +100,7 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeRapid,c);
 
-        JCheckBox includeFast = new JCheckBox("Include Level 2 Chargers");
+        includeFast = new JCheckBox("Include Level 2 Chargers");
         includeFast.setFont(Settings.DEFAULT_FONT);
         includeFast.setSelected(true);
         c = new GridBagConstraints();
@@ -146,23 +148,21 @@ class MenuPanel extends JPanel {
 
         selectorList.addListSelectionListener(e -> {
             app.repaint();
-            if(e.getValueIsAdjusting()){
-                if(selectorList.getSelectedIndex() == 0){
-                    infoArea.setText("");
-                } else{
-                    String selectedID = selectorList.getSelectedValue().split(" - ")[0];
-                    ChargerObject selectedCharger = app.getDataModel().getCharger(selectedID);
-                    String newText = "NAME: " + selectedCharger.getName();
-                    newText+= "\nPRICE: " + selectedCharger.getPrice() +"p";
-                    newText+= "\nOUTPUT: " + selectedCharger.getPowerOutput()+"kW";
-                    if(selectedCharger.isRapid()){
-                        newText+= "\nRAPID: Yes";
-                    } else {
-                        newText+= "\nRAPID: No";
-                    }
-                    newText+= "\nADDRESS: " + selectedCharger.getAddress();
-                    infoArea.setText(newText);
+            if(selectorList.getSelectedIndex() == 0){
+                infoArea.setText("");
+            } else{
+                String selectedID = selectorList.getSelectedValue().split(" - ")[0];
+                ChargerObject selectedCharger = app.getDataModel().getCharger(selectedID);
+                String newText = "NAME: " + selectedCharger.getName();
+                newText+= "\nPRICE: " + selectedCharger.getPrice() +"p";
+                newText+= "\nOUTPUT: " + selectedCharger.getPowerOutput()+"kW";
+                if(selectedCharger.isRapid()){
+                    newText+= "\nRAPID: Yes";
+                } else {
+                    newText+= "\nRAPID: No";
                 }
+                newText+= "\nADDRESS: " + selectedCharger.getAddress();
+                infoArea.setText(newText);
             }
         });
 
@@ -221,6 +221,14 @@ class MenuPanel extends JPanel {
 
     public boolean isShowGrid(){
         return showGrid.isSelected();
+    }
+
+    private boolean isShowRapid(){
+        return includeRapid.isSelected();
+    }
+
+    private boolean isShowFast(){
+        return includeFast.isSelected();
     }
 
 }

@@ -20,8 +20,6 @@ class DataModel {
      * Downloads the details for all the chargers in the 'ids' list in DataModel
      */
     public synchronized void downloadIdData() {
-        NotificationLogger.logger.addToLog("");
-
         //Clear any previous values
         chargers.replaceAll((k,v) -> null);
         System.out.println();
@@ -34,8 +32,10 @@ class DataModel {
             long startTime = System.currentTimeMillis();
 
             //Iterate over all ids
+            Integer counter = 1;
             for(String id : getIds()){
-                NotificationLogger.logger.addToLog("Downloading data for '" + id + "'");
+                NotificationLogger.logger.addToLog("Downloading data for '" + id +
+                        "'    (" + counter +"/" + getIds().size()+ ")");
 
                 //Ids come in the form of "xxxx:x", where xxxx is the id and x is the designator
                 String realID = id.split(":")[0];
@@ -48,6 +48,7 @@ class DataModel {
                         doc = newCharger.getHtmlPage(app.getWebClient());
                     }
                     newCharger.fetchDetailsFromPage(doc);
+                    counter++;
 
                     //Put it in the internal map and update the previous charger
                     chargers.put(id,newCharger);
@@ -62,13 +63,6 @@ class DataModel {
                     String itemTitle = newCharger.getId() +":" + newCharger.getDesignator() + " - " + newCharger.getName();
                     app.getMenuPanel().addMenuItem(itemTitle);
                 });
-
-                //log the results in teh notification panel.
-                NotificationLogger.logger.addToLog("Download successful:");
-                NotificationLogger.logger.addToLog("\tName: " + newCharger.getName());
-                NotificationLogger.logger.addToLog("\tPrice: " + newCharger.getPrice() +"p");
-                NotificationLogger.logger.addToLog("\tPower: " + newCharger.getPowerOutput() +"kW");
-                NotificationLogger.logger.addToLog("");
             }
             NotificationLogger.logger.addToLog("Download Completed in " + (System.currentTimeMillis() - startTime)/1000 +"s");
         });
