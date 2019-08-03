@@ -13,9 +13,9 @@ class MenuPanel extends JPanel {
 
     private JSpinner spinnerHorizontal;
     private JSpinner spinnerVertical;
-    JCheckBox includeRapid;
-    JCheckBox includeFast;
-    JCheckBox showGrid;
+    private JCheckBox includeRapid;
+    private JCheckBox includeFast;
+    private JCheckBox showGrid;
 
     MenuPanel(Application app){
         this.app = app;
@@ -172,6 +172,16 @@ class MenuPanel extends JPanel {
 
         showGrid.addActionListener(e -> app.repaint());
 
+        includeRapid.addActionListener(e -> {
+            app.getDataModel().rebuiltGeneralModel();
+            app.repaint();
+        });
+
+        includeFast.addActionListener(e -> {
+            app.getDataModel().rebuiltGeneralModel();
+            app.repaint();
+        });
+
         openInBrowserButton.addActionListener(e -> {
             String id = getSelectedOption().split(":")[0];
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -223,11 +233,11 @@ class MenuPanel extends JPanel {
         return showGrid.isSelected();
     }
 
-    private boolean isShowRapid(){
+    public boolean isShowRapid(){
         return includeRapid.isSelected();
     }
 
-    private boolean isShowFast(){
+    public boolean isShowFast(){
         return includeFast.isSelected();
     }
 

@@ -88,6 +88,10 @@ class DataModel {
     }
 
     private boolean isValidCharger(ChargerObject charger){
+        if ((!charger.isRapid() || !app.getMenuPanel().isShowRapid()) &&
+                (charger.isRapid() || !app.getMenuPanel().isShowFast())) {
+            return false;
+        }
         return true;
     }
 
