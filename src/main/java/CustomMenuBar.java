@@ -88,7 +88,7 @@ public class CustomMenuBar extends JMenuBar {
         debugOption.setFont(Settings.DEFAULT_FONT);
         debugMenu.add(debugOption);
         debugOption.addActionListener(e -> {
-            //do something
+            Application a = app;
         });
 
         startLoggingMenu.addActionListener(e -> {
