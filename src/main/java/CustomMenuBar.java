@@ -112,7 +112,7 @@ public class CustomMenuBar extends JMenuBar {
         });
 
         changeInterval.addActionListener(e -> {
-            String input = JOptionPane.showInputDialog(this, "Enter a new Log Interval (minutes)", "Edit Log Interval", JOptionPane.PLAIN_MESSAGE);
+            String input = JOptionPane.showInputDialog(null, "Enter a new Log Interval (minutes)", "Edit Log Interval", JOptionPane.PLAIN_MESSAGE);
             if(input != null){
                 try{
                     if (Long.parseLong(input) > 0){
