@@ -49,7 +49,7 @@ public class LoggingThread extends Thread {
                                     +"s    Total Chargers in Use: " + app.getDataModel().getGeneralLogEntry(startTime)
                                     +"    Next Log at " + simple.format(900000 - System.currentTimeMillis() + startTime));
 
-                    app.getCustomMenuBar().exportConfigToFIle("LogFiles\\Log_" + System.currentTimeMillis()/1000);
+                    app.getCustomMenuBar().exportConfigToFIle("LogFiles\\Log_Recent");
 
                     Thread.sleep(900000 - System.currentTimeMillis() + startTime);
                 } catch (IOException | InterruptedException | TransformerException | ParserConfigurationException e) {
