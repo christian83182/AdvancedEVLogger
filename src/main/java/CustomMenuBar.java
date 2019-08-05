@@ -288,7 +288,7 @@ public class CustomMenuBar extends JMenuBar {
         Element programConfigElement = document.getDocumentElement();
 
         Node logIntervalNode = programConfigElement.getElementsByTagName("LogInterval").item(0);
-        Settings.LOG_INTERVAL = Long.parseLong(logIntervalNode.getTextContent());
+        app.setLogInterval(Long.parseLong(logIntervalNode.getTextContent()));
 
         //iterate over all nodes
         NodeList nodes = programConfigElement.getElementsByTagName("ChargerObject");
