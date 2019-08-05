@@ -81,7 +81,8 @@ public class GraphPanel extends InteractivePanel {
         FontMetrics fontMetrics = g2.getFontMetrics();
 
         //populate times according to the selected option
-        if(app.getMenuPanel().getSelectedOption().equals("Show All")){
+        if(app.getMenuPanel().getSelectedOption().equals("Show All") ||
+            app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
             times = new ArrayList<>(app.getDataModel().getGeneralLogKey());
         } else {
             String id = app.getMenuPanel().getSelectedOption().split(" - ")[0];
@@ -147,9 +148,49 @@ public class GraphPanel extends InteractivePanel {
         //Draw the graphs themselves
         if(app.getMenuPanel().getSelectedOption().equals("Show All")){
             paintAggregateData(g2,times);
-        } else {
+        } else if(app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
+            paintMovingAverage(g2,times);
+        }else {
             String id = app.getMenuPanel().getSelectedOption().split(" - ")[0];
             paintIndividualData(g2,id,times);
+        }
+    }
+
+    private void paintMovingAverage(Graphics2D g2, List<Long> times){
+        Integer xStep = app.getMenuPanel().getHorizontalScale();
+        Integer yStep = app.getMenuPanel().getVerticalScale();
+        Integer yIncrement = (getHeight()-130)/yStep;
+
+        g2.setColor(new Color(0, 164, 161));
+        if(!times.isEmpty()) {
+            long startTime = times.get(0);
+            for (int i = 0; i < times.size() - 1; i++) {
+                int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
+                int y1 = -app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement;
+                int x2 = (int) (long) (times.get(i + 1) - startTime) / (3600000 / xStep);
+                int y2 = -app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement;
+
+                if (xStep < 400) {
+                    g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
+                    g2.drawLine(x1, y1, x2, y2);
+                    g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
+                } else {
+                    g2.setStroke(new BasicStroke(5));
+                    g2.drawLine(x1, y1, x2, y2);
+                    g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
+                }
+            }
+
+            //paint total chargers line
+            Integer totalValid = 0;
+            for (String chargerID : app.getDataModel().getIds()) {
+                ChargerObject charger = app.getDataModel().getCharger(chargerID);
+                if (app.getDataModel().isValidCharger(charger)) {
+                    totalValid++;
+                }
+            }
+            g2.setColor(new Color(162, 55, 118));
+            g2.drawLine(0, -yIncrement * totalValid, 1000000, -yIncrement * totalValid);
         }
     }
 

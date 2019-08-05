@@ -89,6 +89,17 @@ class DataModel {
                 }
             }
         }
+        if(app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
+            List<Long> times = new ArrayList<>(getGeneralLogKey());
+            Map<Long,Integer> newMap = new HashMap<>();
+            Collections.sort(times);
+            for(int i =1; i < times.size()-1; i++){
+                int sum = getGeneralLogEntry(times.get(i-1)) + getGeneralLogEntry(times.get(i)) + getGeneralLogEntry(times.get(i+1));
+                int average = sum/3;
+                newMap.put(times.get(i),average);
+            }
+            this.generalChargingLog = newMap;
+        }
     }
 
     public boolean isValidCharger(ChargerObject charger){

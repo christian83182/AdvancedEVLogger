@@ -22,6 +22,7 @@ class MenuPanel extends JPanel {
         this.app = app;
         selectorModel = new DefaultListModel<>();
         selectorModel.addElement("Show All");
+        selectorModel.addElement("Show Moving Average");
         selectorList = new JList<>(selectorModel);
         init();
     }
@@ -157,6 +158,12 @@ class MenuPanel extends JPanel {
             if(selectorList.getSelectedIndex() == 0){
                 infoArea.setText("");
                 openMapsButton.setEnabled(false);
+                openInfoButton.setEnabled(true);
+            } else if(selectorList.getSelectedIndex() == 1){
+                infoArea.setText("");
+                openMapsButton.setEnabled(false);
+                openInfoButton.setEnabled(false);
+                app.getDataModel().rebuiltGeneralModel();
             } else{
                 String selectedID = selectorList.getSelectedValue().split(" - ")[0];
                 ChargerObject selectedCharger = app.getDataModel().getCharger(selectedID);
@@ -171,6 +178,7 @@ class MenuPanel extends JPanel {
                 newText+= "\nADDRESS: " + selectedCharger.getAddress();
                 infoArea.setText(newText);
                 openMapsButton.setEnabled(true);
+                openInfoButton.setEnabled(true);
             }
             app.repaint();
         });
