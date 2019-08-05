@@ -8,7 +8,7 @@ class DataModel {
 
     private Map<String,ChargerObject> chargers;
     private Application app;
-    private Map<Long,Integer> generalChargingLog;
+    private Map<Long,Double> generalChargingLog;
 
     DataModel(Application app){
         this.chargers = new HashMap<>();
@@ -79,24 +79,32 @@ class DataModel {
                         if(generalChargingLog.containsKey(time)){
                             generalChargingLog.put(time, generalChargingLog.get(time)+1);
                         } else {
-                            generalChargingLog.put(time,1);
+                            generalChargingLog.put(time,1.0);
                         }
                     } else {
                         if(!generalChargingLog.containsKey(time)){
-                            generalChargingLog.put(time, 0);
+                            generalChargingLog.put(time, 0.0);
                         }
                     }
                 }
             }
         }
-        if(app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
+
+        if(app.getMenuPanel().getSelectedOption().equals("Show Moving Average")
+                && !getGeneralLogKey().isEmpty()){
             List<Long> times = new ArrayList<>(getGeneralLogKey());
-            Map<Long,Integer> newMap = new HashMap<>();
+            Map<Long,Double> newMap = new HashMap<>();
             Collections.sort(times);
-            for(int i =1; i < times.size()-1; i++){
-                int sum = getGeneralLogEntry(times.get(i-1)) + getGeneralLogEntry(times.get(i)) + getGeneralLogEntry(times.get(i+1));
-                int average = sum/3;
-                newMap.put(times.get(i),average);
+            for(int i =2; i < times.size()-2; i++){
+                double sumCount = getGeneralLogEntry(times.get(i-2)) + getGeneralLogEntry(times.get(i-1)) +
+                        getGeneralLogEntry(times.get(i)) + getGeneralLogEntry(times.get(i+1)) +
+                        getGeneralLogEntry(times.get(i+2));
+                double averageCount = sumCount/5.0;
+
+                double sumTime = times.get(i-2) + times.get(i-1) + times.get(i) + times.get(i+1) + times.get(i+2);
+                long averageTime = (long)(sumTime/5.0);
+
+                newMap.put(averageTime,averageCount);
             }
             this.generalChargingLog = newMap;
         }
@@ -135,7 +143,7 @@ class DataModel {
         return generalChargingLog.keySet();
     }
 
-    public synchronized Integer getGeneralLogEntry(Long time){
+    public synchronized Double getGeneralLogEntry(Long time){
         return generalChargingLog.get(time);
     }
 
@@ -143,7 +151,7 @@ class DataModel {
         generalChargingLog.clear();
     }
 
-    public synchronized void addToGeneralLog(Long time, Integer quantity){
+    public synchronized void addToGeneralLog(Long time, Double quantity){
         generalChargingLog.put(time,quantity);
     }
 }

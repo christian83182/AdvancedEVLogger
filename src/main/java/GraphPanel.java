@@ -57,9 +57,9 @@ public class GraphPanel extends InteractivePanel {
             app.getMenuPanel().setHorizontalScale((int)(adjustedWidth/totalHours));
 
             //Iterate over all values, find the maximum value, and change the vertical width accordingly.
-            Integer maxValue = 0;
+            Double maxValue = 0.0;
             if(includeTotalValue){
-                maxValue = app.getDataModel().getIds().size();
+                maxValue = (double)app.getDataModel().getIds().size();
             } else {
                 for(Long time : times){
                     if(app.getDataModel().getGeneralLogEntry(time) > maxValue){
@@ -67,7 +67,7 @@ public class GraphPanel extends InteractivePanel {
                     }
                 }
             }
-            app.getMenuPanel().setVerticalScale(maxValue+1);
+            app.getMenuPanel().setVerticalScale(maxValue.intValue()+1);
         }
     }
 
@@ -166,9 +166,9 @@ public class GraphPanel extends InteractivePanel {
             long startTime = times.get(0);
             for (int i = 0; i < times.size() - 1; i++) {
                 int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
-                int y1 = -app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement;
+                int y1 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement);
                 int x2 = (int) (long) (times.get(i + 1) - startTime) / (3600000 / xStep);
-                int y2 = -app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement;
+                int y2 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement);
 
                 if (xStep < 400) {
                     g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
@@ -258,9 +258,9 @@ public class GraphPanel extends InteractivePanel {
             long startTime = times.get(0);
             for (int i = 0; i < times.size() - 1; i++) {
                 int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
-                int y1 = -app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement;
+                int y1 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement;
                 int x2 = (int) (long) (times.get(i + 1) - startTime) / (3600000 / xStep);
-                int y2 = -app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement;
+                int y2 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement;
 
                 if (xStep < 400) {
                     g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));

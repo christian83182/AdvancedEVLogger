@@ -159,6 +159,7 @@ class MenuPanel extends JPanel {
                 infoArea.setText("");
                 openMapsButton.setEnabled(false);
                 openInfoButton.setEnabled(true);
+                app.getDataModel().rebuiltGeneralModel();
             } else if(selectorList.getSelectedIndex() == 1){
                 infoArea.setText("");
                 openMapsButton.setEnabled(false);
