@@ -325,10 +325,10 @@ public class GraphPanel extends InteractivePanel {
                 int x2 = (int)(long)(times.get(i+1) - startTime)/(3600000/xStep);
                 int y2 = -app.getDataModel().getGeneralLogEntry(times.get(i+1))*yIncrement;
 
-                if(xStep < 200){
-                    g2.setStroke(new BasicStroke((int)((xStep/200.0) * 4)+1));
+                if(xStep < 400){
+                    g2.setStroke(new BasicStroke((int)((xStep/400.0) * 4)+1));
                     g2.drawLine(x1,y1,x2,y2);
-                    g2.fillRect((x2-xStep/20),(y2-xStep/20),xStep/10,xStep/10);
+                    g2.fillRect((x2-xStep/40),(y2-xStep/40),xStep/20,xStep/20);
                 } else {
                     g2.setStroke(new BasicStroke(5));
                     g2.drawLine(x1,y1,x2,y2);

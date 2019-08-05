@@ -2,6 +2,8 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Application extends JFrame {
 
@@ -28,7 +30,7 @@ public class Application extends JFrame {
 
     private void init(){
         NotificationLogger.logger.addToLog("Starting UI...");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
         setLookAndFeel();
@@ -74,6 +76,19 @@ public class Application extends JFrame {
 
         this.add(notificationPanel, BorderLayout.SOUTH);
         this.setJMenuBar(menuBar);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int confirmed = JOptionPane.showConfirmDialog(null,
+                        "Are you sure you wish to exit?", "Exit Program Confirmation",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirmed == JOptionPane.YES_OPTION) {
+                    dispose();
+                    System.exit(0);
+                }
+            }
+        });
 
         this.pack();
         this.setLocationRelativeTo(null);
