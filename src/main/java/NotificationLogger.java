@@ -29,11 +29,10 @@ public class NotificationLogger {
             log.append("\n");
         } else {
             DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-            log.append(simple.format(System.currentTimeMillis()) +" - " + notification +"\n");
+            log.insert(0,simple.format(System.currentTimeMillis()) +" - " + notification +"\n");
             logLabel.setText(notification);
             logLabel.repaint();
         }
-
     }
 
     /**

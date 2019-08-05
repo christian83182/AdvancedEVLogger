@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 class MenuPanel extends JPanel {
 
@@ -13,7 +14,9 @@ class MenuPanel extends JPanel {
 
     private JSpinner spinnerHorizontal;
     private JSpinner spinnerVertical;
-    JCheckBox showGrid;
+    private JCheckBox includeRapid;
+    private JCheckBox includeFast;
+    private JCheckBox showGrid;
 
     MenuPanel(Application app){
         this.app = app;
@@ -89,7 +92,7 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(spinnerVertical,c);
 
-        JCheckBox includeRapid = new JCheckBox("Include Level 3 Chargers");
+        includeRapid = new JCheckBox("Include Level 3 Chargers");
         includeRapid.setFont(Settings.DEFAULT_FONT);
         includeRapid.setSelected(true);
         c = new GridBagConstraints();
@@ -98,7 +101,7 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeRapid,c);
 
-        JCheckBox includeFast = new JCheckBox("Include Level 2 Chargers");
+        includeFast = new JCheckBox("Include Level 2 Chargers");
         includeFast.setFont(Settings.DEFAULT_FONT);
         includeFast.setSelected(true);
         c = new GridBagConstraints();
@@ -134,36 +137,42 @@ class MenuPanel extends JPanel {
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 2; c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0,10,0,10);
+        c.insets = new Insets(7,10,7,10);
         selectionPanel.add(infoScroller,c);
 
-        JButton openInBrowserButton = new JButton("Open in Browser");
+        JPanel buttonPanel = new JPanel();
+        JButton openInfoButton = new JButton("Open in Browser");
+        JButton openMapsButton = new JButton("Show on Map");
+        openMapsButton.setEnabled(false);
+        buttonPanel.setLayout(new GridLayout(1,2));
+        buttonPanel.add(openInfoButton);
+        buttonPanel.add(openMapsButton);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 3; c.weightx=1;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(0,10,10,10);
-        selectionPanel.add(openInBrowserButton,c);
+        selectionPanel.add(buttonPanel,c);
 
         selectorList.addListSelectionListener(e -> {
-            app.repaint();
-            if(e.getValueIsAdjusting()){
-                if(selectorList.getSelectedIndex() == 0){
-                    infoArea.setText("");
-                } else{
-                    String selectedID = selectorList.getSelectedValue().split(" - ")[0];
-                    ChargerObject selectedCharger = app.getDataModel().getCharger(selectedID);
-                    String newText = "NAME: " + selectedCharger.getName();
-                    newText+= "\nPRICE: " + selectedCharger.getPrice() +"p";
-                    newText+= "\nOUTPUT: " + selectedCharger.getPowerOutput()+"kW";
-                    if(selectedCharger.isRapid()){
-                        newText+= "\nRAPID: Yes";
-                    } else {
-                        newText+= "\nRAPID: No";
-                    }
-                    newText+= "\nADDRESS: " + selectedCharger.getAddress();
-                    infoArea.setText(newText);
+            if(selectorList.getSelectedIndex() == 0){
+                infoArea.setText("");
+                openMapsButton.setEnabled(false);
+            } else{
+                String selectedID = selectorList.getSelectedValue().split(" - ")[0];
+                ChargerObject selectedCharger = app.getDataModel().getCharger(selectedID);
+                String newText = "NAME: " + selectedCharger.getName();
+                newText+= "\nPRICE: " + selectedCharger.getPrice() +"p";
+                newText+= "\nOUTPUT: " + selectedCharger.getPowerOutput()+"kW";
+                if(selectedCharger.isRapid()){
+                    newText+= "\nRAPID: Yes";
+                } else {
+                    newText+= "\nRAPID: No";
                 }
+                newText+= "\nADDRESS: " + selectedCharger.getAddress();
+                infoArea.setText(newText);
+                openMapsButton.setEnabled(true);
             }
+            app.repaint();
         });
 
         spinnerModelHorizontal.addChangeListener(e -> app.repaint());
@@ -172,7 +181,17 @@ class MenuPanel extends JPanel {
 
         showGrid.addActionListener(e -> app.repaint());
 
-        openInBrowserButton.addActionListener(e -> {
+        includeRapid.addActionListener(e -> {
+            app.getDataModel().rebuiltGeneralModel();
+            app.repaint();
+        });
+
+        includeFast.addActionListener(e -> {
+            app.getDataModel().rebuiltGeneralModel();
+            app.repaint();
+        });
+
+        openInfoButton.addActionListener(e -> {
             String id = getSelectedOption().split(":")[0];
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try{
@@ -181,6 +200,18 @@ class MenuPanel extends JPanel {
                     } else {
                         Desktop.getDesktop().browse(new URI("https://polar-network.com/charge-point-information/" + id +"/"));
                     }
+                } catch (URISyntaxException | IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        openMapsButton.addActionListener(e -> {
+            String id = getSelectedOption().split(" - ")[0];
+            if(!id.equals("Show All") && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
+                try{
+                    Desktop.getDesktop().browse(new URI("https://www.google.com/maps/search/?api=1&query="+
+                            URLEncoder.encode(app.getDataModel().getCharger(id).getAddress())));
                 } catch (URISyntaxException | IOException e1) {
                     e1.printStackTrace();
                 }
@@ -212,7 +243,7 @@ class MenuPanel extends JPanel {
         return (Integer)spinnerVertical.getValue();
     }
 
-    public void setVeticalScale(Integer newValue){
+    public void setVerticalScale(Integer newValue){
         if(newValue >= 1 && newValue < 1000){
             spinnerVertical.setValue(newValue);
             app.repaint();
@@ -221,6 +252,14 @@ class MenuPanel extends JPanel {
 
     public boolean isShowGrid(){
         return showGrid.isSelected();
+    }
+
+    public boolean isShowRapid(){
+        return includeRapid.isSelected();
+    }
+
+    public boolean isShowFast(){
+        return includeFast.isSelected();
     }
 
 }

@@ -34,9 +34,9 @@ public class CustomMenuBar extends JMenuBar {
         toolsMenu.setFont(Settings.DEFAULT_FONT);
         this.add(toolsMenu);
 
-        JMenu helpMenu = new JMenu("Help");
-        helpMenu.setFont(Settings.DEFAULT_FONT);
-        this.add(helpMenu);
+        JMenu debugMenu = new JMenu("Debug");
+        debugMenu.setFont(Settings.DEFAULT_FONT);
+        this.add(debugMenu);
 
         JMenuItem importIdsMenu = new JMenuItem("Import EV Charger's IDs");
         importIdsMenu.setFont(Settings.DEFAULT_FONT);
@@ -83,6 +83,13 @@ public class CustomMenuBar extends JMenuBar {
         stopLoggingMenu.setEnabled(false);
         stopLoggingMenu.setFont(Settings.DEFAULT_FONT);
         toolsMenu.add(stopLoggingMenu);
+
+        JMenuItem debugOption = new JMenuItem("Debug Button");
+        debugOption.setFont(Settings.DEFAULT_FONT);
+        debugMenu.add(debugOption);
+        debugOption.addActionListener(e -> {
+            //do something
+        });
 
         startLoggingMenu.addActionListener(e -> {
             app.setLogging(true);
@@ -132,14 +139,14 @@ public class CustomMenuBar extends JMenuBar {
         int returnVal = fileChooser.showSaveDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
             try {
-                exportHelper(fileChooser.getSelectedFile().getAbsolutePath());
+                exportConfigToFIle(fileChooser.getSelectedFile().getAbsolutePath());
             } catch (ParserConfigurationException | TransformerException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void exportHelper(String path) throws ParserConfigurationException, TransformerException {
+    public void exportConfigToFIle(String path) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         Document doc = documentBuilder.newDocument();
@@ -286,9 +293,26 @@ public class CustomMenuBar extends JMenuBar {
             Node chargerRapidNode = chargerObjectElement.getElementsByTagName("IsChargerRapid").item(0);
             chargerObject.setRapid(Boolean.parseBoolean(chargerRapidNode.getTextContent()));
 
+            //iterate over log and extract
+            Element chargerLogElement = (Element) chargerObjectElement.getElementsByTagName("ChargerLog").item(0);
+            NodeList chargerLogNodes = chargerLogElement.getElementsByTagName("LogEntry");
+            for(int j = 0; j< chargerLogNodes.getLength(); j++){
+                Element logEntryElement = (Element) chargerLogNodes.item(j);
+
+                Node logEntryTimeNode = logEntryElement.getElementsByTagName("EntryTime").item(0);
+                Long timeEntry = Long.parseLong(logEntryTimeNode.getTextContent());
+                Node logEntryStatusNode = logEntryElement.getElementsByTagName("EntryStatus").item(0);
+                Boolean statusEntry = Boolean.parseBoolean(logEntryStatusNode.getTextContent());
+
+                chargerObject.addLogEntry(timeEntry,statusEntry);
+            }
+
             String chargerObjectId = chargerObject.getId() +":" + chargerObject.getDesignator();
             app.getDataModel().addCharger(chargerObjectId,chargerObject);
+            app.getDataModel().rebuiltGeneralModel();
             app.getMenuPanel().addMenuItem(chargerObjectId + " - " + chargerObject.getName());
+            app.getGraphPanel().fitToWindow();
+            app.repaint();
         }
 
         System.out.println();

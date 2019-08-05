@@ -51,7 +51,7 @@ public class GraphPanel extends InteractivePanel {
                     maxValue = app.getDataModel().getGeneralLogEntry(time);
                 }
             }
-            app.getMenuPanel().setVeticalScale(maxValue+1);
+            app.getMenuPanel().setVerticalScale(maxValue+1);
         }
     }
 
