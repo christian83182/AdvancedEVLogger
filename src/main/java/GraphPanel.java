@@ -92,13 +92,13 @@ public class GraphPanel extends InteractivePanel {
         DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm");
         for(int i = 1; i < 10000; i++) {
             if (!times.isEmpty()) {
-                String label = simple.format(times.get(0) + i * 900000);
+                String label = simple.format(times.get(0) + i * 60000);
                 Integer stringLength = fontMetrics.stringWidth(label);
                 Integer stringHeight = fontMetrics.getHeight();
-                Integer textXpos = (int)(i * xStep/4.0 - (stringLength / 2.0));
-                Integer tickXpos = (int)(i * xStep/4.0);
+                Integer textXpos = (int)(i * xStep/60.0 - (stringLength / 2.0));
+                Integer tickXpos = (int)(i * xStep/60.0);
 
-                if(xStep < 4 && i %256 == 0){
+                if(xStep < 9 && xStep >= 1 && i % 1440 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -107,7 +107,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 7 && xStep >= 4 && i %128 == 0){
+                } else if(xStep < 23 && xStep >= 9 && i % 720 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -116,7 +116,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 14 && xStep >= 7 && i %64 == 0){
+                }else if(xStep < 55 && xStep >= 23 && i % 300 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -125,7 +125,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 27 && xStep >= 14 && i %32 == 0){
+                }else if(xStep < 107 && xStep >= 55 && i % 120 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -134,7 +134,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if (xStep < 54 && xStep >= 27 && i % 16 == 0) {
+                } else if(xStep < 420 && xStep >= 107 && i % 60 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -143,7 +143,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 104 && xStep >= 54 && i % 8 == 0){
+                } else if(xStep < 1333 && xStep >= 420 && i % 15 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -152,7 +152,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 208 && xStep >= 104 && i % 4 == 0){
+                } else if(xStep < 6666 && xStep >= 1333 && i % 5 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -161,16 +161,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 416 && xStep >= 208 && i % 2 == 0){
-                    if(app.getMenuPanel().isShowGrid()){
-                        g2.setColor(Settings.GRID_COLOUR);
-                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
-                    }
-                    g2.setColor(Color.WHITE);
-                    g2.drawString(label, textXpos, stringHeight + 10);
-                    g2.drawLine(tickXpos,0, tickXpos,-10);
-
-                } else if(xStep >= 416){
+                }  else if(xStep >= 6666){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -237,13 +228,13 @@ public class GraphPanel extends InteractivePanel {
         DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm");
         for(int i = 1; i < 10000; i++) {
             if (!times.isEmpty()) {
-                String label = simple.format(times.get(0) + i * 900000);
+                String label = simple.format(times.get(0) + i * 60000);
                 Integer stringLength = fontMetrics.stringWidth(label);
                 Integer stringHeight = fontMetrics.getHeight();
-                Integer textXpos = (int)(i * xStep/4.0 - (stringLength / 2.0));
-                Integer tickXpos = (int)(i * xStep/4.0);
+                Integer textXpos = (int)(i * xStep/60.0 - (stringLength / 2.0));
+                Integer tickXpos = (int)(i * xStep/60.0);
 
-                if(xStep < 4 && i %256 == 0){
+                if(xStep < 9 && xStep >= 1 && i % 1440 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -252,7 +243,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 7 && xStep >= 4 && i %128 == 0){
+                } else if(xStep < 23 && xStep >= 9 && i % 720 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -261,7 +252,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 14 && xStep >= 7 && i %64 == 0){
+                }else if(xStep < 55 && xStep >= 23 && i % 300 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -270,7 +261,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 27 && xStep >= 14 && i %32 == 0){
+                }else if(xStep < 107 && xStep >= 55 && i % 120 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -279,7 +270,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if (xStep < 54 && xStep >= 27 && i % 16 == 0) {
+                } else if(xStep < 420 && xStep >= 107 && i % 60 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -288,7 +279,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 104 && xStep >= 54 && i % 8 == 0){
+                } else if(xStep < 1333 && xStep >= 420 && i % 15 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -297,7 +288,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 208 && xStep >= 104 && i % 4 == 0){
+                } else if(xStep < 6666 && xStep >= 1333 && i % 5 == 0){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
@@ -306,16 +297,7 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawString(label, textXpos, stringHeight + 10);
                     g2.drawLine(tickXpos,0, tickXpos,-10);
 
-                } else if(xStep < 416 && xStep >= 208 && i % 2 == 0){
-                    if(app.getMenuPanel().isShowGrid()){
-                        g2.setColor(Settings.GRID_COLOUR);
-                        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
-                    }
-                    g2.setColor(Color.WHITE);
-                    g2.drawString(label, textXpos, stringHeight + 10);
-                    g2.drawLine(tickXpos,0, tickXpos,-10);
-
-                } else if(xStep >= 416){
+                }  else if(xStep >= 6666){
                     if(app.getMenuPanel().isShowGrid()){
                         g2.setColor(Settings.GRID_COLOUR);
                         g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);

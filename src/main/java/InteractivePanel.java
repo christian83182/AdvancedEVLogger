@@ -101,7 +101,13 @@ public abstract class InteractivePanel extends JPanel {
         }
 
         //Different size options should be added from smallest to largest.
-        if (scaleLength > 400) {
+        if (scaleLength > 6000){
+            scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom() / 60;
+            label = "1 Minute";
+        } else if (scaleLength > 1200) {
+            scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom() / 12;
+            label = "5 Minutes";
+        }else if (scaleLength > 400){
             scaleLength = app.getMenuPanel().getHorizontalScale() * getZoom() / 4;
             label = "15 Minutes";
         }else if (scaleLength > 200){
