@@ -13,6 +13,7 @@ public class Application extends JFrame {
     private LoggingThread loggingThread;
 
     private JLabel statusLabel;
+    private JLabel logIntervalLabel;
     private volatile boolean isLogging;
 
     Application(){
@@ -52,9 +53,19 @@ public class Application extends JFrame {
         notificationPanel.add(NotificationLogger.logger.getLabel());
         notificationPanel.add(Box.createHorizontalGlue());
 
+        JLabel logIntervalTextLabel = new JLabel("Logging Interval: ");
+        logIntervalTextLabel.setFont(Settings.DEFAULT_FONT);
+        notificationPanel.add(logIntervalTextLabel);
+
+        logIntervalLabel = new JLabel(Settings.LOG_INTERVAL.toString());
+        this.setLogInterval(Settings.LOG_INTERVAL);
+        notificationPanel.add(logIntervalLabel);
+        notificationPanel.add(Box.createRigidArea(new Dimension(30,1)));
+
         JLabel statusTextLabel = new JLabel("Logging Status: ");
         statusTextLabel.setFont(Settings.DEFAULT_FONT);
         notificationPanel.add(statusTextLabel);
+
         statusLabel = new JLabel("");
         statusLabel.setFont(Settings.DEFAULT_FONT);
         notificationPanel.add(statusLabel);
@@ -104,6 +115,12 @@ public class Application extends JFrame {
 
     public synchronized boolean isLogging(){
         return isLogging;
+    }
+
+    public void setLogInterval(Long interval){
+        Settings.LOG_INTERVAL = interval;
+        this.logIntervalLabel.setText(interval / 60000 +"m");
+        this.repaint();
     }
 
     private void setLookAndFeel(){

@@ -11,9 +11,10 @@ public class Settings {
     static Color GRAPH_COLOUR = new Color(48, 48, 48);
     static Color GRID_COLOUR = new Color(57, 57, 57);
 
-
     static Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 15);
 
     static String[] FAST_CHARGERS = {"CHAdeMO","DC Combo Type 2"};
+
+    static Long LOG_INTERVAL = new Long(900000);
 
 }
