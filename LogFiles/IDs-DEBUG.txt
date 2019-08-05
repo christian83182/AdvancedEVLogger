@@ -1,0 +1,21 @@
+24198 1 Holiday Inn
+24198 2
+24198 3
+
+3782 1 Hotel ibis Budget 
+3782 2
+
+24585 1 Brandshatch Place Hotel & Spa
+24585 2
+24585 3
+
+24107 1 Holiday Inn Newport
+24107 2
+24107 3
+
+24488 1 Holiday Inn Express Newport
+24488 2
+24488 3
+
+1412 1 Clifton Villas
+1412 2

@@ -91,7 +91,7 @@ class DataModel {
         }
     }
 
-    private boolean isValidCharger(ChargerObject charger){
+    public boolean isValidCharger(ChargerObject charger){
         if(app.getMenuPanel().isShowRapid() && charger.isRapid()){
             return true;
         } else if(app.getMenuPanel().isShowFast() && !charger.isRapid()){
