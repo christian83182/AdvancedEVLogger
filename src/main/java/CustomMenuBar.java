@@ -139,14 +139,14 @@ public class CustomMenuBar extends JMenuBar {
         int returnVal = fileChooser.showSaveDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
             try {
-                exportHelper(fileChooser.getSelectedFile().getAbsolutePath());
+                exportConfigToFIle(fileChooser.getSelectedFile().getAbsolutePath());
             } catch (ParserConfigurationException | TransformerException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void exportHelper(String path) throws ParserConfigurationException, TransformerException {
+    public void exportConfigToFIle(String path) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         Document doc = documentBuilder.newDocument();

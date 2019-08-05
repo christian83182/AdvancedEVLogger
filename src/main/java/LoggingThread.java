@@ -1,5 +1,7 @@
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,8 +49,10 @@ public class LoggingThread extends Thread {
                                     +"s    Total Chargers in Use: " + app.getDataModel().getGeneralLogEntry(startTime)
                                     +"    Next Log at " + simple.format(900000 - System.currentTimeMillis() + startTime));
 
+                    app.getCustomMenuBar().exportConfigToFIle("LogFiles\\Log_" + System.currentTimeMillis()/1000);
+
                     Thread.sleep(900000 - System.currentTimeMillis() + startTime);
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException | InterruptedException | TransformerException | ParserConfigurationException e) {
                     e.printStackTrace();
                 }
             } else {
