@@ -47,7 +47,7 @@ public class LoggingThread extends Thread {
                     NotificationLogger.logger.addToLog(
                             "Logging completed in " +(System.currentTimeMillis() - startTime)/1000
                                     +"s    Total Chargers in Use: " + app.getDataModel().getGeneralLogEntry(startTime)
-                                    +"    Next Log at " + simple.format(Settings.LOG_INTERVAL - System.currentTimeMillis() + startTime));
+                                    +"    Next Log at " + simple.format(startTime+Settings.LOG_INTERVAL));
 
                     app.getCustomMenuBar().exportConfigToFIle("LogFiles\\Log_Recent");
 
