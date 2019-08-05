@@ -32,7 +32,7 @@ public class GraphPanel extends InteractivePanel {
         paintOverlay(g2);
     }
 
-    //Paints theoverlay
+    //Paints the overlay
     private void paintOverlay(Graphics2D g2){
         //paint graph background
         g2.setColor(Settings.BACKGROUND_COLOUR);
@@ -44,7 +44,7 @@ public class GraphPanel extends InteractivePanel {
     }
 
     //Changes xStep such that all data is fit within the window.
-    public void fitToWindow(){
+    public void fitGraphToWindow(Boolean includeTotalValue){
         //Create and sort a list of all times
         List<Long> times = new ArrayList<>(app.getDataModel().getGeneralLogKey());
         Collections.sort(times);
@@ -58,15 +58,20 @@ public class GraphPanel extends InteractivePanel {
 
             //Iterate over all values, find the maximum value, and change the vertical width accordingly.
             Integer maxValue = 0;
-            for(Long time : times){
-                if(app.getDataModel().getGeneralLogEntry(time) > maxValue){
-                    maxValue = app.getDataModel().getGeneralLogEntry(time);
+            if(includeTotalValue){
+                maxValue = app.getDataModel().getIds().size();
+            } else {
+                for(Long time : times){
+                    if(app.getDataModel().getGeneralLogEntry(time) > maxValue){
+                        maxValue = app.getDataModel().getGeneralLogEntry(time);
+                    }
                 }
             }
             app.getMenuPanel().setVerticalScale(maxValue+1);
         }
     }
 
+    //paints the charger graph
     private void paintChargerGraph(Graphics2D g2){
         //Create member variables
         Integer xStep = app.getMenuPanel().getHorizontalScale();
@@ -116,8 +121,9 @@ public class GraphPanel extends InteractivePanel {
         g2.drawLine(0,0,1000000,0);
 
         //draw x axis labels and markers
-        for(int i = 1; i < 30000; i++) {
-            if (!times.isEmpty()) {
+        if (!times.isEmpty()) {
+            long numOfLabels = (times.get(times.size()-1) - times.get(0))/60000;
+            for(int i = 1; i < numOfLabels; i++) {
                 if(xStep < 9 && xStep >= 1 && i % 1440 == 0){
                     drawXAxisHelp(g2,times,i);
                 } else if(xStep < 23 && xStep >= 9 && i % 720 == 0){
@@ -147,6 +153,7 @@ public class GraphPanel extends InteractivePanel {
         }
     }
 
+    //a commonly used operation in paintChargerGraph used to paint the x axis marks
     private void drawXAxisHelp(Graphics2D g2, List<Long> times, Integer i){
         DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm");
         FontMetrics fontMetrics = g2.getFontMetrics();
@@ -171,6 +178,7 @@ public class GraphPanel extends InteractivePanel {
         g2.drawLine(tickXpos,0, tickXpos,-10);
     }
 
+    //paints the graph for a single charger
     private void paintIndividualData(Graphics2D g2, String id, List<Long> times){
         Integer xStep = app.getMenuPanel().getHorizontalScale();
         Integer yStep = app.getMenuPanel().getVerticalScale();
@@ -198,6 +206,7 @@ public class GraphPanel extends InteractivePanel {
         }
     }
 
+    //paints the graph summarizing all data
     private void paintAggregateData(Graphics2D g2, List<Long> times){
         Integer xStep = app.getMenuPanel().getHorizontalScale();
         Integer yStep = app.getMenuPanel().getVerticalScale();
@@ -236,6 +245,7 @@ public class GraphPanel extends InteractivePanel {
         }
     }
 
+    //paints the background.
     private void paintBackground(Graphics2D g2){
         g2.setColor(Settings.BACKGROUND_COLOUR);
         g2.fillRect(-100000,-100000,200000,200000);

@@ -76,10 +76,17 @@ public class CustomMenuBar extends JMenuBar {
         toolsMenu.add(downloadData);
         downloadData.addActionListener(e-> app.getDataModel().downloadIdData());
 
+        toolsMenu.addSeparator();
+
         JMenuItem fitGraph = new JMenuItem("Fit Graph Scale to Window");
         fitGraph.setFont(Settings.DEFAULT_FONT);
         toolsMenu.add(fitGraph);
-        fitGraph.addActionListener(e -> app.getGraphPanel().fitToWindow());
+        fitGraph.addActionListener(e -> app.getGraphPanel().fitGraphToWindow(false));
+
+        JMenuItem fitFullGraph = new JMenuItem("Fit Data Scale to Window");
+        fitFullGraph.setFont(Settings.DEFAULT_FONT);
+        toolsMenu.add(fitFullGraph);
+        fitFullGraph.addActionListener(e -> app.getGraphPanel().fitGraphToWindow(true));
 
         toolsMenu.addSeparator();
 
@@ -342,7 +349,7 @@ public class CustomMenuBar extends JMenuBar {
             app.getDataModel().addCharger(chargerObjectId,chargerObject);
             app.getDataModel().rebuiltGeneralModel();
             app.getMenuPanel().addMenuItem(chargerObjectId + " - " + chargerObject.getName());
-            app.getGraphPanel().fitToWindow();
+            app.getGraphPanel().fitGraphToWindow(true);
             app.repaint();
         }
 
