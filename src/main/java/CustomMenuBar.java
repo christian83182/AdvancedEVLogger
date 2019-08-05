@@ -180,7 +180,7 @@ public class CustomMenuBar extends JMenuBar {
         doc.appendChild(programConfigElement);
 
         Element logIntervalElement = doc.createElement("LogInterval");
-        doc.appendChild(logIntervalElement);
+        programConfigElement.appendChild(logIntervalElement);
         logIntervalElement.appendChild(doc.createTextNode(Settings.LOG_INTERVAL.toString()));
 
         //Iterate over all chargers and create a node for each of them
