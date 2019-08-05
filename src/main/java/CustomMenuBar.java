@@ -30,6 +30,10 @@ public class CustomMenuBar extends JMenuBar {
         fileMenu.setFont(Settings.DEFAULT_FONT);
         this.add(fileMenu);
 
+        JMenu editMenu = new JMenu("Edit");
+        editMenu.setFont(Settings.DEFAULT_FONT);
+        this.add(editMenu);
+
         JMenu toolsMenu = new JMenu("Tools");
         toolsMenu.setFont(Settings.DEFAULT_FONT);
         this.add(toolsMenu);
@@ -62,6 +66,10 @@ public class CustomMenuBar extends JMenuBar {
         JMenuItem exportGraph = new JMenuItem("Export View");
         exportGraph.setFont(Settings.DEFAULT_FONT);
         fileMenu.add(exportGraph);
+
+        JMenuItem changeInterval = new JMenuItem("Edit Log Interval");
+        changeInterval.setFont(Settings.DEFAULT_FONT);
+        editMenu.add(changeInterval);
 
         JMenuItem downloadData = new JMenuItem("Download EV Charger's Data");
         downloadData.setFont(Settings.DEFAULT_FONT);
@@ -101,6 +109,22 @@ public class CustomMenuBar extends JMenuBar {
             app.setLogging(false);
             startLoggingMenu.setEnabled(true);
             stopLoggingMenu.setEnabled(false);
+        });
+
+        changeInterval.addActionListener(e -> {
+            String input = JOptionPane.showInputDialog(this, "Enter a new Log Interval (minutes)", "Edit Log Interval", JOptionPane.PLAIN_MESSAGE);
+            if(input != null){
+                try{
+                    if (Long.parseLong(input) > 0){
+                        app.setLogInterval(Long.parseLong(input)*60000);
+                    } else {
+                        NotificationLogger.logger.addToLog("Could not change Log Interval: Invalid Number");
+                    }
+                } catch (Exception e1){
+                    NotificationLogger.logger.addToLog("Could not change Log Interval: Invalid Input");
+                }
+            }
+            app.repaint();
         });
     }
 
@@ -154,6 +178,10 @@ public class CustomMenuBar extends JMenuBar {
         //Create the root
         Element programConfigElement = doc.createElement("ProgramConfiguration");
         doc.appendChild(programConfigElement);
+
+        Element logIntervalElement = doc.createElement("LogInterval");
+        doc.appendChild(logIntervalElement);
+        logIntervalElement.appendChild(doc.createTextNode(Settings.LOG_INTERVAL.toString()));
 
         //Iterate over all chargers and create a node for each of them
         for(String chargerID : app.getDataModel().getIds()){
@@ -258,6 +286,9 @@ public class CustomMenuBar extends JMenuBar {
 
         //Extract the root node
         Element programConfigElement = document.getDocumentElement();
+
+        Node logIntervalNode = programConfigElement.getElementsByTagName("LogInterval").item(0);
+        Settings.LOG_INTERVAL = Long.parseLong(logIntervalNode.getTextContent());
 
         //iterate over all nodes
         NodeList nodes = programConfigElement.getElementsByTagName("ChargerObject");

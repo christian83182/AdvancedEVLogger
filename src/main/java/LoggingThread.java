@@ -47,11 +47,11 @@ public class LoggingThread extends Thread {
                     NotificationLogger.logger.addToLog(
                             "Logging completed in " +(System.currentTimeMillis() - startTime)/1000
                                     +"s    Total Chargers in Use: " + app.getDataModel().getGeneralLogEntry(startTime)
-                                    +"    Next Log at " + simple.format(900000 - System.currentTimeMillis() + startTime));
+                                    +"    Next Log at " + simple.format(Settings.LOG_INTERVAL - System.currentTimeMillis() + startTime));
 
                     app.getCustomMenuBar().exportConfigToFIle("LogFiles\\Log_Recent");
 
-                    Thread.sleep(900000 - System.currentTimeMillis() + startTime);
+                    Thread.sleep(Settings.LOG_INTERVAL - System.currentTimeMillis() + startTime);
                 } catch (IOException | InterruptedException | TransformerException | ParserConfigurationException e) {
                     e.printStackTrace();
                 }
