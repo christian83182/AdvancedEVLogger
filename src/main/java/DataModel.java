@@ -81,6 +81,10 @@ class DataModel {
                         } else {
                             generalChargingLog.put(time,1);
                         }
+                    } else {
+                        if(!generalChargingLog.containsKey(time)){
+                            generalChargingLog.put(time, 0);
+                        }
                     }
                 }
             }
@@ -88,11 +92,12 @@ class DataModel {
     }
 
     private boolean isValidCharger(ChargerObject charger){
-        if ((!charger.isRapid() || !app.getMenuPanel().isShowRapid()) &&
-                (charger.isRapid() || !app.getMenuPanel().isShowFast())) {
-            return false;
+        if(app.getMenuPanel().isShowRapid() && charger.isRapid()){
+            return true;
+        } else if(app.getMenuPanel().isShowFast() && !charger.isRapid()){
+            return true;
         }
-        return true;
+        return false;
     }
 
     public synchronized Set<String> getIds(){
