@@ -153,7 +153,7 @@ public class GraphPanel extends InteractivePanel {
         }
     }
 
-    //a commonly used operation in paintChargerGraph used to paint the x axis marks
+    //a commonly used operation in paintChargerGraph used to paint the x axis marks`
     private void drawXAxisHelp(Graphics2D g2, List<Long> times, Integer i){
         DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm");
         FontMetrics fontMetrics = g2.getFontMetrics();
