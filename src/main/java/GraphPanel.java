@@ -335,6 +335,17 @@ public class GraphPanel extends InteractivePanel {
                     g2.fillRect((x2-10),(y2-10),20,20);
                 }
             }
+
+            //paint total chargers line
+            Integer totalValid = 0;
+            for(String chargerID : app.getDataModel().getIds()){
+                ChargerObject charger = app.getDataModel().getCharger(chargerID);
+                if(app.getDataModel().isValidCharger(charger)){
+                    totalValid++;
+                }
+            }
+            g2.setColor(new Color(162, 55, 118));
+            g2.drawLine(0,-yIncrement*totalValid,1000000,-yIncrement*totalValid);
         }
     }
 
