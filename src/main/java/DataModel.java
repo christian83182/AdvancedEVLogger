@@ -95,15 +95,16 @@ class DataModel {
             List<Long> times = new ArrayList<>(getGeneralLogKey());
             Map<Long,Double> newMap = new HashMap<>();
             Collections.sort(times);
-            for(int i =2; i < times.size()-2; i++){
-                double sumCount = getGeneralLogEntry(times.get(i-2)) + getGeneralLogEntry(times.get(i-1)) +
-                        getGeneralLogEntry(times.get(i)) + getGeneralLogEntry(times.get(i+1)) +
-                        getGeneralLogEntry(times.get(i+2));
-                double averageCount = sumCount/5.0;
-
-                double sumTime = times.get(i-2) + times.get(i-1) + times.get(i) + times.get(i+1) + times.get(i+2);
-                long averageTime = (long)(sumTime/5.0);
-
+            Integer movingAverageWidth = app.getMenuPanel().getMovingAverageWidth()/2;
+            for(int i =movingAverageWidth; i < times.size()-movingAverageWidth; i++){
+                double sumCount = 0.0;
+                double sumTimes = 0.0;
+                for(int j = -movingAverageWidth; j <= movingAverageWidth; j++){
+                    sumCount += getGeneralLogEntry(times.get(i+j));
+                    sumTimes += times.get(i+j);
+                }
+                double averageCount = sumCount/(movingAverageWidth*2 +1);
+                long averageTime = (long)(sumTimes/(movingAverageWidth*2 +1));
                 newMap.put(averageTime,averageCount);
             }
             this.generalChargingLog = newMap;

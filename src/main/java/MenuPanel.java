@@ -14,9 +14,11 @@ class MenuPanel extends JPanel {
 
     private JSpinner spinnerHorizontal;
     private JSpinner spinnerVertical;
+    private JSpinner spinnerAverage;
     private JCheckBox includeRapid;
     private JCheckBox includeFast;
     private JCheckBox showGrid;
+    private JCheckBox showLogMarkers;
 
     MenuPanel(Application app){
         this.app = app;
@@ -80,7 +82,7 @@ class MenuPanel extends JPanel {
         yAxisScaleLabel.setFont(Settings.DEFAULT_FONT);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 1;
-        c.insets = new Insets(0,15,15,0);
+        c.insets = new Insets(0,15,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(yAxisScaleLabel,c);
 
@@ -89,15 +91,32 @@ class MenuPanel extends JPanel {
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 1; c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0,15,15,10);
+        c.insets = new Insets(0,15,0,10);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(spinnerVertical,c);
+
+        JLabel movingAverageLabel = new JLabel("Moving Average Width");
+        movingAverageLabel.setFont(Settings.DEFAULT_FONT);
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 2;
+        c.insets = new Insets(0,15,15,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(movingAverageLabel,c);
+
+        SpinnerModel spinnerModelAverage = new SpinnerNumberModel(5,1,200,2);
+        spinnerAverage = new JSpinner(spinnerModelAverage);
+        c = new GridBagConstraints();
+        c.gridx = 1; c.gridy = 2; c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0,15,15,10);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(spinnerAverage,c);
 
         includeRapid = new JCheckBox("Include Level 3 Chargers");
         includeRapid.setFont(Settings.DEFAULT_FONT);
         includeRapid.setSelected(true);
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 2; c.weightx = 1; c.gridwidth = 2;
+        c.gridx = 0; c.gridy = 3; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeRapid,c);
@@ -106,7 +125,7 @@ class MenuPanel extends JPanel {
         includeFast.setFont(Settings.DEFAULT_FONT);
         includeFast.setSelected(true);
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 3; c.weightx = 1; c.gridwidth = 2;
+        c.gridx = 0; c.gridy = 4; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,10,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeFast,c);
@@ -115,10 +134,19 @@ class MenuPanel extends JPanel {
         showGrid.setFont(Settings.DEFAULT_FONT);
         showGrid.setSelected(true);
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 4; c.weightx = 1; c.gridwidth = 2;
-        c.insets = new Insets(0,10,10,0);
+        c.gridx = 0; c.gridy = 5; c.weightx = 1; c.gridwidth = 2;
+        c.insets = new Insets(0,10,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(showGrid,c);
+
+        showLogMarkers = new JCheckBox("Show Log Markers");
+        showLogMarkers.setFont(Settings.DEFAULT_FONT);
+        showLogMarkers.setSelected(true);
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 6; c.weightx = 1; c.gridwidth = 2;
+        c.insets = new Insets(0,10,10,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(showLogMarkers,c);
 
         selectorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectorList.setLayoutOrientation(JList.VERTICAL);
@@ -188,7 +216,14 @@ class MenuPanel extends JPanel {
 
         spinnerModelVertical.addChangeListener(e -> app.repaint());
 
+        spinnerModelAverage.addChangeListener(e -> {
+            app.getDataModel().rebuiltGeneralModel();
+            app.repaint();
+        });
+
         showGrid.addActionListener(e -> app.repaint());
+
+        showLogMarkers.addActionListener(e -> app.repaint());
 
         includeRapid.addActionListener(e -> {
             app.getDataModel().rebuiltGeneralModel();
@@ -269,6 +304,14 @@ class MenuPanel extends JPanel {
 
     public boolean isShowFast(){
         return includeFast.isSelected();
+    }
+
+    public boolean isShowLogMarkers(){
+        return showLogMarkers.isSelected();
+    }
+
+    public Integer getMovingAverageWidth(){
+        return (Integer) spinnerAverage.getValue();
     }
 
 }

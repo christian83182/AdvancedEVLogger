@@ -156,44 +156,6 @@ public class GraphPanel extends InteractivePanel {
         }
     }
 
-    private void paintMovingAverage(Graphics2D g2, List<Long> times){
-        Integer xStep = app.getMenuPanel().getHorizontalScale();
-        Integer yStep = app.getMenuPanel().getVerticalScale();
-        Integer yIncrement = (getHeight()-130)/yStep;
-
-        g2.setColor(new Color(0, 164, 161));
-        if(!times.isEmpty()) {
-            long startTime = times.get(0);
-            for (int i = 0; i < times.size() - 1; i++) {
-                int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
-                int y1 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement);
-                int x2 = (int) (long) (times.get(i + 1) - startTime) / (3600000 / xStep);
-                int y2 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement);
-
-                if (xStep < 400) {
-                    g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
-                    g2.drawLine(x1, y1, x2, y2);
-                    g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
-                } else {
-                    g2.setStroke(new BasicStroke(5));
-                    g2.drawLine(x1, y1, x2, y2);
-                    g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
-                }
-            }
-
-            //paint total chargers line
-            Integer totalValid = 0;
-            for (String chargerID : app.getDataModel().getIds()) {
-                ChargerObject charger = app.getDataModel().getCharger(chargerID);
-                if (app.getDataModel().isValidCharger(charger)) {
-                    totalValid++;
-                }
-            }
-            g2.setColor(new Color(162, 55, 118));
-            g2.drawLine(0, -yIncrement * totalValid, 1000000, -yIncrement * totalValid);
-        }
-    }
-
     //a commonly used operation in paintChargerGraph used to paint the x axis marks`
     private void drawXAxisHelp(Graphics2D g2, List<Long> times, Integer i){
         DateFormat simple = new SimpleDateFormat("dd/MM/yy HH:mm");
@@ -219,6 +181,46 @@ public class GraphPanel extends InteractivePanel {
         g2.drawLine(tickXpos,0, tickXpos,-10);
     }
 
+    //paints the graph for the moving average
+    private void paintMovingAverage(Graphics2D g2, List<Long> times){
+        Integer xStep = app.getMenuPanel().getHorizontalScale();
+        Integer yStep = app.getMenuPanel().getVerticalScale();
+        Integer yIncrement = (getHeight()-130)/yStep;
+
+        g2.setColor(new Color(0, 164, 161));
+        if(!times.isEmpty()) {
+            long startTime = times.get(0);
+            for (int i = 0; i < times.size() - 1; i++) {
+                int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
+                int y1 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement);
+                int x2 = (int) (long) (times.get(i + 1) - startTime) / (3600000 / xStep);
+                int y2 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement);
+
+                if (xStep < 400) {
+                    g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
+                    g2.drawLine(x1, y1, x2, y2);
+
+                    if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
+                } else {
+                    g2.setStroke(new BasicStroke(5));
+                    g2.drawLine(x1, y1, x2, y2);
+                    if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
+                }
+            }
+
+            //paint total chargers line
+            Integer totalValid = 0;
+            for (String chargerID : app.getDataModel().getIds()) {
+                ChargerObject charger = app.getDataModel().getCharger(chargerID);
+                if (app.getDataModel().isValidCharger(charger)) {
+                    totalValid++;
+                }
+            }
+            g2.setColor(new Color(162, 55, 118));
+            g2.drawLine(0, -yIncrement * totalValid, 1000000, -yIncrement * totalValid);
+        }
+    }
+
     //paints the graph for a single charger
     private void paintIndividualData(Graphics2D g2, String id, List<Long> times){
         Integer xStep = app.getMenuPanel().getHorizontalScale();
@@ -237,11 +239,11 @@ public class GraphPanel extends InteractivePanel {
                 if(xStep < 400){
                     g2.setStroke(new BasicStroke((int)((xStep/400.0) * 4)+1));
                     g2.drawLine(x1,y1,x2,y2);
-                    g2.fillRect((x2-xStep/40),(y2-xStep/40),xStep/20,xStep/20);
+                    if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2-xStep/40),(y2-xStep/40),xStep/20,xStep/20);
                 } else {
                     g2.setStroke(new BasicStroke(5));
                     g2.drawLine(x1,y1,x2,y2);
-                    g2.fillRect((x2-10),(y2-10),20,20);
+                    if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2-10),(y2-10),20,20);
                 }
             }
         }
@@ -265,11 +267,11 @@ public class GraphPanel extends InteractivePanel {
                 if (xStep < 400) {
                     g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
                     g2.drawLine(x1, y1, x2, y2);
-                    g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
+                    if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
                 } else {
                     g2.setStroke(new BasicStroke(5));
                     g2.drawLine(x1, y1, x2, y2);
-                    g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
+                    if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
                 }
             }
 
