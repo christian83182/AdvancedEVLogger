@@ -68,6 +68,8 @@ public class GraphPanel extends InteractivePanel {
                 }
             }
             app.getMenuPanel().setVerticalScale(maxValue.intValue()+1);
+
+            this.setPan(new Point(Settings.DEFAULT_PAN.x,getPan().y));
         }
     }
 

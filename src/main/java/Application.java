@@ -7,6 +7,8 @@ import java.awt.event.WindowEvent;
 
 public class Application extends JFrame {
 
+    //todo add notifications to exporting (make sure they appear before the final logging message
+
     private CustomMenuBar menuBar;
     private GraphPanel graphPanel;
     private MenuPanel menuPanel;

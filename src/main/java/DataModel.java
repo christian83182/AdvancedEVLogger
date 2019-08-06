@@ -98,17 +98,55 @@ class DataModel {
             Integer movingAverageWidth = app.getMenuPanel().getMovingAverageWidth()/2;
             for(int i =movingAverageWidth; i < times.size()-movingAverageWidth; i++){
                 double sumCount = 0.0;
-                double sumTimes = 0.0;
+                //double sumTimes = 0.0;
                 for(int j = -movingAverageWidth; j <= movingAverageWidth; j++){
                     sumCount += getGeneralLogEntry(times.get(i+j));
-                    sumTimes += times.get(i+j);
+                    //sumTimes += times.get(i+j);
                 }
                 double averageCount = sumCount/(movingAverageWidth*2 +1);
-                long averageTime = (long)(sumTimes/(movingAverageWidth*2 +1));
-                newMap.put(averageTime,averageCount);
+                //long averageTime = (long)(sumTimes/(movingAverageWidth*2 +1));
+                newMap.put(times.get(i),averageCount);
             }
             this.generalChargingLog = newMap;
         }
+    }
+
+    public void repairDataModel(){
+        if(!chargers.isEmpty()){
+            for(ChargerObject charger : chargers.values()){
+                List<Long> times = new ArrayList<>(charger.getLogTimes());
+                Collections.sort(times);
+
+                //Iterate over all chargers where there are 3 chargers or more
+                Long previousInterval = times.get(1) - times.get(0);
+                for(int i = 2; i < times.size(); i++){
+                    Long currentInterval = times.get(i) - times.get(i-1);
+                    Long intervalChange = currentInterval - previousInterval;
+
+                    //if the current interval is not within 10s of the previous interval, then correct.
+                    if(intervalChange > 5000 || intervalChange < -5000){
+                        Long numOfNewPoints = Math.round((double)currentInterval/(double)previousInterval)-2;
+                        Long newInterval = currentInterval/numOfNewPoints;
+
+                        //iterate over the number of new points, and add them as log entries
+                        Long leftTime = times.get(i-1);
+                        Long rightTime = times.get(i);
+                        for(int j = 1; j <= numOfNewPoints; j++){
+                            //make half of them the first value, and the other half the second value
+                            if(j < numOfNewPoints/2){
+                                charger.addLogEntry(leftTime + j*newInterval, charger.getEntryInLog(leftTime));
+                            } else
+                                charger.addLogEntry(leftTime + j*newInterval, charger.getEntryInLog(rightTime));
+                        }
+                    } else {
+                        previousInterval = times.get(i) - times.get(i-1);
+                    }
+                }
+            }
+            this.rebuiltGeneralModel();
+            app.repaint();
+        }
+
     }
 
     public boolean isValidCharger(ChargerObject charger){

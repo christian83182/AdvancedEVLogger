@@ -76,6 +76,11 @@ public class CustomMenuBar extends JMenuBar {
         toolsMenu.add(downloadData);
         downloadData.addActionListener(e-> app.getDataModel().downloadIdData());
 
+        JMenuItem repairData = new JMenuItem("Repair Log Data");
+        repairData.setFont(Settings.DEFAULT_FONT);
+        toolsMenu.add(repairData);
+        repairData.addActionListener(e -> app.getDataModel().repairDataModel());
+
         toolsMenu.addSeparator();
 
         JMenuItem fitGraph = new JMenuItem("Fit Graph Scale to Window");
