@@ -1,3 +1,4 @@
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import javax.swing.*;
@@ -45,7 +46,7 @@ class DataModel {
                 //If the previous charger has a different id then the page must be re-downloaded
                 try {
                     if(!previousID.equals(newCharger.getId())){
-                        doc = newCharger.getHtmlPage(app.getWebClient());
+                        doc = newCharger.getHtmlPage(new WebClient());
                     }
                     newCharger.fetchDetailsFromPage(doc);
                     counter++;

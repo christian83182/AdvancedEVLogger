@@ -12,7 +12,6 @@ public class Application extends JFrame {
     private CustomMenuBar menuBar;
     private GraphPanel graphPanel;
     private MenuPanel menuPanel;
-    private WebClient client;
     private DataModel dataModel;
     private LoggingThread loggingThread;
 
@@ -23,7 +22,6 @@ public class Application extends JFrame {
     Application(){
         super("Advanced EV Charging Logger");
         NotificationLogger.logger.addToLog("Starting Web Client...");
-        this.client = new WebClient();
         this.isLogging = false;
         this.dataModel = new DataModel(this);
         this.loggingThread = new LoggingThread(this);
@@ -95,10 +93,6 @@ public class Application extends JFrame {
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-    }
-
-    public synchronized WebClient getWebClient(){
-        return client;
     }
 
     public synchronized DataModel getDataModel(){

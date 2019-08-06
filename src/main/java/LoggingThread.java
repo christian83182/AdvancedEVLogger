@@ -1,3 +1,4 @@
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -68,7 +69,7 @@ public class LoggingThread extends Thread {
                 for(String id : app.getDataModel().getIds()){
                     ChargerObject currentCharger = app.getDataModel().getCharger(id);
                     if(!currentCharger.getId().equals(previousId)){
-                        doc = currentCharger.getHtmlPage(app.getWebClient());
+                        doc = currentCharger.getHtmlPage(new WebClient());
                     }
                     currentCharger.logCurrent(doc,startTime);
                     previousId = currentCharger.getId();
