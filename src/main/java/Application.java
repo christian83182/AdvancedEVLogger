@@ -14,7 +14,7 @@ public class Application extends JFrame {
     private MenuPanel menuPanel;
     private DataModel dataModel;
     private LoggingThread loggingThread;
-
+    private WebClient webClient;
     private JLabel statusLabel;
     private JLabel logIntervalLabel;
     private volatile boolean isLogging;
@@ -22,6 +22,7 @@ public class Application extends JFrame {
     Application(){
         super("Advanced EV Charging Logger");
         NotificationLogger.logger.addToLog("Starting Web Client...");
+        this.webClient = new WebClient();
         this.isLogging = false;
         this.dataModel = new DataModel(this);
         this.loggingThread = new LoggingThread(this);
@@ -161,5 +162,9 @@ public class Application extends JFrame {
         } catch (Exception e) {
             System.out.println("Nimbus not available, using default 'Metal'");
         }
+    }
+
+    public WebClient getWebClient(){
+        return webClient;
     }
 }
