@@ -114,6 +114,10 @@ public class ChargerObject {
         chargingLog.put(time,value);
     }
 
+    public void removeLogEntry(Long time){
+        this.chargingLog.remove(time);
+    }
+
     public Boolean isRapid(){
         return isRapid;
     }
