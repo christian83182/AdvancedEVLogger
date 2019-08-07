@@ -1,4 +1,3 @@
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import javax.swing.*;
@@ -46,7 +45,7 @@ class DataModel {
                 //If the previous charger has a different id then the page must be re-downloaded
                 try {
                     if(!previousID.equals(newCharger.getId())){
-                        doc = newCharger.getHtmlPage(new WebClient());
+                        doc = newCharger.getHtmlPage(app.getWebClient());
                     }
                     newCharger.fetchDetailsFromPage(doc);
                     counter++;
@@ -76,6 +75,9 @@ class DataModel {
         for(ChargerObject charger : chargers.values()){
             if(isValidCharger(charger)){
                 for(Long time : charger.getLogTimes()){
+                    if(charger.getEntryInLog(time) == null){
+                        System.out.println();
+                    }
                     if(charger.getEntryInLog(time)){
                         if(generalChargingLog.containsKey(time)){
                             generalChargingLog.put(time, generalChargingLog.get(time)+1);
@@ -99,14 +101,14 @@ class DataModel {
             Integer movingAverageWidth = app.getMenuPanel().getMovingAverageWidth()/2;
             for(int i =movingAverageWidth; i < times.size()-movingAverageWidth; i++){
                 double sumCount = 0.0;
-                //double sumTimes = 0.0;
+                double sumTimes = 0.0;
                 for(int j = -movingAverageWidth; j <= movingAverageWidth; j++){
                     sumCount += getGeneralLogEntry(times.get(i+j));
-                    //sumTimes += times.get(i+j);
+                    sumTimes += times.get(i+j);
                 }
                 double averageCount = sumCount/(movingAverageWidth*2 +1);
-                //long averageTime = (long)(sumTimes/(movingAverageWidth*2 +1));
-                newMap.put(times.get(i),averageCount);
+                long averageTime = (long)(sumTimes/(movingAverageWidth*2 +1));
+                newMap.put(averageTime,averageCount);
             }
             this.generalChargingLog = newMap;
         }
@@ -118,8 +120,23 @@ class DataModel {
                 List<Long> times = new ArrayList<>(charger.getLogTimes());
                 Collections.sort(times);
 
+                //remove any points which aren't present on all chargers
+                Integer counter = 0;
+                for(ChargerObject checkingCharger : chargers.values()){
+                    for(Long time : times){
+                        if(!checkingCharger.getLogTimes().contains(time)){
+                            charger.removeLogEntry(time);
+                            counter++;
+                        }
+                    }
+                }
+
+                //recompute times now tha some points of data might have been removed
+                times = new ArrayList<>(charger.getLogTimes());
+                Collections.sort(times);
                 //Iterate over all chargers where there are 3 chargers or more
                 Long previousInterval = times.get(1) - times.get(0);
+                Random rand = new Random();
                 for(int i = 2; i < times.size(); i++){
                     Long currentInterval = times.get(i) - times.get(i-1);
                     Long intervalChange = currentInterval - previousInterval;
@@ -127,27 +144,30 @@ class DataModel {
                     //if the current interval is not within 10s of the previous interval, then correct.
                     if(intervalChange > 5000 || intervalChange < -5000){
                         Long numOfNewPoints = Math.round((double)currentInterval/(double)previousInterval)-2;
-                        Long newInterval = currentInterval/numOfNewPoints;
+                        if(numOfNewPoints >0){
+                            Long newInterval = currentInterval/numOfNewPoints;
 
-                        //iterate over the number of new points, and add them as log entries
-                        Long leftTime = times.get(i-1);
-                        Long rightTime = times.get(i);
-                        for(int j = 1; j <= numOfNewPoints; j++){
-                            //make half of them the first value, and the other half the second value
-                            if(j < numOfNewPoints/2){
-                                charger.addLogEntry(leftTime + j*newInterval, charger.getEntryInLog(leftTime));
-                            } else
-                                charger.addLogEntry(leftTime + j*newInterval, charger.getEntryInLog(rightTime));
+                            //iterate over the number of new points, and add them as log entries
+                            Long leftTime = times.get(i-1);
+                            Long rightTime = times.get(i);
+                            Integer randomDivider = (int)(1.0/rand.nextDouble());
+                            for(int j = 1; j <= numOfNewPoints; j++){
+                                //make half of them the first value, and the other half the second value
+                                if(j < numOfNewPoints/randomDivider){
+                                    charger.addLogEntry(leftTime + j*newInterval, charger.getEntryInLog(leftTime));
+                                } else
+                                    charger.addLogEntry(leftTime + j*newInterval, charger.getEntryInLog(rightTime));
+                            }
                         }
                     } else {
                         previousInterval = times.get(i) - times.get(i-1);
                     }
                 }
             }
-            this.rebuiltGeneralModel();
+
+            rebuiltGeneralModel();
             app.repaint();
         }
-
     }
 
     public boolean isValidCharger(ChargerObject charger){
