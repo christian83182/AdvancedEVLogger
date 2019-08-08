@@ -166,14 +166,6 @@ public abstract class InteractivePanel extends JPanel {
             }
             app.getMenuPanel().setHorizontalScale(newScale);
             app.repaint();
-
-            /*int newPan = getPan().x + e.getWheelRotation()*-20;
-            if(newPan < 70){
-                getPan().x = newPan;
-            } else {
-                getPan().x = 70;
-            }*/
-
         }
     }
 

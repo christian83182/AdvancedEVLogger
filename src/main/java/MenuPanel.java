@@ -151,6 +151,7 @@ class MenuPanel extends JPanel {
         selectorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectorList.setLayoutOrientation(JList.VERTICAL);
         selectorList.setSelectedIndex(0);
+        selectorList.setFont(Settings.DEFAULT_FONT);
         JScrollPane selectorPanel = new JScrollPane(selectorList);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 1; c.weighty = 1; c.weightx = 1;
@@ -161,6 +162,7 @@ class MenuPanel extends JPanel {
         JTextArea infoArea = new JTextArea();
         infoArea.setEditable(false);
         infoArea.setLineWrap(true);
+        infoArea.setFont(Settings.DEFAULT_FONT);
         JScrollPane infoScroller = new JScrollPane(infoArea);
         infoScroller.setPreferredSize(new Dimension(10,200));
         c = new GridBagConstraints();
@@ -171,7 +173,9 @@ class MenuPanel extends JPanel {
 
         JPanel buttonPanel = new JPanel();
         JButton openInfoButton = new JButton("Open in Browser");
+        openInfoButton.setFont(Settings.DEFAULT_FONT);
         JButton openMapsButton = new JButton("Show on Map");
+        openMapsButton.setFont(Settings.DEFAULT_FONT);
         openMapsButton.setEnabled(false);
         buttonPanel.setLayout(new GridLayout(1,2));
         buttonPanel.add(openInfoButton);

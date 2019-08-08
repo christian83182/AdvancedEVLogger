@@ -23,7 +23,7 @@ public class ScrollableTextWindow extends JDialog {
         JTextArea textArea = new JTextArea(windowContent);
         //Setting various textArea properties.
         textArea.setEditable(false);
-        textArea.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        textArea.setFont(Settings.DEFAULT_FONT);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         //Add the text area to a scroll pane to make it scrollable.

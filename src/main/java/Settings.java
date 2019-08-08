@@ -8,8 +8,9 @@ public class Settings {
     static Double DEFAULT_ZOOM = 1.0;
 
     static Color BACKGROUND_COLOUR = new Color(44, 44, 44);
-    static Color GRAPH_COLOUR = new Color(48, 48, 48);
-    static Color GRID_COLOUR = new Color(57, 57, 57);
+    static Color FIRST_GRAPH_COLOUR = new Color(48, 48, 48);
+    static Color SECOND_GRAPH_COLOUR = new Color(50, 50, 50);
+    static Color GRID_COLOUR = new Color(59, 59, 59);
 
     static Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 15);
 

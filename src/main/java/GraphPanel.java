@@ -94,8 +94,21 @@ public class GraphPanel extends InteractivePanel {
         Collections.sort(times);
 
         //paint graph background
-        g2.setColor(Settings.GRAPH_COLOUR);
+        g2.setColor(Settings.FIRST_GRAPH_COLOUR);
         g2.fillRect(0,-yStep*yIncrement,1000000,yStep*yIncrement);
+
+        //paint the alternating colours for days
+        if(!times.isEmpty()){
+            g2.setColor(Settings.SECOND_GRAPH_COLOUR);
+            double firstDayWidth = (double)(xStep)*((86400000-(times.get(0) % 86400000.0))/3600000.0 - 1);
+            g2.fillRect(0,-yStep*yIncrement,(int)firstDayWidth,yStep*yIncrement);
+
+            //int numOfDays = (int)Math.floor((times.get(times.size()-1) - times.get(0))/86400000.0);
+            for(int i =1; i < 10; i += 2){
+                double xPos = firstDayWidth + i* xStep*24;
+                g2.fillRect((int)xPos,-yStep*yIncrement, 24*xStep, yStep*yIncrement);
+            }
+        }
 
         //paint y axis
         g2.setColor(Color.WHITE);
