@@ -153,6 +153,19 @@ public class ChargerObject {
         return chargeDurations;
     }
 
+    private Double getEstimatedTotalRevenue(){
+        Long totalUsage = getTotalUsage();
+        Double pricePerkWh = getPrice();
+        Double power = getPowerOutput();
+        return pricePerkWh*power*(totalUsage/3600000.0);
+    }
+
+    private Double getEstimatedDailyRevenue(){
+        Double totalRevenue = getEstimatedTotalRevenue();
+        Long totalLogTime = getTotalLogTime();
+        return totalRevenue/(totalLogTime/86400000.0);
+    }
+
     public String getDetailsString(){
         StringBuilder detailsString = new StringBuilder("");
         Long totalLogTime = getTotalLogTime();
@@ -160,10 +173,13 @@ public class ChargerObject {
         Long averageDailyUsage = getAverageDailyUsage();
         Long averageChargeTime = getAverageChargeTime();
         Integer totalCharges = getChargeDurations().size();
+        Double estimatedTotalRevenue = getEstimatedTotalRevenue();
+        Double estimatedDailyRevenue = getEstimatedDailyRevenue();
+
         detailsString.append("Total Time Logged: ").append(totalLogTime/86400000).append("d ");
         detailsString.append((totalLogTime%86400000)/3600000).append("h");
 
-        detailsString.append("\nTotal Usage: ").append(totalUsage/86400000).append("d ");
+        detailsString.append("\n\nTotal Usage: ").append(totalUsage/86400000).append("d ");
         detailsString.append((totalUsage%86400000)/3600000).append("h");
 
         detailsString.append("\nAverage Daily Usage: ").append(averageDailyUsage/3600000).append("h ");
@@ -172,10 +188,16 @@ public class ChargerObject {
         detailsString.append("\nAverage Charge Duration: ").append(averageChargeTime/3600000).append("h ");
         detailsString.append((averageChargeTime%3600000)/60000).append("m");
 
-        detailsString.append("\nTotal Charges: ").append(totalCharges);
+        detailsString.append("\n\nTotal Charges: ").append(totalCharges);
 
         detailsString.append("\nAverage Daily Charges: ");
         detailsString.append(String.format("%.2f",totalCharges/(totalLogTime/86400000.0)));
+
+        detailsString.append("\n\nEstimated Total Revenue: £");
+        detailsString.append(String.format("%.2f",estimatedTotalRevenue/100));
+
+        detailsString.append("\nEstimated Daily Revenue: £");
+        detailsString.append(String.format("%.2f",estimatedDailyRevenue/100));
         return detailsString.toString();
     }
 

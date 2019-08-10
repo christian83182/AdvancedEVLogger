@@ -151,7 +151,7 @@ class MenuPanel extends JPanel {
 
         showLineOnly = new JCheckBox("Show Line Only");
         showLineOnly.setFont(Settings.DEFAULT_FONT);
-        showLineOnly.setSelected(true);
+        showLineOnly.setSelected(false);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 7; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,10,0);

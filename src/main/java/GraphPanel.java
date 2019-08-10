@@ -219,7 +219,6 @@ public class GraphPanel extends InteractivePanel {
                     g2.setColor(Settings.ALL_CHARGERS_COLOUR);
                 }
 
-
                 if (xStep < 400) {
                     g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
                     g2.drawLine(x1, y1, x2, y2);
@@ -229,7 +228,13 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawLine(x1, y1, x2, y2);
                     if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
                 }
+
                 if(!app.getMenuPanel().isShowLineOnly()){
+                    if(app.getDataModel().isGenerated(times.get(i))){
+                        g2.setColor(Settings.GENERATED_FILL);
+                    } else {
+                        g2.setColor(Settings.ALL_CHARGERS_FILL);
+                    }
                     g2.fillPolygon(new int[] {x1,x1,x2,x2}, new int[] {0,y1,y2,0}, 4);
                 }
             }
@@ -279,7 +284,13 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawLine(x1, y1, x2, y2);
                     if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
                 }
+
                 if(!app.getMenuPanel().isShowLineOnly()){
+                    if(app.getDataModel().isGenerated(times.get(i))){
+                        g2.setColor(Settings.GENERATED_FILL);
+                    } else {
+                        g2.setColor(Settings.MOVING_AVERAGE_FILL);
+                    }
                     g2.fillPolygon(new int[] {x1,x1,x2,x2}, new int[] {0,y1,y2,0}, 4);
                 }
             }
@@ -332,7 +343,13 @@ public class GraphPanel extends InteractivePanel {
                     g2.drawLine(x1,y1,x2,y2);
                     if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2-10),(y2-10),20,20);
                 }
+
                 if(!app.getMenuPanel().isShowLineOnly()){
+                    if(app.getDataModel().isGenerated(times.get(i))){
+                        g2.setColor(Settings.GENERATED_FILL);
+                    } else {
+                        g2.setColor(Settings.SINGLE_CHARGER_FILL);
+                    }
                     g2.fillPolygon(new int[] {x1,x1,x2,x2}, new int[] {0,y1,y2,0}, 4);
                 }
             }
