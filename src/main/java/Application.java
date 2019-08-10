@@ -17,6 +17,8 @@ public class Application extends JFrame {
     private WebClient webClient;
     private JLabel statusLabel;
     private JLabel logIntervalLabel;
+    private DetailsPane detailsPanel;
+    private JSplitPane detailsSplitPanel;
     private volatile boolean isLogging;
 
     Application(){
@@ -39,14 +41,21 @@ public class Application extends JFrame {
         menuBar = new CustomMenuBar(this);
         menuPanel = new MenuPanel(this);
         graphPanel = new GraphPanel(this);
+        detailsPanel = new DetailsPane(this);
 
-        JSplitPane splitPane = new JSplitPane();
-        splitPane.setDividerSize(3);
-        splitPane.setLeftComponent(menuPanel);
-        splitPane.setRightComponent(graphPanel);
-        splitPane.setBorder(BorderFactory.createMatteBorder(1,1,1,1,new Color(42, 42, 42)));
+        JSplitPane firstSplitPane = new JSplitPane();
+        firstSplitPane.setDividerSize(3);
+        firstSplitPane.setLeftComponent(menuPanel);
+        firstSplitPane.setRightComponent(graphPanel);
+        firstSplitPane.setBorder(BorderFactory.createMatteBorder(1,1,1,1,new Color(42, 42, 42)));
 
-        this.add(splitPane,BorderLayout.CENTER);
+        detailsSplitPanel = new JSplitPane();
+        detailsSplitPanel.setDividerSize(3);
+        detailsSplitPanel.setLeftComponent(firstSplitPane);
+        detailsSplitPanel.setRightComponent(detailsPanel);
+        detailsSplitPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,new Color(42, 42, 42)));
+
+        this.add(detailsSplitPanel,BorderLayout.CENTER);
 
         JPanel notificationPanel = new JPanel();
         notificationPanel.setLayout(new BoxLayout(notificationPanel,BoxLayout.LINE_AXIS));
@@ -96,6 +105,16 @@ public class Application extends JFrame {
         this.setVisible(true);
     }
 
+    public void closeDetailsPanel(){
+        detailsSplitPanel.setDividerSize(0);
+        detailsSplitPanel.setDividerLocation(getWidth());
+    }
+
+    public void openDetailsPanel(){
+        detailsSplitPanel.setDividerSize(3);
+        detailsSplitPanel.setDividerLocation(0.7);
+    }
+
     public synchronized DataModel getDataModel(){
         return dataModel;
     }
@@ -110,6 +129,14 @@ public class Application extends JFrame {
 
     public synchronized MenuPanel getMenuPanel() {
         return menuPanel;
+    }
+
+    public synchronized DetailsPane getDetailsPanel(){
+        return detailsPanel;
+    }
+
+    public WebClient getWebClient(){
+        return webClient;
     }
 
     public synchronized void setLogging(boolean isLogging){
@@ -164,7 +191,5 @@ public class Application extends JFrame {
         }
     }
 
-    public WebClient getWebClient(){
-        return webClient;
-    }
+
 }

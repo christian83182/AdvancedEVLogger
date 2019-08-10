@@ -1,12 +1,9 @@
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNode;
-import com.gargoylesoftware.htmlunit.html.HtmlData;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ChargerObject {
 
@@ -15,6 +12,7 @@ public class ChargerObject {
     private Integer designator;
     private Boolean isRapid;
     private Map<Long,Boolean> chargingLog;
+    private Set<Long> generatedLogs;
 
     ChargerObject(String id, Integer designator){
         this.id = id;
@@ -25,6 +23,7 @@ public class ChargerObject {
         this.powerOutput = 0.0;
         this.isRapid = false;
         this.chargingLog = new HashMap<>();
+        this.generatedLogs = new HashSet<>();
     }
 
     public HtmlPage getHtmlPage(WebClient client) throws IOException {
@@ -85,6 +84,92 @@ public class ChargerObject {
         }
     }
 
+    //returns the total number of ms in use.
+    private Long getTotalUsage(){
+        List<Long> times = new ArrayList<>(getLogTimes());
+        Collections.sort(times);
+        Long totalUsage = 0L;
+        for(int i = 1;i < times.size(); i++){
+            if(getEntryInLog(times.get(i))){
+                totalUsage += times.get(i) - times.get(i-1);
+            }
+        }
+        return totalUsage;
+    }
+
+    public Long getTotalLogTime(){
+        return (Collections.max(getLogTimes()) - Collections.min(getLogTimes()));
+    }
+
+    //returns the average daily usage
+    public Long getAverageDailyUsage(){
+        Long totalUsage = getTotalUsage();
+        Double numOfDays = getTotalLogTime()/86400000.0;
+        return (long)(totalUsage/numOfDays);
+    }
+
+    public Long getAverageChargeTime(){
+        List<Long> times = new ArrayList<>(getLogTimes());
+        Collections.sort(times);
+
+        List<Long> chargeDurations = new ArrayList<>();
+        boolean isCharging = false;
+        Long chargeStart = 0L;
+        for(int i = 0; i < times.size(); i++){
+            if(!isCharging && getEntryInLog(times.get(i))){
+                isCharging = true;
+                chargeStart = times.get(i);
+            } else if (isCharging && !getEntryInLog(times.get(i))){
+                isCharging = false;
+                chargeDurations.add( times.get(i) - chargeStart);
+            }
+        }
+
+        if(chargeDurations.size() >0 ){
+            Long sum = 0L;
+            for(Long duration : chargeDurations){
+                sum += duration;
+            }
+            return sum/chargeDurations.size();
+        }else{
+            return 0L;
+        }
+    }
+
+    public String getDetailsString(){
+        StringBuilder detailsString = new StringBuilder("");
+        Long totalLogTime = getTotalLogTime();
+        Long totalUsage = getTotalUsage();
+        Long averageDailyUsage = getAverageDailyUsage();
+        Long averageChargeTime = getAverageChargeTime();
+        detailsString.append("Total Time Logged: ").append(totalLogTime/86400000).append("d ");
+        detailsString.append((totalLogTime%86400000)/3600000).append("h");
+
+        detailsString.append("\nTotal Usage: ").append(totalUsage/86400000).append("d ");
+        detailsString.append((totalUsage%86400000)/3600000).append("h");
+
+        detailsString.append("\nAverage Daily Usage: ").append(averageDailyUsage/3600000).append("h ");
+        detailsString.append((averageDailyUsage%3600000)/60000).append("m");
+
+        detailsString.append("\nAverage Charge Duration: ").append(averageChargeTime/3600000).append("h ");
+        detailsString.append((averageChargeTime%3600000)/60000).append("m");
+        return detailsString.toString();
+    }
+
+    public String getInfoString(){
+        StringBuilder infoString = new StringBuilder();
+        infoString.append("NAME: ").append(getName());
+        infoString.append("\nPRICE: ").append(getPrice()).append("p");
+        infoString.append("\nOUTPUT: ").append(getPowerOutput()).append("kW");
+        if(isRapid()){
+            infoString.append("\nRAPID: Yes");
+        } else {
+            infoString.append("\nRAPID: No");
+        }
+        infoString.append("\nADDRESS: ").append(getAddress());
+        return infoString.toString();
+    }
+
     public void logCurrent(HtmlPage doc, Long time){
         DomNode statusNode = doc.getElementById("connector" + designator + "Status").getFirstChild();
         if(statusNode != null){
@@ -98,10 +183,6 @@ public class ChargerObject {
         }
     }
 
-    public void logCurrent(HtmlPage doc) {
-        logCurrent(doc, System.currentTimeMillis());
-    }
-
     public Set<Long> getLogTimes(){
         return chargingLog.keySet();
     }
@@ -110,12 +191,16 @@ public class ChargerObject {
         return chargingLog.get(key);
     }
 
-    public void addLogEntry(Long time, Boolean value){
+    public void addLogEntry(Long time, Boolean value, Boolean isGenerated){
         chargingLog.put(time,value);
+        if(isGenerated){
+            generatedLogs.add(time);
+        }
     }
 
     public void removeLogEntry(Long time){
-        this.chargingLog.remove(time);
+        chargingLog.remove(time);
+        generatedLogs.remove(time);
     }
 
     public Boolean isRapid(){
@@ -172,5 +257,9 @@ public class ChargerObject {
 
     public void setRapid(boolean rapid) {
         isRapid = rapid;
+    }
+
+    public boolean isGenerated(Long time){
+        return generatedLogs.contains(time);
     }
 }

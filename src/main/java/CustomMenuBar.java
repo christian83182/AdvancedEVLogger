@@ -38,9 +38,9 @@ public class CustomMenuBar extends JMenuBar {
         toolsMenu.setFont(Settings.DEFAULT_FONT);
         this.add(toolsMenu);
 
-        JMenu debugMenu = new JMenu("Debug");
-        debugMenu.setFont(Settings.DEFAULT_FONT);
-        this.add(debugMenu);
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setFont(Settings.DEFAULT_FONT);
+        this.add(viewMenu);
 
         JMenuItem importIdsMenu = new JMenuItem("Import EV Charger's IDs");
         importIdsMenu.setFont(Settings.DEFAULT_FONT);
@@ -104,12 +104,15 @@ public class CustomMenuBar extends JMenuBar {
         stopLoggingMenu.setFont(Settings.DEFAULT_FONT);
         toolsMenu.add(stopLoggingMenu);
 
-        JMenuItem debugOption = new JMenuItem("Debug Button");
-        debugOption.setFont(Settings.DEFAULT_FONT);
-        debugMenu.add(debugOption);
-        debugOption.addActionListener(e -> {
-            Application a = app;
-        });
+        JMenuItem openDetailsPanel = new JMenuItem("Open Details Panel");
+        openDetailsPanel.setFont(Settings.DEFAULT_FONT);
+        viewMenu.add(openDetailsPanel);
+        openDetailsPanel.addActionListener(e -> {app.openDetailsPanel();});
+
+        JMenuItem closeDetailsPanel = new JMenuItem("Close Details Panel");
+        closeDetailsPanel.setFont(Settings.DEFAULT_FONT);
+        viewMenu.add(closeDetailsPanel);
+        closeDetailsPanel.addActionListener(e -> {app.closeDetailsPanel();});
 
         startLoggingMenu.addActionListener(e -> {
             app.setLogging(true);
@@ -347,7 +350,7 @@ public class CustomMenuBar extends JMenuBar {
                 Node logEntryStatusNode = logEntryElement.getElementsByTagName("EntryStatus").item(0);
                 Boolean statusEntry = Boolean.parseBoolean(logEntryStatusNode.getTextContent());
 
-                chargerObject.addLogEntry(timeEntry,statusEntry);
+                chargerObject.addLogEntry(timeEntry,statusEntry,false);
             }
 
             String chargerObjectId = chargerObject.getId() +":" + chargerObject.getDesignator();

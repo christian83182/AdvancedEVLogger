@@ -9,11 +9,13 @@ class DataModel {
     private Map<String,ChargerObject> chargers;
     private Application app;
     private Map<Long,Double> generalChargingLog;
+    private Set<Long> isGenerated;
 
     DataModel(Application app){
         this.chargers = new HashMap<>();
         this.app = app;
         this.generalChargingLog = new HashMap<>();
+        this.isGenerated = new HashSet<>();
     }
 
     /**
@@ -72,12 +74,10 @@ class DataModel {
 
     public synchronized void rebuiltGeneralModel(){
         this.generalChargingLog.clear();
+        this.isGenerated.clear();
         for(ChargerObject charger : chargers.values()){
             if(isValidCharger(charger)){
                 for(Long time : charger.getLogTimes()){
-                    if(charger.getEntryInLog(time) == null){
-                        System.out.println();
-                    }
                     if(charger.getEntryInLog(time)){
                         if(generalChargingLog.containsKey(time)){
                             generalChargingLog.put(time, generalChargingLog.get(time)+1);
@@ -88,6 +88,9 @@ class DataModel {
                         if(!generalChargingLog.containsKey(time)){
                             generalChargingLog.put(time, 0.0);
                         }
+                    }
+                    if(charger.isGenerated(time)){
+                        isGenerated.add(time);
                     }
                 }
             }
@@ -109,6 +112,9 @@ class DataModel {
                 double averageCount = sumCount/(movingAverageWidth*2 +1);
                 long averageTime = (long)(sumTimes/(movingAverageWidth*2 +1));
                 newMap.put(averageTime,averageCount);
+                if(isGenerated(times.get(i))){
+                    isGenerated.add(averageTime);
+                }
             }
             this.generalChargingLog = newMap;
         }
@@ -121,17 +127,15 @@ class DataModel {
                 Collections.sort(times);
 
                 //remove any points which aren't present on all chargers
-                Integer counter = 0;
                 for(ChargerObject checkingCharger : chargers.values()){
                     for(Long time : times){
                         if(!checkingCharger.getLogTimes().contains(time)){
                             charger.removeLogEntry(time);
-                            counter++;
                         }
                     }
                 }
 
-                //recompute times now tha some points of data might have been removed
+                //recompute times now that some points of data might have been removed
                 times = new ArrayList<>(charger.getLogTimes());
                 Collections.sort(times);
                 //Iterate over all chargers where there are 3 chargers or more
@@ -151,12 +155,20 @@ class DataModel {
                             Long leftTime = times.get(i-1);
                             Long rightTime = times.get(i);
                             Integer randomDivider = (int)(1.0/rand.nextDouble());
-                            for(int j = 1; j <= numOfNewPoints; j++){
+                            for(int j = 1; j <= numOfNewPoints; j++) {
                                 //make half of them the first value, and the other half the second value
-                                if(j < numOfNewPoints/randomDivider){
-                                    charger.addLogEntry(leftTime + j*newInterval, charger.getEntryInLog(leftTime));
-                                } else
-                                    charger.addLogEntry(leftTime + j*newInterval, charger.getEntryInLog(rightTime));
+                                boolean value;
+                                if (j < numOfNewPoints / randomDivider) {
+                                    value = charger.getEntryInLog(leftTime);
+                                } else {
+                                    value = charger.getEntryInLog(rightTime);
+                                }
+
+                                if(currentInterval > 1800000){
+                                    charger.addLogEntry(leftTime + j*newInterval,value,true);
+                                } else {
+                                    charger.addLogEntry(leftTime + j*newInterval, value, false);
+                                }
                             }
                         }
                     } else {
@@ -164,7 +176,6 @@ class DataModel {
                     }
                 }
             }
-
             rebuiltGeneralModel();
             app.repaint();
         }
@@ -213,5 +224,9 @@ class DataModel {
 
     public synchronized void addToGeneralLog(Long time, Double quantity){
         generalChargingLog.put(time,quantity);
+    }
+
+    public synchronized boolean isGenerated(Long time){
+        return isGenerated.contains(time);
     }
 }

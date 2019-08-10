@@ -202,7 +202,7 @@ public class GraphPanel extends InteractivePanel {
         Integer yStep = app.getMenuPanel().getVerticalScale();
         Integer yIncrement = (getHeight()-130)/yStep;
 
-        g2.setColor(new Color(0, 164, 161));
+
         if(!times.isEmpty()) {
             long startTime = times.get(0);
             for (int i = 0; i < times.size() - 1; i++) {
@@ -210,6 +210,14 @@ public class GraphPanel extends InteractivePanel {
                 int y1 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement);
                 int x2 = (int) (long) (times.get(i + 1) - startTime) / (3600000 / xStep);
                 int y2 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement);
+
+                if(app.getDataModel().isGenerated(times.get(i))){
+                    g2.setColor(new Color(164, 0, 5,35));
+                    g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
+                    g2.setColor(new Color(164, 44, 47));
+                } else {
+                    g2.setColor(new Color(0, 164, 161));
+                }
 
                 if (xStep < 400) {
                     g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
@@ -243,7 +251,7 @@ public class GraphPanel extends InteractivePanel {
         Integer yIncrement = (getHeight()-130)/yStep;
         ChargerObject charger = app.getDataModel().getCharger(id);
 
-        g2.setColor(new Color(164, 121, 58));
+
         if(!times.isEmpty()){
             long startTime  = times.get(0);
             for(int i = 0; i < times.size()-1 ; i++){
@@ -251,6 +259,16 @@ public class GraphPanel extends InteractivePanel {
                 int x2 = (int)(long)(times.get(i+1) - startTime)/(3600000/xStep);
                 int y1 = -yIncrement * (charger.getEntryInLog(times.get(i)) ? 1 : 0);
                 int y2 = -yIncrement * (charger.getEntryInLog(times.get(i+1)) ? 1 : 0);
+
+                //Set the colour depending on if the data was generated
+                if(charger.isGenerated(times.get(i))){
+                    g2.setColor(new Color(164, 0, 5,35));
+                    g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
+                    g2.setColor(new Color(164, 44, 47));
+                } else{
+                    g2.setColor(new Color(164, 121, 58));
+                }
+
                 if(xStep < 400){
                     g2.setStroke(new BasicStroke((int)((xStep/400.0) * 4)+1));
                     g2.drawLine(x1,y1,x2,y2);
@@ -270,7 +288,6 @@ public class GraphPanel extends InteractivePanel {
         Integer yStep = app.getMenuPanel().getVerticalScale();
         Integer yIncrement = (getHeight()-130)/yStep;
 
-        g2.setColor(new Color(32, 100, 164));
         if(!times.isEmpty()) {
             long startTime = times.get(0);
             for (int i = 0; i < times.size() - 1; i++) {
@@ -278,6 +295,16 @@ public class GraphPanel extends InteractivePanel {
                 int y1 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement;
                 int x2 = (int) (long) (times.get(i + 1) - startTime) / (3600000 / xStep);
                 int y2 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement;
+
+                //change colour based on if the data was generated or not.
+                if(app.getDataModel().isGenerated(times.get(i))){
+                    g2.setColor(new Color(164, 0, 5,35));
+                    g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
+                    g2.setColor(new Color(164, 44, 47));
+                } else {
+                    g2.setColor(new Color(32, 100, 164));
+                }
+
 
                 if (xStep < 400) {
                     g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));

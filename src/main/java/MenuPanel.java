@@ -103,7 +103,7 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(movingAverageLabel,c);
 
-        SpinnerModel spinnerModelAverage = new SpinnerNumberModel(5,1,200,2);
+        SpinnerModel spinnerModelAverage = new SpinnerNumberModel(11,1,1000,2);
         spinnerAverage = new JSpinner(spinnerModelAverage);
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 2; c.weightx = 1;
@@ -159,18 +159,6 @@ class MenuPanel extends JPanel {
         c.insets = new Insets(10,10,0,10);
         selectionPanel.add(selectorPanel,c);
 
-        JTextArea infoArea = new JTextArea();
-        infoArea.setEditable(false);
-        infoArea.setLineWrap(true);
-        infoArea.setFont(Settings.DEFAULT_FONT);
-        JScrollPane infoScroller = new JScrollPane(infoArea);
-        infoScroller.setPreferredSize(new Dimension(10,200));
-        c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 2; c.weightx = 1;
-        c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(7,10,7,10);
-        selectionPanel.add(infoScroller,c);
-
         JPanel buttonPanel = new JPanel();
         JButton openInfoButton = new JButton("Open in Browser");
         openInfoButton.setFont(Settings.DEFAULT_FONT);
@@ -188,28 +176,22 @@ class MenuPanel extends JPanel {
 
         selectorList.addListSelectionListener(e -> {
             if(selectorList.getSelectedIndex() == 0){
-                infoArea.setText("");
+                app.getDetailsPanel().setAnalysisText("");
+                app.getDetailsPanel().setInfoText("");
                 openMapsButton.setEnabled(false);
                 openInfoButton.setEnabled(true);
                 app.getDataModel().rebuiltGeneralModel();
             } else if(selectorList.getSelectedIndex() == 1){
-                infoArea.setText("");
+                app.getDetailsPanel().setAnalysisText("");
+                app.getDetailsPanel().setInfoText("");
                 openMapsButton.setEnabled(false);
                 openInfoButton.setEnabled(false);
                 app.getDataModel().rebuiltGeneralModel();
             } else{
                 String selectedID = selectorList.getSelectedValue().split(" - ")[0];
                 ChargerObject selectedCharger = app.getDataModel().getCharger(selectedID);
-                String newText = "NAME: " + selectedCharger.getName();
-                newText+= "\nPRICE: " + selectedCharger.getPrice() +"p";
-                newText+= "\nOUTPUT: " + selectedCharger.getPowerOutput()+"kW";
-                if(selectedCharger.isRapid()){
-                    newText+= "\nRAPID: Yes";
-                } else {
-                    newText+= "\nRAPID: No";
-                }
-                newText+= "\nADDRESS: " + selectedCharger.getAddress();
-                infoArea.setText(newText);
+                app.getDetailsPanel().setInfoText(selectedCharger.getInfoString());
+                app.getDetailsPanel().setAnalysisText(selectedCharger.getDetailsString());
                 openMapsButton.setEnabled(true);
                 openInfoButton.setEnabled(true);
             }
