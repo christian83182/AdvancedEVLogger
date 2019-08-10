@@ -212,11 +212,11 @@ public class GraphPanel extends InteractivePanel {
                 int y2 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i + 1)) * yIncrement);
 
                 if(app.getDataModel().isGenerated(times.get(i))){
-                    g2.setColor(new Color(164, 0, 5,35));
+                    g2.setColor(Settings.GENERATED_HIGHLIGHT_COLOUR);
                     g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
-                    g2.setColor(new Color(164, 44, 47));
+                    g2.setColor(Settings.GENERATED_LINE_COLOUR);
                 } else {
-                    g2.setColor(new Color(0, 164, 161));
+                    g2.setColor(Settings.MOVING_AVERAGE_COLOUR);
                 }
 
                 if (xStep < 400) {
@@ -239,7 +239,7 @@ public class GraphPanel extends InteractivePanel {
                     totalValid++;
                 }
             }
-            g2.setColor(new Color(162, 55, 118));
+            g2.setColor(Settings.TOTAL_CHARGERS_COLOUR);
             g2.drawLine(0, -yIncrement * totalValid, 1000000, -yIncrement * totalValid);
         }
     }
@@ -262,11 +262,11 @@ public class GraphPanel extends InteractivePanel {
 
                 //Set the colour depending on if the data was generated
                 if(charger.isGenerated(times.get(i))){
-                    g2.setColor(new Color(164, 0, 5,35));
+                    g2.setColor(Settings.GENERATED_HIGHLIGHT_COLOUR);
                     g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
-                    g2.setColor(new Color(164, 44, 47));
+                    g2.setColor(Settings.GENERATED_LINE_COLOUR);
                 } else{
-                    g2.setColor(new Color(164, 121, 58));
+                    g2.setColor(Settings.SINGLE_CHARGER_COLOUR);
                 }
 
                 if(xStep < 400){
@@ -298,11 +298,11 @@ public class GraphPanel extends InteractivePanel {
 
                 //change colour based on if the data was generated or not.
                 if(app.getDataModel().isGenerated(times.get(i))){
-                    g2.setColor(new Color(164, 0, 5,35));
+                    g2.setColor(Settings.GENERATED_HIGHLIGHT_COLOUR);
                     g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
-                    g2.setColor(new Color(164, 44, 47));
+                    g2.setColor(Settings.GENERATED_LINE_COLOUR);
                 } else {
-                    g2.setColor(new Color(32, 100, 164));
+                    g2.setColor(Settings.ALL_CHARGERS_COLOUR);
                 }
 
 
@@ -325,7 +325,7 @@ public class GraphPanel extends InteractivePanel {
                     totalValid++;
                 }
             }
-            g2.setColor(new Color(162, 55, 118));
+            g2.setColor(Settings.TOTAL_CHARGERS_COLOUR);
             g2.drawLine(0, -yIncrement * totalValid, 1000000, -yIncrement * totalValid);
         }
     }

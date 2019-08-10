@@ -90,7 +90,7 @@ public class ChargerObject {
         Collections.sort(times);
         Long totalUsage = 0L;
         for(int i = 1;i < times.size(); i++){
-            if(getEntryInLog(times.get(i))){
+            if(getEntryInLog(times.get(i)) && !isGenerated(times.get(i))){
                 totalUsage += times.get(i) - times.get(i-1);
             }
         }
@@ -98,7 +98,15 @@ public class ChargerObject {
     }
 
     public Long getTotalLogTime(){
-        return (Collections.max(getLogTimes()) - Collections.min(getLogTimes()));
+        Long runtTime = (Collections.max(getLogTimes()) - Collections.min(getLogTimes()));
+        List<Long> times = new ArrayList<>(getLogTimes());
+        Collections.sort(times);
+        for(int i = 1;i < times.size(); i++){
+            if(isGenerated(times.get(i))){
+                runtTime -= times.get(i) - times.get(i-1);
+            }
+        }
+        return runtTime;
     }
 
     //returns the average daily usage
@@ -109,21 +117,7 @@ public class ChargerObject {
     }
 
     public Long getAverageChargeTime(){
-        List<Long> times = new ArrayList<>(getLogTimes());
-        Collections.sort(times);
-
-        List<Long> chargeDurations = new ArrayList<>();
-        boolean isCharging = false;
-        Long chargeStart = 0L;
-        for(int i = 0; i < times.size(); i++){
-            if(!isCharging && getEntryInLog(times.get(i))){
-                isCharging = true;
-                chargeStart = times.get(i);
-            } else if (isCharging && !getEntryInLog(times.get(i))){
-                isCharging = false;
-                chargeDurations.add( times.get(i) - chargeStart);
-            }
-        }
+        List<Long> chargeDurations = getChargeDurations();
 
         if(chargeDurations.size() >0 ){
             Long sum = 0L;
@@ -136,12 +130,36 @@ public class ChargerObject {
         }
     }
 
+    public List<Long> getChargeDurations(){
+        List<Long> times = new ArrayList<>(getLogTimes());
+        Collections.sort(times);
+
+        List<Long> chargeDurations = new ArrayList<>();
+        if(times.size() >0){
+            boolean isCharging = false;
+            Long chargeStart = 0L;
+            for(int i = 1; i < times.size(); i++){
+                if(isGenerated(times.get(i))){
+                    isCharging = false;
+                } else if(!isCharging && getEntryInLog(times.get(i)) && !getEntryInLog(times.get(i-1))){
+                    isCharging = true;
+                    chargeStart = times.get(i);
+                } else if (isCharging && !getEntryInLog(times.get(i))){
+                    isCharging = false;
+                    chargeDurations.add( times.get(i) - chargeStart);
+                }
+            }
+        }
+        return chargeDurations;
+    }
+
     public String getDetailsString(){
         StringBuilder detailsString = new StringBuilder("");
         Long totalLogTime = getTotalLogTime();
         Long totalUsage = getTotalUsage();
         Long averageDailyUsage = getAverageDailyUsage();
         Long averageChargeTime = getAverageChargeTime();
+        Integer totalCharges = getChargeDurations().size();
         detailsString.append("Total Time Logged: ").append(totalLogTime/86400000).append("d ");
         detailsString.append((totalLogTime%86400000)/3600000).append("h");
 
@@ -153,6 +171,11 @@ public class ChargerObject {
 
         detailsString.append("\nAverage Charge Duration: ").append(averageChargeTime/3600000).append("h ");
         detailsString.append((averageChargeTime%3600000)/60000).append("m");
+
+        detailsString.append("\nTotal Charges: ").append(totalCharges);
+
+        detailsString.append("\nAverage Daily Charges: ");
+        detailsString.append(String.format("%.2f",totalCharges/(totalLogTime/86400000.0)));
         return detailsString.toString();
     }
 

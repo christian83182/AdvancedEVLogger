@@ -163,21 +163,21 @@ public class Application extends JFrame {
     }
 
     private void setLookAndFeel(){
-        UIManager.put("control", new Color(55, 55, 55)); // Primary
-        UIManager.put("nimbusBase", new Color(42, 42, 42)); // The colour of selectors
-        UIManager.put("nimbusBlueGrey", new Color(52, 52, 52)); // The colour of buttons
+        UIManager.put("control", new Color(45, 45, 45)); // Primary
+        UIManager.put("nimbusBase", new Color(33, 33, 33)); // The colour of selectors
+        UIManager.put("nimbusBlueGrey", new Color(41, 41, 41)); // The colour of buttons
         UIManager.put("text",new Color(255,255,255)); //Sets Default text colour to white
         UIManager.put("ScrollPane.background", Color.DARK_GRAY); //Background for the ScrollPane (affects JFileChooser)
         UIManager.put("List.background", Color.DARK_GRAY); //Background for the ScrollPane (affects JFileChooser)
         UIManager.put("TextField.background", Color.DARK_GRAY); //Background for the TextField (affects JFileChooser)
         UIManager.put("Menu[Enabled].textForeground",new Color(255, 255, 255));
         UIManager.put("nimbusFocus",new Color(0, 104, 208));
-        UIManager.put("nimbusLightBackground",new Color(74, 74, 74));
+        UIManager.put("nimbusLightBackground",new Color(66, 66, 66));
         UIManager.put("nimbusSelectionBackground",new Color(0, 104, 208));
-        UIManager.put("List.background",new Color(80, 80, 80));
+        UIManager.put("List.background",new Color(72, 72, 72));
         UIManager.put("List[Selected].textForeground",new Color(250, 251, 255));
         UIManager.put("Slider.tickColor",new Color(250, 251, 255));
-        UIManager.put("nimbusDisabledText",new Color(83, 83, 83));
+        UIManager.put("nimbusDisabledText",new Color(71, 71, 71));
 
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
