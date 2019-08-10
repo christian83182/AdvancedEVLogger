@@ -19,6 +19,7 @@ class MenuPanel extends JPanel {
     private JCheckBox includeFast;
     private JCheckBox showGrid;
     private JCheckBox showLogMarkers;
+    private JCheckBox showLineOnly;
 
     MenuPanel(Application app){
         this.app = app;
@@ -69,7 +70,7 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(xAxisScaleLabel,c);
 
-        SpinnerModel spinnerModelHorizontal = new SpinnerNumberModel(100,1,1000000,1);
+        SpinnerModel spinnerModelHorizontal = new SpinnerNumberModel(100,1,5000,1);
         spinnerHorizontal = new JSpinner(spinnerModelHorizontal);
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 0; c.weightx = 1;
@@ -144,9 +145,18 @@ class MenuPanel extends JPanel {
         showLogMarkers.setSelected(true);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 6; c.weightx = 1; c.gridwidth = 2;
-        c.insets = new Insets(0,10,10,0);
+        c.insets = new Insets(0,10,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(showLogMarkers,c);
+
+        showLineOnly = new JCheckBox("Show Line Only");
+        showLineOnly.setFont(Settings.DEFAULT_FONT);
+        showLineOnly.setSelected(true);
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 7; c.weightx = 1; c.gridwidth = 2;
+        c.insets = new Insets(0,10,10,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(showLineOnly,c);
 
         selectorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectorList.setLayoutOrientation(JList.VERTICAL);
@@ -210,6 +220,8 @@ class MenuPanel extends JPanel {
         showGrid.addActionListener(e -> app.repaint());
 
         showLogMarkers.addActionListener(e -> app.repaint());
+
+        showLineOnly.addActionListener(e-> app.repaint());
 
         includeRapid.addActionListener(e -> {
             app.getDataModel().rebuiltGeneralModel();
@@ -294,6 +306,10 @@ class MenuPanel extends JPanel {
 
     public boolean isShowLogMarkers(){
         return showLogMarkers.isSelected();
+    }
+
+    public boolean isShowLineOnly(){
+        return showLineOnly.isSelected();
     }
 
     public Integer getMovingAverageWidth(){
