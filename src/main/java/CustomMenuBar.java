@@ -80,22 +80,11 @@ public class CustomMenuBar extends JMenuBar {
         toolsMenu.add(downloadData);
         downloadData.addActionListener(e-> app.getDataModel().downloadIdData());
 
-        JMenuItem repairData = new JMenuItem("Repair Log Data");
+        JMenuItem repairData = new JMenuItem("Repair Log Data",'r');
+        repairData.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
         repairData.setFont(Settings.DEFAULT_FONT);
         toolsMenu.add(repairData);
         repairData.addActionListener(e -> app.getDataModel().repairDataModel());
-
-        toolsMenu.addSeparator();
-
-        JMenuItem fitGraph = new JMenuItem("Fit Graph Scale to Window");
-        fitGraph.setFont(Settings.DEFAULT_FONT);
-        toolsMenu.add(fitGraph);
-        fitGraph.addActionListener(e -> app.getGraphPanel().fitGraphToWindow(false));
-
-        JMenuItem fitFullGraph = new JMenuItem("Fit Data Scale to Window");
-        fitFullGraph.setFont(Settings.DEFAULT_FONT);
-        toolsMenu.add(fitFullGraph);
-        fitFullGraph.addActionListener(e -> app.getGraphPanel().fitGraphToWindow(true));
 
         toolsMenu.addSeparator();
 
@@ -107,6 +96,18 @@ public class CustomMenuBar extends JMenuBar {
         stopLoggingMenu.setEnabled(false);
         stopLoggingMenu.setFont(Settings.DEFAULT_FONT);
         toolsMenu.add(stopLoggingMenu);
+
+        JMenuItem fitGraph = new JMenuItem("Fit Graph Scale to Window");
+        fitGraph.setFont(Settings.DEFAULT_FONT);
+        viewMenu.add(fitGraph);
+        fitGraph.addActionListener(e -> app.getGraphPanel().fitGraphToWindow(false));
+
+        JMenuItem fitFullGraph = new JMenuItem("Fit Data Scale to Window");
+        fitFullGraph.setFont(Settings.DEFAULT_FONT);
+        viewMenu.add(fitFullGraph);
+        fitFullGraph.addActionListener(e -> app.getGraphPanel().fitGraphToWindow(true));
+
+        viewMenu.addSeparator();
 
         JMenuItem openDetailsPanel = new JMenuItem("Open Details Panel");
         openDetailsPanel.setFont(Settings.DEFAULT_FONT);
