@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -186,14 +187,10 @@ class MenuPanel extends JPanel {
 
         selectorList.addListSelectionListener(e -> {
             if(selectorList.getSelectedIndex() == 0){
-                app.getDetailsPanel().setAnalysisText("");
-                app.getDetailsPanel().setInfoText("");
                 openMapsButton.setEnabled(false);
                 openInfoButton.setEnabled(true);
                 app.getDataModel().rebuiltGeneralModel();
             } else if(selectorList.getSelectedIndex() == 1){
-                app.getDetailsPanel().setAnalysisText("");
-                app.getDetailsPanel().setInfoText("");
                 openMapsButton.setEnabled(false);
                 openInfoButton.setEnabled(false);
                 app.getDataModel().rebuiltGeneralModel();
@@ -314,6 +311,13 @@ class MenuPanel extends JPanel {
 
     public Integer getMovingAverageWidth(){
         return (Integer) spinnerAverage.getValue();
+    }
+
+    public void resetSelectedItem(){
+        this.selectorList.setSelectedIndex(0);
+        app.getDataModel().rebuiltGeneralModel();
+        app.getDetailsPanel().setAnalysisText("Not Applicable");
+        app.getDetailsPanel().setAnalysisText(app.getDataModel().getInfoString());
     }
 
 }

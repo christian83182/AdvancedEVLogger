@@ -85,7 +85,7 @@ public class ChargerObject {
     }
 
     //returns the total number of ms in use.
-    private Long getTotalUsage(){
+    public Long getTotalUsage(){
         List<Long> times = new ArrayList<>(getLogTimes());
         Collections.sort(times);
         Long totalUsage = 0L;
@@ -153,14 +153,14 @@ public class ChargerObject {
         return chargeDurations;
     }
 
-    private Double getEstimatedTotalRevenue(){
+    public Double getEstimatedTotalRevenue(){
         Long totalUsage = getTotalUsage();
         Double pricePerkWh = getPrice();
         Double power = getPowerOutput();
         return pricePerkWh*power*(totalUsage/3600000.0);
     }
 
-    private Double getEstimatedDailyRevenue(){
+    public Double getEstimatedDailyRevenue(){
         Double totalRevenue = getEstimatedTotalRevenue();
         Long totalLogTime = getTotalLogTime();
         return totalRevenue/(totalLogTime/86400000.0);

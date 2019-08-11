@@ -359,12 +359,11 @@ public class CustomMenuBar extends JMenuBar {
 
             String chargerObjectId = chargerObject.getId() +":" + chargerObject.getDesignator();
             app.getDataModel().addCharger(chargerObjectId,chargerObject);
-            app.getDataModel().rebuiltGeneralModel();
             app.getMenuPanel().addMenuItem(chargerObjectId + " - " + chargerObject.getName());
-            app.getGraphPanel().fitGraphToWindow(true);
-            app.repaint();
         }
-
-        System.out.println();
+        app.getMenuPanel().resetSelectedItem();
+        app.getDataModel().rebuiltGeneralModel();
+        app.getGraphPanel().fitGraphToWindow(true);
+        app.repaint();
     }
 }

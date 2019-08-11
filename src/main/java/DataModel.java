@@ -10,12 +10,14 @@ class DataModel {
     private Application app;
     private Map<Long,Double> generalChargingLog;
     private Set<Long> isGenerated;
+    private Map<String,String> analysisMap;
 
     DataModel(Application app){
         this.chargers = new HashMap<>();
         this.app = app;
         this.generalChargingLog = new HashMap<>();
         this.isGenerated = new HashSet<>();
+        this.analysisMap = new HashMap<>();
     }
 
     /**
@@ -72,6 +74,80 @@ class DataModel {
         webThread.start();
     }
 
+    public synchronized void rebuildAnalysis(){
+        List<Long> times = new ArrayList<>(getGeneralLogKey());
+        Collections.sort(times);
+
+        Long runtime = Collections.max(times) - Collections.min(times);
+        List<Long> averageChargeDurations = new ArrayList<>();
+        List<Long> averageDailyUsage = new ArrayList<>();
+        List<Double> averageDailyUses = new ArrayList<>();
+        List<Double> averageDailyRevenues = new ArrayList<>();
+
+        for(int i =1; i< times.size(); i++){
+            if(isGenerated(times.get(i))){
+                runtime -= times.get(i) - times.get(i-1);
+            }
+        }
+
+        for(ChargerObject charger : chargers.values()){
+            if(isValidCharger(charger)){
+                Long chargerAverageChargeTime = charger.getAverageChargeTime();
+                if( chargerAverageChargeTime > 0){
+                    averageChargeDurations.add(chargerAverageChargeTime);
+                }
+                Long chargerAverageUse = charger.getAverageDailyUsage();
+                if(chargerAverageUse >0){
+                    averageDailyUsage.add(chargerAverageUse);
+                }
+                Integer chargerTotalUses = charger.getChargeDurations().size();
+                if(chargerTotalUses >0){
+                    averageDailyUses.add(chargerTotalUses/(runtime/86400000.0));
+                }
+                Double chargerDailyRevenue = charger.getEstimatedDailyRevenue();
+                if(chargerDailyRevenue > 0){
+                    averageDailyRevenues.add(chargerDailyRevenue);
+                }
+            }
+        }
+
+        String totalLogTimeString = (runtime/86400000) + "d " + ((runtime%86400000)/3600000) +"h";
+        analysisMap.put("TotalLogTime",totalLogTimeString);
+
+        Long averageChargeDuration = (long)averageChargeDurations.stream().mapToLong(e -> e).average().getAsDouble();
+        String avgChargeDurationString = (averageChargeDuration/3600000) +"h " + (averageChargeDuration%3600000)/60000 +"m";
+        analysisMap.put("AverageChargeDuration",avgChargeDurationString);
+
+        Long averageChargerUsage = (long)averageDailyUsage.stream().mapToLong(e->e).average().getAsDouble();
+        String averageChargerUsageString = (averageChargerUsage/3600000)+"h " + (averageChargerUsage%3600000)/60000 +"m";
+        analysisMap.put("AverageDailyUsage",averageChargerUsageString);
+
+        Double averageDailyUse = averageDailyUses.stream().mapToDouble(e->e).average().getAsDouble();
+        String averageDailyUseString = String.format("%.2f",averageDailyUse);
+        analysisMap.put("AverageDailyUses",averageDailyUseString);
+
+        Double averageDailyRevenue = averageDailyRevenues.stream().mapToDouble(e->e/100).average().getAsDouble();
+        String averageDailyRevenueString = "£" + String.format("%.2f",averageDailyRevenue);
+        analysisMap.put("AverageDailyRevenue",averageDailyRevenueString);
+
+        if(app.getMenuPanel().getSelectedOption().equals("Show All") || app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
+            app.getDetailsPanel().setAnalysisText("Not Applicable");
+            app.getDetailsPanel().setAnalysisText(app.getDataModel().getInfoString());
+        }
+    }
+
+    public synchronized String getInfoString(){
+        StringBuilder detailsString = new StringBuilder();
+
+        detailsString.append("Total Time Logged: ").append(analysisMap.get("TotalLogTime"));
+        detailsString.append("\n\nAverage Charge Duration: ").append(analysisMap.get("AverageChargeDuration"));
+        detailsString.append("\nAverage Daily Charger Usage: ").append(analysisMap.get("AverageDailyUsage"));
+        detailsString.append("\nAverage Daily Charger Uses: ").append(analysisMap.get("AverageDailyUses"));
+        detailsString.append("\nAverage Daily Charger Revenue: ").append(analysisMap.get("AverageDailyRevenue"));
+
+        return detailsString.toString();
+    }
+
     public synchronized void rebuiltGeneralModel(){
         this.generalChargingLog.clear();
         this.isGenerated.clear();
@@ -118,6 +194,7 @@ class DataModel {
             }
             this.generalChargingLog = newMap;
         }
+        rebuildAnalysis();
     }
 
     public void repairDataModel(){
