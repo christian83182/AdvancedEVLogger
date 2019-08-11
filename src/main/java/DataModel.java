@@ -77,6 +77,10 @@ class DataModel {
     }
 
     public synchronized void rebuildAnalysis(){
+        if(chargers.values().isEmpty()){
+            return;
+        }
+
         List<Long> times = new ArrayList<>(getGeneralLogKey());
         Collections.sort(times);
 
