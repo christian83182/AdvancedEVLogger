@@ -1,5 +1,8 @@
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -12,11 +15,15 @@ public class GraphPanel extends InteractivePanel {
 
     //and instance of the Application class used by the program
     private Application app;
+    //a Point object used to track the position of the mouse;
+    private Point mouseLocation;
 
     //Initialize all member variables & call super methods
     GraphPanel(Application app) {
         super(Settings.DEFAULT_PAN, Settings.DEFAULT_ZOOM, app);
         this.app = app;
+        this.mouseLocation = new Point();
+        this.addMouseMotionListener(new MousePositionListener());
         this.setPreferredSize(new Dimension(1500,900));
     }
 
@@ -169,6 +176,37 @@ public class GraphPanel extends InteractivePanel {
             String id = app.getMenuPanel().getSelectedOption().split(" - ")[0];
             paintIndividualData(g2,id,times);
         }
+
+        //paints the mouse overlay
+        if(!times.isEmpty()){
+            paintMouseOverlay(g2,times.get(0),xStep);
+        }
+    }
+
+    //paints the mouse overlay based on the position of the mouse
+    private void paintMouseOverlay(Graphics2D g2, Long firstTime, Integer xStep){
+        try {
+            AffineTransform oldTx = g2.getTransform();
+            AffineTransform newTx = oldTx.createInverse();
+
+            Point localMousePos = new Point();
+            newTx.transform(mouseLocation,localMousePos);
+
+            if(localMousePos.x >0){
+                g2.setColor(new Color(140, 229, 162));
+                g2.drawLine(localMousePos.x,0,localMousePos.x,-10000);
+                //g2.drawLine(0,localMousePos.y,100000,localMousePos.y);
+
+                FontMetrics fontMetrics = g2.getFontMetrics();
+                DateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+                Long mousePosTime = firstTime + (int)(((double)localMousePos.x/(double)xStep)*3600000.0);
+                String mousePosLabel = formatter.format(mousePosTime);
+                g2.drawString(mousePosLabel,localMousePos.x-fontMetrics.stringWidth(mousePosLabel)/2,45);
+            }
+        } catch (NoninvertibleTransformException e) {
+            e.printStackTrace();
+        }
+
     }
 
     //a commonly used operation in paintChargerGraph used to paint the x axis marks`
@@ -360,5 +398,21 @@ public class GraphPanel extends InteractivePanel {
     private void paintBackground(Graphics2D g2){
         g2.setColor(Settings.BACKGROUND_COLOUR);
         g2.fillRect(-100000,-100000,200000,200000);
+    }
+
+    private class MousePositionListener extends MouseAdapter{
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            super.mouseMoved(e);
+            mouseLocation = new Point(e.getX(),e.getY());
+            GraphPanel.this.repaint();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            super.mouseDragged(e);
+            mouseLocation = new Point(e.getX(),e.getY());
+            GraphPanel.this.repaint();
+        }
     }
 }

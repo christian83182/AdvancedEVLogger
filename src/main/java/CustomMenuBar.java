@@ -13,6 +13,8 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.*;
 
 public class CustomMenuBar extends JMenuBar {
@@ -47,14 +49,16 @@ public class CustomMenuBar extends JMenuBar {
         fileMenu.add(importIdsMenu);
         importIdsMenu.addActionListener(e -> importIds());
 
-        JMenuItem importConfiguration = new JMenuItem("Import Program Configuration");
+        JMenuItem importConfiguration = new JMenuItem("Import Program Configuration",'o');
+        importConfiguration.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
         importConfiguration.setFont(Settings.DEFAULT_FONT);
         fileMenu.add(importConfiguration);
         importConfiguration.addActionListener(e -> importConfig());
 
         fileMenu.addSeparator();
 
-        JMenuItem exportConfiguration = new JMenuItem("Export Program Configuration");
+        JMenuItem exportConfiguration = new JMenuItem("Export Program Configuration",'s');
+        exportConfiguration.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
         exportConfiguration.setFont(Settings.DEFAULT_FONT);
         fileMenu.add(exportConfiguration);
         exportConfiguration.addActionListener(e -> exportConfig());

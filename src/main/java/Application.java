@@ -167,6 +167,7 @@ public class Application extends JFrame {
         UIManager.put("nimbusBase", new Color(33, 33, 33)); // The colour of selectors
         UIManager.put("nimbusBlueGrey", new Color(41, 41, 41)); // The colour of buttons
         UIManager.put("text",new Color(255,255,255)); //Sets Default text colour to white
+        UIManager.put("TextArea.background", new Color(64, 64, 64));
         UIManager.put("ScrollPane.background", Color.DARK_GRAY); //Background for the ScrollPane (affects JFileChooser)
         UIManager.put("List.background", Color.DARK_GRAY); //Background for the ScrollPane (affects JFileChooser)
         UIManager.put("TextField.background", Color.DARK_GRAY); //Background for the TextField (affects JFileChooser)
