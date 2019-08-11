@@ -2,6 +2,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 class DataModel {
@@ -111,6 +113,12 @@ class DataModel {
             }
         }
 
+        DateFormat format = new SimpleDateFormat("dd/MM/yy  HH:mm:ss");
+        analysisMap.put("TotalChargers",chargers.values().size()+"");
+        analysisMap.put("FirstLogTime",format.format(Collections.min(generalChargingLog.keySet())));
+        analysisMap.put("LastLogTime",format.format(Collections.max(generalChargingLog.keySet())));
+        analysisMap.put("ActiveChargers",String.format("%.2f",getGeneralLogEntry(Collections.max(generalChargingLog.keySet()))));
+
         String totalLogTimeString = (runtime/86400000) + "d " + ((runtime%86400000)/3600000) +"h";
         analysisMap.put("TotalLogTime",totalLogTimeString);
 
@@ -131,8 +139,8 @@ class DataModel {
         analysisMap.put("AverageDailyRevenue",averageDailyRevenueString);
 
         if(app.getMenuPanel().getSelectedOption().equals("Show All") || app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
-            app.getDetailsPanel().setAnalysisText("Not Applicable");
-            app.getDetailsPanel().setAnalysisText(app.getDataModel().getInfoString());
+            app.getDetailsPanel().setInfoText(getDetailsString());
+            app.getDetailsPanel().setAnalysisText(getInfoString());
         }
     }
 
@@ -144,6 +152,17 @@ class DataModel {
         detailsString.append("\nAverage Daily Charger Usage: ").append(analysisMap.get("AverageDailyUsage"));
         detailsString.append("\nAverage Daily Charger Uses: ").append(analysisMap.get("AverageDailyUses"));
         detailsString.append("\nAverage Daily Charger Revenue: ").append(analysisMap.get("AverageDailyRevenue"));
+
+        return detailsString.toString();
+    }
+
+    public synchronized String getDetailsString(){
+        StringBuilder detailsString = new StringBuilder();
+
+        detailsString.append("Total Chargers Tracked: ").append(analysisMap.get("TotalChargers"));
+        //detailsString.append("\nCurrent Active Chargers: ").append(analysisMap.get("ActiveChargers"));
+        detailsString.append("\nFirst Log Recorded: ").append(analysisMap.get("FirstLogTime"));
+        detailsString.append("\nLast Log Recorded: ").append(analysisMap.get("LastLogTime"));
 
         return detailsString.toString();
     }
