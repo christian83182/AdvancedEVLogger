@@ -18,10 +18,10 @@ class MenuPanel extends JPanel {
     private JSpinner spinnerAverage;
     private JCheckBox includeRapid;
     private JCheckBox includeFast;
-    private JCheckBox isOptimizeDisplay;
-    private JCheckBox showGrid;
-    private JCheckBox showLogMarkers;
-    private JCheckBox showLineOnly;
+    //private JCheckBox isOptimizeDisplay;
+    //private JCheckBox showGrid;
+    //private JCheckBox showLogMarkers;
+    //private JCheckBox showLineOnly;
 
     MenuPanel(Application app){
         this.app = app;
@@ -133,7 +133,7 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeFast,c);
 
-        isOptimizeDisplay = new JCheckBox("Optimize View");
+        /*isOptimizeDisplay = new JCheckBox("Optimize View");
         isOptimizeDisplay.setFont(Settings.DEFAULT_FONT);
         isOptimizeDisplay.setSelected(true);
         c = new GridBagConstraints();
@@ -167,7 +167,7 @@ class MenuPanel extends JPanel {
         c.gridx = 0; c.gridy = 8; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,10,0);
         c.anchor = GridBagConstraints.LINE_START;
-        controlPanel.add(showLineOnly,c);
+        controlPanel.add(showLineOnly,c);*/
 
         selectorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectorList.setLayoutOrientation(JList.VERTICAL);
@@ -224,13 +224,13 @@ class MenuPanel extends JPanel {
             app.repaint();
         });
 
-        isOptimizeDisplay.addActionListener(e -> app.repaint());
+        //isOptimizeDisplay.addActionListener(e -> app.repaint());
 
-        showGrid.addActionListener(e -> app.repaint());
+        //showGrid.addActionListener(e -> app.repaint());
 
-        showLogMarkers.addActionListener(e -> app.repaint());
+        //showLogMarkers.addActionListener(e -> app.repaint());
 
-        showLineOnly.addActionListener(e-> app.repaint());
+        //showLineOnly.addActionListener(e-> app.repaint());
 
         includeRapid.addActionListener(e -> {
             app.getDataModel().rebuiltGeneralModel();
@@ -301,13 +301,13 @@ class MenuPanel extends JPanel {
         }
     }
 
-    public boolean isOptimizeDisplay(){
+    /*public boolean isOptimizeDisplay(){
         return isOptimizeDisplay.isSelected();
-    }
+    }*/
 
-    public boolean isShowGrid(){
+    /*public boolean isShowGrid(){
         return showGrid.isSelected();
-    }
+    }*/
 
     public boolean isShowRapid(){
         return includeRapid.isSelected();
@@ -317,13 +317,13 @@ class MenuPanel extends JPanel {
         return includeFast.isSelected();
     }
 
-    public boolean isShowLogMarkers(){
+    /*public boolean isShowLogMarkers(){
         return showLogMarkers.isSelected();
-    }
+    }*/
 
-    public boolean isShowLineOnly(){
+    /*public boolean isShowLineOnly(){
         return showLineOnly.isSelected();
-    }
+    }*/
 
     public Integer getMovingAverageWidth(){
         return (Integer) spinnerAverage.getValue();

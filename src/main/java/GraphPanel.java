@@ -110,7 +110,6 @@ public class GraphPanel extends InteractivePanel {
             double firstDayWidth = (double)(xStep)*((86400000-(times.get(0) % 86400000.0))/3600000.0 - 1);
             g2.fillRect(0,-yStep*yIncrement,(int)firstDayWidth,yStep*yIncrement);
 
-            //int numOfDays = (int)Math.floor((times.get(times.size()-1) - times.get(0))/86400000.0);
             for(int i =1; i < 10; i += 2){
                 double xPos = firstDayWidth + i* xStep*24;
                 g2.fillRect((int)xPos,-yStep*yIncrement, 24*xStep, yStep*yIncrement);
@@ -123,14 +122,12 @@ public class GraphPanel extends InteractivePanel {
 
         //paint the y axis ticks and labels
         for(int i = 1; i <= yStep; i++){
-            //draw gridlines if the option is enabled
-            if(app.getMenuPanel().isShowGrid()){
-                g2.setColor(Settings.GRID_COLOUR);
-                g2.drawLine(0,-yIncrement*i,1000000,-yIncrement*i);
-            }
-            g2.setColor(Color.WHITE);
+            //draw the grid
+            g2.setColor(Settings.GRID_COLOUR);
+            g2.drawLine(0,-yIncrement*i,1000000,-yIncrement*i);
 
-            //draw a tick line
+            //draw the tick
+            g2.setColor(Color.WHITE);
             g2.drawLine(0,-yIncrement*i,15,-yIncrement*i);
 
             //draw the label
@@ -177,7 +174,6 @@ public class GraphPanel extends InteractivePanel {
             paintIndividualData(g2,id,times);
         }
 
-        //paints the mouse overlay
         if(!times.isEmpty()){
             paintMouseOverlay(g2,times.get(0),xStep);
         }
@@ -225,10 +221,9 @@ public class GraphPanel extends InteractivePanel {
         Integer textXpos = (int)(i * xStep/60.0 - (stringLength / 2.0));
         Integer tickXpos = (int)(i * xStep/60.0);
 
-        if(app.getMenuPanel().isShowGrid()){
-            g2.setColor(Settings.GRID_COLOUR);
-            g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
-        }
+        g2.setColor(Settings.GRID_COLOUR);
+        g2.drawLine(tickXpos,0, tickXpos,-yStep*yIncrement);
+
         g2.setColor(Color.WHITE);
         g2.drawString(label, textXpos, stringHeight + 10);
         g2.drawLine(tickXpos,0, tickXpos,-10);
@@ -242,48 +237,47 @@ public class GraphPanel extends InteractivePanel {
 
         if(!times.isEmpty()) {
             long startTime = times.get(0);
+            Integer compFactor = (int)Math.ceil(1.0/(xStep/50.0));
+            List<Integer> xPoints = new ArrayList<>(times.size()/compFactor);
+            List<Integer> yPoints = new ArrayList<>(times.size()/compFactor);
+            xPoints.add(0); yPoints.add(0);
 
-            Integer lossyCompressionFactor = 1;
-            if(app.getMenuPanel().isOptimizeDisplay()){
-                lossyCompressionFactor = (int)Math.ceil(1.0/(xStep/50.0));
-            }
+            for (int i = 0; i < times.size() - compFactor; i += compFactor) {
+                int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
+                int y1 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement;
+                int x2 = (int) (long) (times.get(i + compFactor) - startTime) / (3600000 / xStep);
+                int y2 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i + compFactor)) * yIncrement;
 
-            for (int i = 0; i < times.size() - lossyCompressionFactor; i++) {
-                if(i%lossyCompressionFactor == 0 || !app.getMenuPanel().isOptimizeDisplay()){
-                    int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
-                    int y1 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement;
-                    int x2 = (int) (long) (times.get(i + lossyCompressionFactor) - startTime) / (3600000 / xStep);
-                    int y2 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i + lossyCompressionFactor)) * yIncrement;
+                //change colour based on if the data was generated or not.
+                if(app.getDataModel().isGenerated(times.get(i))){
+                    g2.setColor(Settings.GENERATED_HIGHLIGHT_COLOUR);
+                    g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
+                    g2.setColor(Settings.GENERATED_LINE_COLOUR);
+                } else {
+                    g2.setColor(Settings.ALL_CHARGERS_COLOUR);
+                }
 
-                    //change colour based on if the data was generated or not.
-                    if(app.getDataModel().isGenerated(times.get(i))){
-                        g2.setColor(Settings.GENERATED_HIGHLIGHT_COLOUR);
-                        g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
-                        g2.setColor(Settings.GENERATED_LINE_COLOUR);
-                    } else {
-                        g2.setColor(Settings.ALL_CHARGERS_COLOUR);
-                    }
+                if (xStep < 400) {
+                    g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
+                    g2.drawLine(x1, y1, x2, y2);
+                    //if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
+                } else {
+                    g2.setStroke(new BasicStroke(5));
+                    g2.drawLine(x1, y1, x2, y2);
+                    //if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
+                }
 
-                    if (xStep < 400) {
-                        g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
-                        g2.drawLine(x1, y1, x2, y2);
-                        if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
-                    } else {
-                        g2.setStroke(new BasicStroke(5));
-                        g2.drawLine(x1, y1, x2, y2);
-                        if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
-                    }
-
-                    if(!app.getMenuPanel().isShowLineOnly()){
-                        if(app.getDataModel().isGenerated(times.get(i))){
-                            g2.setColor(Settings.GENERATED_FILL);
-                        } else {
-                            g2.setColor(Settings.ALL_CHARGERS_FILL);
-                        }
-                        g2.fillPolygon(new int[] {x1,x1,x2,x2}, new int[] {0,y1,y2,0}, 4);
-                    }
+                xPoints.add(x1);
+                yPoints.add(y1);
+                if(i + compFactor >= times.size() - compFactor){
+                    xPoints.add(x2); yPoints.add(y2);
+                    xPoints.add(x2);yPoints.add(0);
                 }
             }
+
+            //paint the fill
+            g2.setColor(Settings.ALL_CHARGERS_FILL);
+            g2.fillPolygon(xPoints.stream().mapToInt(Integer::intValue).toArray(),yPoints.stream().mapToInt(Integer::intValue).toArray(),xPoints.size());
 
             //paint total chargers line
             Integer totalValid = 0;
@@ -307,48 +301,47 @@ public class GraphPanel extends InteractivePanel {
 
         if(!times.isEmpty()) {
             long startTime = times.get(0);
+            Integer compFactor = (int)Math.ceil(1.0/(xStep/50.0));
+            List<Integer> xPoints = new ArrayList<>(times.size()/compFactor);
+            List<Integer> yPoints = new ArrayList<>(times.size()/compFactor);
+            xPoints.add(0); yPoints.add(0);
 
-            Integer lossyCompressionFactor = 1;
-            if(app.getMenuPanel().isOptimizeDisplay()){
-                lossyCompressionFactor = (int)Math.ceil(1.0/(xStep/50.0));
-            }
+            for (int i = 0; i < times.size() - compFactor; i += compFactor) {
+                int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
+                int y1 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement);
+                int x2 = (int) (long) (times.get(i + compFactor) - startTime) / (3600000 / xStep);
+                int y2 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i + compFactor)) * yIncrement);
 
-            for (int i = 0; i < times.size() - lossyCompressionFactor; i++) {
-                if(i%lossyCompressionFactor == 0 || !app.getMenuPanel().isOptimizeDisplay()){
-                    int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
-                    int y1 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement);
-                    int x2 = (int) (long) (times.get(i + lossyCompressionFactor) - startTime) / (3600000 / xStep);
-                    int y2 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i + lossyCompressionFactor)) * yIncrement);
 
-                    if(app.getDataModel().isGenerated(times.get(i))){
-                        g2.setColor(Settings.GENERATED_HIGHLIGHT_COLOUR);
-                        g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
-                        g2.setColor(Settings.GENERATED_LINE_COLOUR);
-                    } else {
-                        g2.setColor(Settings.MOVING_AVERAGE_COLOUR);
-                    }
+                if(app.getDataModel().isGenerated(times.get(i))){
+                    g2.setColor(Settings.GENERATED_HIGHLIGHT_COLOUR);
+                    g2.fillRect(x1,-yIncrement*yStep,x2-x1,yIncrement*yStep);
+                    g2.setColor(Settings.GENERATED_LINE_COLOUR);
+                } else {
+                    g2.setColor(Settings.MOVING_AVERAGE_COLOUR);
+                }
 
-                    if (xStep < 400) {
-                        g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
-                        g2.drawLine(x1, y1, x2, y2);
-                        if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
-                    } else {
-                        g2.setStroke(new BasicStroke(5));
-                        g2.drawLine(x1, y1, x2, y2);
-                        if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
-                    }
+                if (xStep < 400) {
+                    g2.setStroke(new BasicStroke((int) ((xStep / 400.0) * 4) + 1));
+                    g2.drawLine(x1, y1, x2, y2);
+                    //if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - xStep / 40), (y2 - xStep / 40), xStep / 20, xStep / 20);
+                } else {
+                    g2.setStroke(new BasicStroke(5));
+                    g2.drawLine(x1, y1, x2, y2);
+                    //if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2 - 10), (y2 - 10), 20, 20);
+                }
 
-                    if(!app.getMenuPanel().isShowLineOnly()){
-                        if(app.getDataModel().isGenerated(times.get(i))){
-                            g2.setColor(Settings.GENERATED_FILL);
-                        } else {
-                            g2.setColor(Settings.MOVING_AVERAGE_FILL);
-                        }
-                        g2.fillPolygon(new int[] {x1,x1,x2,x2}, new int[] {0,y1,y2,0}, 4);
-                    }
+                xPoints.add(x1);
+                yPoints.add(y1);
+                if(i + compFactor >= times.size() - compFactor){
+                    xPoints.add(x2); yPoints.add(y2);
+                    xPoints.add(x2);yPoints.add(0);
                 }
             }
 
+            //paint the fill
+            g2.setColor(Settings.MOVING_AVERAGE_FILL);
+            g2.fillPolygon(xPoints.stream().mapToInt(Integer::intValue).toArray(),yPoints.stream().mapToInt(Integer::intValue).toArray(),xPoints.size());
 
             //paint total chargers line
             Integer totalValid = 0;
@@ -373,6 +366,10 @@ public class GraphPanel extends InteractivePanel {
 
         if(!times.isEmpty()){
             long startTime  = times.get(0);
+            List<Integer> xPoints = new ArrayList<>(times.size());
+            List<Integer> yPoints = new ArrayList<>(times.size());
+            xPoints.add(0); yPoints.add(0);
+
             for(int i = 0; i < times.size()-1 ; i++){
                 int x1 = (int)(long)(times.get(i) - startTime)/(3600000/xStep);
                 int x2 = (int)(long)(times.get(i+1) - startTime)/(3600000/xStep);
@@ -391,22 +388,24 @@ public class GraphPanel extends InteractivePanel {
                 if(xStep < 400){
                     g2.setStroke(new BasicStroke((int)((xStep/400.0) * 4)+1));
                     g2.drawLine(x1,y1,x2,y2);
-                    if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2-xStep/40),(y2-xStep/40),xStep/20,xStep/20);
+                    //if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2-xStep/40),(y2-xStep/40),xStep/20,xStep/20);
                 } else {
                     g2.setStroke(new BasicStroke(5));
                     g2.drawLine(x1,y1,x2,y2);
-                    if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2-10),(y2-10),20,20);
+                    //if(app.getMenuPanel().isShowLogMarkers()) g2.fillRect((x2-10),(y2-10),20,20);
                 }
 
-                if(!app.getMenuPanel().isShowLineOnly()){
-                    if(app.getDataModel().isGenerated(times.get(i))){
-                        g2.setColor(Settings.GENERATED_FILL);
-                    } else {
-                        g2.setColor(Settings.SINGLE_CHARGER_FILL);
-                    }
-                    g2.fillPolygon(new int[] {x1,x1,x2,x2}, new int[] {0,y1,y2,0}, 4);
+                xPoints.add(x1);
+                yPoints.add(y1);
+                if(i + 1 >= times.size()-1 ){
+                    xPoints.add(x2); yPoints.add(y2);
+                    xPoints.add(x2);yPoints.add(0);
                 }
             }
+
+            //paint the fill
+            g2.setColor(Settings.SINGLE_CHARGER_FILL);
+            g2.fillPolygon(xPoints.stream().mapToInt(Integer::intValue).toArray(),yPoints.stream().mapToInt(Integer::intValue).toArray(),xPoints.size());
         }
     }
 

@@ -31,10 +31,11 @@ public abstract class InteractivePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
+        Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
         BufferedImage img = generateSnapshot();
         g2d.drawImage(img,0,0,getWidth(),getHeight(),null);
+        g2d.dispose();
     }
 
     private void configureGlobalTransform(Graphics2D g2){
