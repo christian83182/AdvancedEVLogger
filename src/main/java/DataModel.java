@@ -22,60 +22,6 @@ class DataModel {
         this.analysisMap = new HashMap<>();
     }
 
-    /**
-     * Downloads the details for all the chargers in the 'ids' list in DataModel
-     */
-    public synchronized void downloadIdData() {
-        //Clear any previous values
-        chargers.replaceAll((k,v) -> null);
-        System.out.println();
-
-        //Create a new thread to run this on so that it can happen concurrently
-        Thread webThread = new Thread(() -> {
-            //create these objects outside the for loop so they can be used to optimize downloads.
-            String previousID = "";
-            HtmlPage doc = null;
-            long startTime = System.currentTimeMillis();
-
-            //Iterate over all ids
-            Integer counter = 1;
-            for(String id : getIds()){
-                NotificationLogger.logger.addToLog("Downloading data for '" + id +
-                        "'    (" + counter +"/" + getIds().size()+ ")");
-
-                //Ids come in the form of "xxxx:x", where xxxx is the id and x is the designator
-                String realID = id.split(":")[0];
-                Integer designator = Integer.parseInt(id.split(":")[1]);
-                ChargerObject newCharger = new ChargerObject(realID,designator);
-
-                //If the previous charger has a different id then the page must be re-downloaded
-                try {
-                    if(!previousID.equals(newCharger.getId())){
-                        doc = newCharger.getHtmlPage(app.getWebClient());
-                    }
-                    newCharger.fetchDetailsFromPage(doc);
-                    counter++;
-
-                    //Put it in the internal map and update the previous charger
-                    chargers.put(id,newCharger);
-                    previousID = newCharger.getId();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                //add it to the menu panel as they're added. Since this is in a new thread, it must be run using 'invokeLater'
-                SwingUtilities.invokeLater(() -> {
-                    String itemTitle = newCharger.getId() +":" + newCharger.getDesignator() + " - " + newCharger.getName();
-                    app.getMenuPanel().addMenuItem(itemTitle);
-                });
-            }
-            NotificationLogger.logger.addToLog("Download Completed in " + (System.currentTimeMillis() - startTime)/1000 +"s");
-        });
-        //start the new thread.
-        webThread.start();
-    }
-
     public synchronized void rebuildAnalysis(){
         if(chargers.values().isEmpty()){
             return;

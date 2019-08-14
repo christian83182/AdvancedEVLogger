@@ -13,10 +13,6 @@ public class Application extends JFrame {
     private GraphPanel graphPanel;
     private MenuPanel menuPanel;
     private DataModel dataModel;
-    private LoggingThread loggingThread;
-    private WebClient webClient;
-    private JLabel statusLabel;
-    private JLabel logIntervalLabel;
     private DetailsPane detailsPanel;
     private JSplitPane detailsSplitPanel;
     private volatile boolean isLogging;
@@ -24,10 +20,8 @@ public class Application extends JFrame {
     Application(){
         super("Advanced EV Charging Logger");
         NotificationLogger.logger.addToLog("Starting Web Client...");
-        this.webClient = new WebClient();
         this.isLogging = false;
         this.dataModel = new DataModel(this);
-        this.loggingThread = new LoggingThread(this);
         init();
     }
 
@@ -56,35 +50,6 @@ public class Application extends JFrame {
         detailsSplitPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,new Color(42, 42, 42)));
 
         this.add(detailsSplitPanel,BorderLayout.CENTER);
-
-        JPanel notificationPanel = new JPanel();
-        notificationPanel.setLayout(new BoxLayout(notificationPanel,BoxLayout.LINE_AXIS));
-        JButton logButton = new JButton("");
-        logButton.addActionListener(e -> new ScrollableTextWindow("Notification History", new Dimension(900,700), NotificationLogger.logger.getAllLog()));
-        notificationPanel.add(logButton);
-        notificationPanel.add(NotificationLogger.logger.getLabel());
-        notificationPanel.add(Box.createHorizontalGlue());
-
-        JLabel logIntervalTextLabel = new JLabel("Logging Interval: ");
-        logIntervalTextLabel.setFont(Settings.DEFAULT_FONT);
-        notificationPanel.add(logIntervalTextLabel);
-
-        logIntervalLabel = new JLabel(Settings.LOG_INTERVAL.toString());
-        this.setLogInterval(Settings.LOG_INTERVAL);
-        notificationPanel.add(logIntervalLabel);
-        notificationPanel.add(Box.createRigidArea(new Dimension(30,1)));
-
-        JLabel statusTextLabel = new JLabel("Logging Status: ");
-        statusTextLabel.setFont(Settings.DEFAULT_FONT);
-        notificationPanel.add(statusTextLabel);
-
-        statusLabel = new JLabel("");
-        statusLabel.setFont(Settings.DEFAULT_FONT);
-        notificationPanel.add(statusLabel);
-        this.setLogging(false);
-        notificationPanel.add(Box.createRigidArea(new Dimension(10,1)));
-
-        this.add(notificationPanel, BorderLayout.SOUTH);
         this.setJMenuBar(menuBar);
 
         addWindowListener(new WindowAdapter() {
@@ -135,31 +100,8 @@ public class Application extends JFrame {
         return detailsPanel;
     }
 
-    public WebClient getWebClient(){
-        return webClient;
-    }
-
-    public synchronized void setLogging(boolean isLogging){
-        this.isLogging = isLogging;
-        if(isLogging){
-            statusLabel.setText("ACTIVE");
-            statusLabel.setForeground(new Color(66, 155, 58));
-            NotificationLogger.logger.addToLog("Logging started...");
-        } else {
-            statusLabel.setText("INACTIVE");
-            statusLabel.setForeground(new Color(163, 0, 9));
-            NotificationLogger.logger.addToLog("Logging stopped...");
-        }
-    }
-
     public synchronized boolean isLogging(){
         return isLogging;
-    }
-
-    public void setLogInterval(Long interval){
-        Settings.LOG_INTERVAL = interval;
-        this.logIntervalLabel.setText(interval / 60000 +"m");
-        this.repaint();
     }
 
     private void setLookAndFeel(){

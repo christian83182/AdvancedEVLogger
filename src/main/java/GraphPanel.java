@@ -173,10 +173,6 @@ public class GraphPanel extends InteractivePanel {
             String id = app.getMenuPanel().getSelectedOption().split(" - ")[0];
             paintIndividualData(g2,id,times);
         }
-
-        if(!times.isEmpty()){
-            paintMouseOverlay(g2,times.get(0),xStep);
-        }
     }
 
     //paints the mouse overlay based on the position of the mouse

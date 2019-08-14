@@ -27,14 +27,10 @@ public class CustomMenuBar extends JMenuBar {
         init();
     }
 
-    private void init(){
+    private void init() {
         JMenu fileMenu = new JMenu("File");
         fileMenu.setFont(Settings.DEFAULT_FONT);
         this.add(fileMenu);
-
-        JMenu editMenu = new JMenu("Edit");
-        editMenu.setFont(Settings.DEFAULT_FONT);
-        this.add(editMenu);
 
         JMenu toolsMenu = new JMenu("Tools");
         toolsMenu.setFont(Settings.DEFAULT_FONT);
@@ -44,24 +40,13 @@ public class CustomMenuBar extends JMenuBar {
         viewMenu.setFont(Settings.DEFAULT_FONT);
         this.add(viewMenu);
 
-        JMenuItem importIdsMenu = new JMenuItem("Import EV Charger's IDs");
-        importIdsMenu.setFont(Settings.DEFAULT_FONT);
-        fileMenu.add(importIdsMenu);
-        importIdsMenu.addActionListener(e -> importIds());
-
-        JMenuItem importConfiguration = new JMenuItem("Import Program Configuration",'o');
+        JMenuItem importConfiguration = new JMenuItem("Import Program Configuration", 'o');
         importConfiguration.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
         importConfiguration.setFont(Settings.DEFAULT_FONT);
         fileMenu.add(importConfiguration);
         importConfiguration.addActionListener(e -> importConfig());
 
         fileMenu.addSeparator();
-
-        JMenuItem exportConfiguration = new JMenuItem("Export Program Configuration",'s');
-        exportConfiguration.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
-        exportConfiguration.setFont(Settings.DEFAULT_FONT);
-        fileMenu.add(exportConfiguration);
-        exportConfiguration.addActionListener(e -> exportConfig());
 
         JMenuItem exportCSV = new JMenuItem("Export Data as CSV");
         exportCSV.setFont(Settings.DEFAULT_FONT);
@@ -71,31 +56,13 @@ public class CustomMenuBar extends JMenuBar {
         exportGraph.setFont(Settings.DEFAULT_FONT);
         fileMenu.add(exportGraph);
 
-        JMenuItem changeInterval = new JMenuItem("Edit Log Interval");
-        changeInterval.setFont(Settings.DEFAULT_FONT);
-        editMenu.add(changeInterval);
 
-        JMenuItem downloadData = new JMenuItem("Download EV Charger's Data");
-        downloadData.setFont(Settings.DEFAULT_FONT);
-        toolsMenu.add(downloadData);
-        downloadData.addActionListener(e-> app.getDataModel().downloadIdData());
-
-        JMenuItem repairData = new JMenuItem("Repair Log Data",'r');
+        JMenuItem repairData = new JMenuItem("Repair Log Data", 'r');
         repairData.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
         repairData.setFont(Settings.DEFAULT_FONT);
         toolsMenu.add(repairData);
         repairData.addActionListener(e -> app.getDataModel().repairDataModel());
 
-        toolsMenu.addSeparator();
-
-        JMenuItem startLoggingMenu = new JMenuItem("EV Data Logging - Start");
-        startLoggingMenu.setFont(Settings.DEFAULT_FONT);
-        toolsMenu.add(startLoggingMenu);
-
-        JMenuItem stopLoggingMenu = new JMenuItem("EV Data Logging - Stop");
-        stopLoggingMenu.setEnabled(false);
-        stopLoggingMenu.setFont(Settings.DEFAULT_FONT);
-        toolsMenu.add(stopLoggingMenu);
 
         JMenuItem fitGraph = new JMenuItem("Fit Graph Scale to Window");
         fitGraph.setFont(Settings.DEFAULT_FONT);
@@ -112,40 +79,17 @@ public class CustomMenuBar extends JMenuBar {
         JMenuItem openDetailsPanel = new JMenuItem("Open Details Panel");
         openDetailsPanel.setFont(Settings.DEFAULT_FONT);
         viewMenu.add(openDetailsPanel);
-        openDetailsPanel.addActionListener(e -> {app.openDetailsPanel();});
+        openDetailsPanel.addActionListener(e -> {
+            app.openDetailsPanel();
+        });
 
         JMenuItem closeDetailsPanel = new JMenuItem("Close Details Panel");
         closeDetailsPanel.setFont(Settings.DEFAULT_FONT);
         viewMenu.add(closeDetailsPanel);
-        closeDetailsPanel.addActionListener(e -> {app.closeDetailsPanel();});
-
-        startLoggingMenu.addActionListener(e -> {
-            app.setLogging(true);
-            stopLoggingMenu.setEnabled(true);
-            startLoggingMenu.setEnabled(false);
+        closeDetailsPanel.addActionListener(e -> {
+            app.closeDetailsPanel();
         });
 
-        stopLoggingMenu.addActionListener(e -> {
-            app.setLogging(false);
-            startLoggingMenu.setEnabled(true);
-            stopLoggingMenu.setEnabled(false);
-        });
-
-        changeInterval.addActionListener(e -> {
-            String input = JOptionPane.showInputDialog(null, "Enter a new Log Interval (minutes)", "Edit Log Interval", JOptionPane.PLAIN_MESSAGE);
-            if(input != null){
-                try{
-                    if (Long.parseLong(input) > 0){
-                        app.setLogInterval(Long.parseLong(input)*60000);
-                    } else {
-                        NotificationLogger.logger.addToLog("Could not change Log Interval: Invalid Number");
-                    }
-                } catch (Exception e1){
-                    NotificationLogger.logger.addToLog("Could not change Log Interval: Invalid Input");
-                }
-            }
-            app.repaint();
-        });
     }
 
     private void importIds(){
@@ -308,7 +252,6 @@ public class CustomMenuBar extends JMenuBar {
         Element programConfigElement = document.getDocumentElement();
 
         Node logIntervalNode = programConfigElement.getElementsByTagName("LogInterval").item(0);
-        app.setLogInterval(Long.parseLong(logIntervalNode.getTextContent()));
 
         //iterate over all nodes
         NodeList nodes = programConfigElement.getElementsByTagName("ChargerObject");
