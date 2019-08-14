@@ -19,17 +19,17 @@ public class DetailsPane extends JPanel {
 
         JPanel detailsPanel = new JPanel();
         TitledBorder detailsBorder = BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.GRAY,1),"General Information",0,2,
+                BorderFactory.createLineBorder(Color.GRAY,1),"General Information    ",0,2,
                 Settings.DEFAULT_FONT,Color.WHITE);
-        detailsBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 18));
+        detailsBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 15));
         detailsPanel.setBorder(detailsBorder);
         detailsPanel.setLayout(new GridBagLayout());
 
         JPanel analysisPanel = new JPanel();
         TitledBorder controlBorder = BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.GRAY,1),"Data Analysis",0,2,
+                BorderFactory.createLineBorder(Color.GRAY,1),"Data Analysis    ",0,2,
                 Settings.DEFAULT_FONT,Color.WHITE);
-        controlBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 18));
+        controlBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 15));
         analysisPanel.setBorder(controlBorder);
         analysisPanel.setLayout(new GridBagLayout());
 

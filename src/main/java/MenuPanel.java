@@ -18,6 +18,7 @@ class MenuPanel extends JPanel {
     private JSpinner spinnerAverage;
     private JCheckBox includeRapid;
     private JCheckBox includeFast;
+    private JCheckBox isOptimizeDisplay;
     private JCheckBox showGrid;
     private JCheckBox showLogMarkers;
     private JCheckBox showLineOnly;
@@ -39,17 +40,17 @@ class MenuPanel extends JPanel {
 
         JPanel controlPanel = new JPanel();
         TitledBorder controlBorder = BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.GRAY,1),"Control Panel",0,2,
+                BorderFactory.createLineBorder(Color.GRAY,1),"Control Panel   ",0,2,
                 Settings.DEFAULT_FONT,Color.WHITE);
-        controlBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 18));
+        controlBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 15));
         controlPanel.setBorder(controlBorder);
         controlPanel.setLayout(new GridBagLayout());
 
         JPanel selectionPanel = new JPanel();
         TitledBorder selectionBorder = BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.GRAY,1),"Selection Panel",0,2,
+                BorderFactory.createLineBorder(Color.GRAY,1),"Selection Panel   ",0,2,
                 Settings.DEFAULT_FONT,Color.WHITE);
-        selectionBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 18));
+        selectionBorder.setTitleFont(new Font("SansSerif", Font.BOLD, 15));
         selectionPanel.setBorder(selectionBorder);
         selectionPanel.setLayout(new GridBagLayout());
 
@@ -132,11 +133,20 @@ class MenuPanel extends JPanel {
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeFast,c);
 
+        isOptimizeDisplay = new JCheckBox("Optimize View");
+        isOptimizeDisplay.setFont(Settings.DEFAULT_FONT);
+        isOptimizeDisplay.setSelected(true);
+        c = new GridBagConstraints();
+        c.gridx = 0; c.gridy = 5; c.weightx = 1; c.gridwidth = 2;
+        c.insets = new Insets(0,10,0,0);
+        c.anchor = GridBagConstraints.LINE_START;
+        controlPanel.add(isOptimizeDisplay,c);
+
         showGrid = new JCheckBox("Show Grid");
         showGrid.setFont(Settings.DEFAULT_FONT);
         showGrid.setSelected(true);
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 5; c.weightx = 1; c.gridwidth = 2;
+        c.gridx = 0; c.gridy = 6; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(showGrid,c);
@@ -145,7 +155,7 @@ class MenuPanel extends JPanel {
         showLogMarkers.setFont(Settings.DEFAULT_FONT);
         showLogMarkers.setSelected(true);
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 6; c.weightx = 1; c.gridwidth = 2;
+        c.gridx = 0; c.gridy = 7; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(showLogMarkers,c);
@@ -154,7 +164,7 @@ class MenuPanel extends JPanel {
         showLineOnly.setFont(Settings.DEFAULT_FONT);
         showLineOnly.setSelected(false);
         c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 7; c.weightx = 1; c.gridwidth = 2;
+        c.gridx = 0; c.gridy = 8; c.weightx = 1; c.gridwidth = 2;
         c.insets = new Insets(0,10,10,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(showLineOnly,c);
@@ -213,6 +223,8 @@ class MenuPanel extends JPanel {
             app.getDataModel().rebuiltGeneralModel();
             app.repaint();
         });
+
+        isOptimizeDisplay.addActionListener(e -> app.repaint());
 
         showGrid.addActionListener(e -> app.repaint());
 
@@ -287,6 +299,10 @@ class MenuPanel extends JPanel {
             spinnerVertical.setValue(newValue);
             app.repaint();
         }
+    }
+
+    public boolean isOptimizeDisplay(){
+        return isOptimizeDisplay.isSelected();
     }
 
     public boolean isShowGrid(){

@@ -242,9 +242,14 @@ public class GraphPanel extends InteractivePanel {
 
         if(!times.isEmpty()) {
             long startTime = times.get(0);
-            Integer lossyCompressionFactor = (int)Math.ceil(1.0/(xStep/25.0));
+
+            Integer lossyCompressionFactor = 1;
+            if(app.getMenuPanel().isOptimizeDisplay()){
+                lossyCompressionFactor = (int)Math.ceil(1.0/(xStep/50.0));
+            }
+
             for (int i = 0; i < times.size() - lossyCompressionFactor; i++) {
-                if(i%lossyCompressionFactor == 0){
+                if(i%lossyCompressionFactor == 0 || !app.getMenuPanel().isOptimizeDisplay()){
                     int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
                     int y1 = (int)-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement;
                     int x2 = (int) (long) (times.get(i + lossyCompressionFactor) - startTime) / (3600000 / xStep);
@@ -302,9 +307,14 @@ public class GraphPanel extends InteractivePanel {
 
         if(!times.isEmpty()) {
             long startTime = times.get(0);
-            Integer lossyCompressionFactor = (int)Math.ceil(1.0/(xStep/25.0));
+
+            Integer lossyCompressionFactor = 1;
+            if(app.getMenuPanel().isOptimizeDisplay()){
+                lossyCompressionFactor = (int)Math.ceil(1.0/(xStep/50.0));
+            }
+
             for (int i = 0; i < times.size() - lossyCompressionFactor; i++) {
-                if(i%lossyCompressionFactor == 0){
+                if(i%lossyCompressionFactor == 0 || !app.getMenuPanel().isOptimizeDisplay()){
                     int x1 = (int) (long) (times.get(i) - startTime) / (3600000 / xStep);
                     int y1 = (int)(-app.getDataModel().getGeneralLogEntry(times.get(i)) * yIncrement);
                     int x2 = (int) (long) (times.get(i + lossyCompressionFactor) - startTime) / (3600000 / xStep);
