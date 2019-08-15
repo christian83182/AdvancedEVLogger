@@ -73,23 +73,6 @@ public class CustomMenuBar extends JMenuBar {
         fitFullGraph.setFont(Settings.DEFAULT_FONT);
         viewMenu.add(fitFullGraph);
         fitFullGraph.addActionListener(e -> app.getGraphPanel().fitGraphToWindow(true));
-
-        viewMenu.addSeparator();
-
-        JMenuItem openDetailsPanel = new JMenuItem("Open Details Panel");
-        openDetailsPanel.setFont(Settings.DEFAULT_FONT);
-        viewMenu.add(openDetailsPanel);
-        openDetailsPanel.addActionListener(e -> {
-            app.openDetailsPanel();
-        });
-
-        JMenuItem closeDetailsPanel = new JMenuItem("Close Details Panel");
-        closeDetailsPanel.setFont(Settings.DEFAULT_FONT);
-        viewMenu.add(closeDetailsPanel);
-        closeDetailsPanel.addActionListener(e -> {
-            app.closeDetailsPanel();
-        });
-
     }
 
     private void importIds(){

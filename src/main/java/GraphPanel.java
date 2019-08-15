@@ -24,7 +24,7 @@ public class GraphPanel extends InteractivePanel {
         this.app = app;
         this.mouseLocation = new Point();
         this.addMouseMotionListener(new MousePositionListener());
-        this.setPreferredSize(new Dimension(1500,900));
+        this.setPreferredSize(new Dimension(1400,1000));
     }
 
     @Override
@@ -57,11 +57,11 @@ public class GraphPanel extends InteractivePanel {
         Collections.sort(times);
         if(!times.isEmpty()){
             //Adjusted width accounts for some extra room around the graph
-            Double adjustedWidth = this.getWidth()*0.85;
+            Double adjustedWidth = this.getWidth()*0.95;
             //Calculate the total number of hours the data represents
             Double totalHours = (times.get(times.size()-1) - times.get(0))/3600000.0;
             //Change the horizontal scale such that the total hours fit within the width
-            app.getMenuPanel().setHorizontalScale((int)(adjustedWidth/totalHours));
+            app.getMenuPanel().setHorizontalScale((int)(Math.floor(adjustedWidth/totalHours)));
 
             //Iterate over all values, find the maximum value, and change the vertical width accordingly.
             Double maxValue = 0.0;
@@ -76,7 +76,7 @@ public class GraphPanel extends InteractivePanel {
             }
             app.getMenuPanel().setVerticalScale(maxValue.intValue()+1);
 
-            this.setPan(new Point(Settings.DEFAULT_PAN.x,Settings.DEFAULT_PAN.y));
+            this.setPan(new Point(Settings.DEFAULT_PAN.x,getPan().y));
         }
     }
 
@@ -90,7 +90,7 @@ public class GraphPanel extends InteractivePanel {
         FontMetrics fontMetrics = g2.getFontMetrics();
 
         //populate times according to the selected option
-        if(app.getMenuPanel().getSelectedOption().equals("Show All") ||
+        if(app.getMenuPanel().getSelectedOption().equals("Show Aggregate Data") ||
             app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
             times = new ArrayList<>(app.getDataModel().getGeneralLogKey());
         } else {
@@ -144,7 +144,9 @@ public class GraphPanel extends InteractivePanel {
         if (!times.isEmpty()) {
             long numOfLabels = (times.get(times.size()-1) - times.get(0))/60000;
             for(int i = 1; i < numOfLabels; i++) {
-                if(xStep < 9 && xStep >= 1 && i % 1440 == 0){
+                if(xStep < 4 && xStep >= 2 && i % 2880 == 0){
+                    drawXAxisHelp(g2,times,i);
+                }else if(xStep < 9 && xStep >= 4 && i % 1440 == 0){
                     drawXAxisHelp(g2,times,i);
                 } else if(xStep < 23 && xStep >= 9 && i % 720 == 0){
                     drawXAxisHelp(g2,times,i);
@@ -165,7 +167,7 @@ public class GraphPanel extends InteractivePanel {
         }
 
         //Draw the graphs themselves
-        if(app.getMenuPanel().getSelectedOption().equals("Show All")){
+        if(app.getMenuPanel().getSelectedOption().equals("Show Aggregate Data")){
             paintAggregateData(g2,times);
         } else if(app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
             paintMovingAverage(g2,times);

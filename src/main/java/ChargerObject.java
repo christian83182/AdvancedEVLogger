@@ -1,7 +1,3 @@
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomNode;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -24,64 +20,6 @@ public class ChargerObject {
         this.isRapid = false;
         this.chargingLog = new HashMap<>();
         this.generatedLogs = new HashSet<>();
-    }
-
-    public HtmlPage getHtmlPage(WebClient client) throws IOException {
-        String url = "https://polar-network.com/charge-point-information/" + id;
-        client.getOptions().setCssEnabled(false);
-        client.getOptions().setJavaScriptEnabled(true);
-        client.getOptions().setDownloadImages(false);
-        client.getOptions().setThrowExceptionOnScriptError(false);
-        client.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        return client.getPage(url);
-    }
-
-    public void fetchDetailsFromPage(HtmlPage doc) {
-        DomNode addressNode = doc.getElementById("cp-address").getFirstChild();
-        if(addressNode != null){
-            this.address = addressNode.getNodeValue();
-        }
-
-        DomNode nameNode = doc.getElementById("cp-name").getFirstChild();
-        if(nameNode == null){
-            this.name = this.address.split(",")[0];
-        } else {
-            this.name = nameNode.getNodeValue();
-        }
-
-        DomNode postcodeNode = doc.getElementById("cp-postcode").getFirstChild();
-        if(postcodeNode != null){
-            this.address += "," + postcodeNode.getNodeValue();
-        }
-
-        DomNode priceNode = doc.getElementById("cp-price").getFirstChild();
-        if(priceNode != null){
-            if(!(priceNode.getNodeValue().equals("No Cost") || priceNode.getNodeValue().equals("?"))){
-                this.price = Double.parseDouble(priceNode.getNodeValue());
-            }
-        }
-
-        DomNode typeNode;
-        DomNode powerNode;
-        if(designator == 1){
-            typeNode = doc.getElementById("cp-type").getFirstChild();
-            powerNode = doc.getElementById("cp-power").getFirstChild();
-        } else {
-            typeNode = doc.getElementById("cp-type" + designator).getFirstChild();
-            powerNode = doc.getElementById("cp-power" + designator).getFirstChild();
-        }
-
-        if(powerNode != null){
-            this.powerOutput = Double.parseDouble(powerNode.getNodeValue().replace("Kw","").trim());
-        }
-
-        if(typeNode != null){
-            for(String chargerType : Settings.FAST_CHARGERS){
-                if(typeNode.getNodeValue().equals(chargerType)){
-                    this.isRapid = true;
-                }
-            }
-        }
     }
 
     //returns the total number of ms in use.
@@ -213,19 +151,6 @@ public class ChargerObject {
         }
         infoString.append("\nADDRESS: ").append(getAddress());
         return infoString.toString();
-    }
-
-    public void logCurrent(HtmlPage doc, Long time){
-        DomNode statusNode = doc.getElementById("connector" + designator + "Status").getFirstChild();
-        if(statusNode != null){
-            if(statusNode.getNodeValue().equals("Charging")){
-                chargingLog.put(time,true);
-            } else {
-                chargingLog.put(time,false);
-            }
-        } else {
-            NotificationLogger.logger.addToLog("[ERROR] Could not make log entry for '" + this.id+":"+this.designator+"'");
-        }
     }
 
     public Set<Long> getLogTimes(){

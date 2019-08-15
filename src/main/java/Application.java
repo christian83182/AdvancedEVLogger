@@ -1,33 +1,31 @@
-import com.gargoylesoftware.htmlunit.WebClient;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 public class Application extends JFrame {
-
-    //todo add notifications to exporting (make sure they appear before the final logging message
 
     private CustomMenuBar menuBar;
     private GraphPanel graphPanel;
     private MenuPanel menuPanel;
     private DataModel dataModel;
     private DetailsPane detailsPanel;
-    private JSplitPane detailsSplitPanel;
     private volatile boolean isLogging;
 
     Application(){
         super("Advanced EV Charging Logger");
-        NotificationLogger.logger.addToLog("Starting Web Client...");
         this.isLogging = false;
         this.dataModel = new DataModel(this);
         init();
     }
 
     private void init(){
-        NotificationLogger.logger.addToLog("Starting UI...");
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setUndecorated(true);
         this.setLayout(new BorderLayout());
 
         setLookAndFeel();
@@ -37,47 +35,30 @@ public class Application extends JFrame {
         graphPanel = new GraphPanel(this);
         detailsPanel = new DetailsPane(this);
 
-        JSplitPane firstSplitPane = new JSplitPane();
-        firstSplitPane.setDividerSize(3);
-        firstSplitPane.setLeftComponent(menuPanel);
-        firstSplitPane.setRightComponent(graphPanel);
-        firstSplitPane.setBorder(BorderFactory.createMatteBorder(1,1,1,1,new Color(42, 42, 42)));
+        this.add(graphPanel,BorderLayout.CENTER);
+        this.add(menuPanel, BorderLayout.WEST);
+        this.add(detailsPanel, BorderLayout.EAST);
+        //this.setJMenuBar(menuBar);
 
-        detailsSplitPanel = new JSplitPane();
-        detailsSplitPanel.setDividerSize(3);
-        detailsSplitPanel.setLeftComponent(firstSplitPane);
-        detailsSplitPanel.setRightComponent(detailsPanel);
-        detailsSplitPanel.setBorder(BorderFactory.createMatteBorder(1,1,1,1,new Color(42, 42, 42)));
-
-        this.add(detailsSplitPanel,BorderLayout.CENTER);
-        this.setJMenuBar(menuBar);
-
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                int confirmed = JOptionPane.showConfirmDialog(null,
-                        "Are you sure you wish to exit?", "Exit Program Confirmation",
-                        JOptionPane.YES_NO_OPTION);
-
-                if (confirmed == JOptionPane.YES_OPTION) {
-                    dispose();
-                    System.exit(0);
-                }
-            }
-        });
+        try {
+            getCustomMenuBar().importConfigHelper("C:\\Users\\chris\\IdeaProjects\\AdvancedEVLogger\\LogFiles\\Log_Recent.xml");
+            getDataModel().repairDataModel();
+        } catch (IOException | SAXException | ParserConfigurationException e) {
+            e.printStackTrace();
+        }
 
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-    }
+        maximizeWindow();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.setVisible(true);
+        getGraphPanel().fitGraphToWindow(true);
 
-    public void closeDetailsPanel(){
-        detailsSplitPanel.setDividerSize(0);
-        detailsSplitPanel.setDividerLocation(getWidth());
-    }
-
-    public void openDetailsPanel(){
-        detailsSplitPanel.setDividerSize(3);
-        detailsSplitPanel.setDividerLocation(0.7);
     }
 
     public synchronized DataModel getDataModel(){
@@ -102,6 +83,11 @@ public class Application extends JFrame {
 
     public synchronized boolean isLogging(){
         return isLogging;
+    }
+
+    public synchronized void maximizeWindow(){
+        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
     }
 
     private void setLookAndFeel(){

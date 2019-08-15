@@ -1,7 +1,4 @@
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import javax.swing.*;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -89,12 +86,12 @@ class DataModel {
         analysisMap.put("AverageDailyRevenue",averageDailyRevenueString);
 
         if(app.getMenuPanel().getSelectedOption().equals("Show All") || app.getMenuPanel().getSelectedOption().equals("Show Moving Average")){
-            app.getDetailsPanel().setInfoText(getDetailsString());
-            app.getDetailsPanel().setAnalysisText(getInfoString());
+            app.getDetailsPanel().setInfoText(getInfoString());
+            app.getDetailsPanel().setAnalysisText(getAnalysisString());
         }
     }
 
-    public synchronized String getInfoString(){
+    public synchronized String getAnalysisString(){
         StringBuilder detailsString = new StringBuilder();
 
         detailsString.append("Total Time Logged: ").append(analysisMap.get("TotalLogTime"));
@@ -106,7 +103,7 @@ class DataModel {
         return detailsString.toString();
     }
 
-    public synchronized String getDetailsString(){
+    public synchronized String getInfoString(){
         StringBuilder detailsString = new StringBuilder();
 
         detailsString.append("Total Chargers Tracked: ").append(analysisMap.get("TotalChargers"));
@@ -164,6 +161,7 @@ class DataModel {
             this.generalChargingLog = newMap;
         }
         rebuildAnalysis();
+        app.repaint();
     }
 
     public void repairDataModel(){
@@ -223,8 +221,8 @@ class DataModel {
                 }
             }
             rebuiltGeneralModel();
-            app.repaint();
         }
+        app.repaint();
     }
 
     public boolean isValidCharger(ChargerObject charger){

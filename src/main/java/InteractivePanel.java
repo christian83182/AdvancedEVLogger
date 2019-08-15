@@ -120,8 +120,9 @@ public abstract class InteractivePanel extends JPanel {
         Point scaleEnd = new Point(scaleStart.x + scaleLength.intValue(), scaleStart.y);
 
         g2.setColor(Color.WHITE);
-        g2.setStroke(new BasicStroke(3));
+        g2.setStroke(new BasicStroke(2));
         g2.drawLine(scaleStart.x, scaleStart.y, scaleEnd.x, scaleEnd.y);
+        g2.setStroke(new BasicStroke(1));
         g2.drawLine(scaleStart.x, scaleStart.y, scaleStart.x, scaleStart.y-7);
         g2.drawLine(scaleEnd.x, scaleEnd.y, scaleEnd.x, scaleEnd.y-7);
         g2.drawString(label, scaleEnd.x+20, scaleEnd.y);
@@ -174,7 +175,7 @@ public abstract class InteractivePanel extends JPanel {
         @Override
         public void componentResized(ComponentEvent e) {
             super.componentResized(e);
-            getPan().y = getHeight()-100;
+            getPan().y = getHeight()-60;
         }
     }
 }

@@ -22,7 +22,7 @@ public class Settings {
     static Color GENERATED_FILL = new Color(GENERATED_LINE_COLOUR.getRed(),GENERATED_LINE_COLOUR.getGreen(),GENERATED_LINE_COLOUR.getBlue(),40);
     static Color GENERATED_HIGHLIGHT_COLOUR = new Color(GENERATED_LINE_COLOUR.getRed(),GENERATED_LINE_COLOUR.getGreen(),GENERATED_LINE_COLOUR.getBlue(),30);
 
-    static Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 12);
+    static Font DEFAULT_FONT = new Font("SansSerif", Font.PLAIN, 10);
 
     static String[] FAST_CHARGERS = {"CHAdeMO","DC Combo Type 2"};
 

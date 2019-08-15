@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -18,22 +17,18 @@ class MenuPanel extends JPanel {
     private JSpinner spinnerAverage;
     private JCheckBox includeRapid;
     private JCheckBox includeFast;
-    //private JCheckBox isOptimizeDisplay;
-    //private JCheckBox showGrid;
-    //private JCheckBox showLogMarkers;
-    //private JCheckBox showLineOnly;
 
     MenuPanel(Application app){
         this.app = app;
         selectorModel = new DefaultListModel<>();
-        selectorModel.addElement("Show All");
+        selectorModel.addElement("Show Aggregate Data");
         selectorModel.addElement("Show Moving Average");
         selectorList = new JList<>(selectorModel);
         init();
     }
 
     private void init(){
-        this.setPreferredSize(new Dimension(450,100));
+        //this.setPreferredSize(new Dimension(300,100));
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c;
@@ -56,19 +51,19 @@ class MenuPanel extends JPanel {
 
         c = new GridBagConstraints(); c.gridx = 0; c.gridy = 0; c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10,20,20,20);
+        c.insets = new Insets(10,5,0,5);
         this.add(controlPanel,c);
 
         c = new GridBagConstraints(); c.gridx = 0; c.gridy = 1; c.weighty =1; c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0,20,20,20);
+        c.insets = new Insets(5,5,5,5);
         this.add(selectionPanel,c);
 
-        JLabel xAxisScaleLabel = new JLabel("Horizontal Scale:");
+        JLabel xAxisScaleLabel = new JLabel("Horizontal Scale:  ");
         xAxisScaleLabel.setFont(Settings.DEFAULT_FONT);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 0;
-        c.insets = new Insets(10,15,0,0);
+        c.insets = new Insets(5,10,0,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(xAxisScaleLabel,c);
 
@@ -77,15 +72,15 @@ class MenuPanel extends JPanel {
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 0; c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10,15,0,10);
+        c.insets = new Insets(5,10,0,10);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(spinnerHorizontal,c);
 
-        JLabel yAxisScaleLabel = new JLabel("Vertical Scale:");
+        JLabel yAxisScaleLabel = new JLabel("Vertical Scale:  ");
         yAxisScaleLabel.setFont(Settings.DEFAULT_FONT);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 1;
-        c.insets = new Insets(0,15,0,0);
+        c.insets = new Insets(0,10,10,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(yAxisScaleLabel,c);
 
@@ -94,7 +89,7 @@ class MenuPanel extends JPanel {
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 1; c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0,15,0,10);
+        c.insets = new Insets(0,10,5,10);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(spinnerVertical,c);
 
@@ -102,18 +97,18 @@ class MenuPanel extends JPanel {
         movingAverageLabel.setFont(Settings.DEFAULT_FONT);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 2;
-        c.insets = new Insets(0,15,15,0);
+        c.insets = new Insets(0,10,10,0);
         c.anchor = GridBagConstraints.LINE_START;
-        controlPanel.add(movingAverageLabel,c);
+        //controlPanel.add(movingAverageLabel,c);
 
-        SpinnerModel spinnerModelAverage = new SpinnerNumberModel(11,1,1000,2);
+        SpinnerModel spinnerModelAverage = new SpinnerNumberModel(17,1,1000,2);
         spinnerAverage = new JSpinner(spinnerModelAverage);
         c = new GridBagConstraints();
         c.gridx = 1; c.gridy = 2; c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0,15,15,10);
+        c.insets = new Insets(0,10,10,10);
         c.anchor = GridBagConstraints.LINE_START;
-        controlPanel.add(spinnerAverage,c);
+        //controlPanel.add(spinnerAverage,c);
 
         includeRapid = new JCheckBox("Include Level 3 Chargers");
         includeRapid.setFont(Settings.DEFAULT_FONT);
@@ -129,45 +124,9 @@ class MenuPanel extends JPanel {
         includeFast.setSelected(true);
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 4; c.weightx = 1; c.gridwidth = 2;
-        c.insets = new Insets(0,10,10,0);
+        c.insets = new Insets(0,10,5,0);
         c.anchor = GridBagConstraints.LINE_START;
         controlPanel.add(includeFast,c);
-
-        /*isOptimizeDisplay = new JCheckBox("Optimize View");
-        isOptimizeDisplay.setFont(Settings.DEFAULT_FONT);
-        isOptimizeDisplay.setSelected(true);
-        c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 5; c.weightx = 1; c.gridwidth = 2;
-        c.insets = new Insets(0,10,0,0);
-        c.anchor = GridBagConstraints.LINE_START;
-        controlPanel.add(isOptimizeDisplay,c);
-
-        showGrid = new JCheckBox("Show Grid");
-        showGrid.setFont(Settings.DEFAULT_FONT);
-        showGrid.setSelected(true);
-        c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 6; c.weightx = 1; c.gridwidth = 2;
-        c.insets = new Insets(0,10,0,0);
-        c.anchor = GridBagConstraints.LINE_START;
-        controlPanel.add(showGrid,c);
-
-        showLogMarkers = new JCheckBox("Show Log Markers");
-        showLogMarkers.setFont(Settings.DEFAULT_FONT);
-        showLogMarkers.setSelected(true);
-        c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 7; c.weightx = 1; c.gridwidth = 2;
-        c.insets = new Insets(0,10,0,0);
-        c.anchor = GridBagConstraints.LINE_START;
-        controlPanel.add(showLogMarkers,c);
-
-        showLineOnly = new JCheckBox("Show Line Only");
-        showLineOnly.setFont(Settings.DEFAULT_FONT);
-        showLineOnly.setSelected(false);
-        c = new GridBagConstraints();
-        c.gridx = 0; c.gridy = 8; c.weightx = 1; c.gridwidth = 2;
-        c.insets = new Insets(0,10,10,0);
-        c.anchor = GridBagConstraints.LINE_START;
-        controlPanel.add(showLineOnly,c);*/
 
         selectorList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectorList.setLayoutOrientation(JList.VERTICAL);
@@ -177,11 +136,11 @@ class MenuPanel extends JPanel {
         c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 1; c.weighty = 1; c.weightx = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(10,10,0,10);
+        c.insets = new Insets(5,5,0,5);
         selectionPanel.add(selectorPanel,c);
 
         JPanel buttonPanel = new JPanel();
-        JButton openInfoButton = new JButton("Open in Browser");
+        JButton openInfoButton = new JButton("Open Browser");
         openInfoButton.setFont(Settings.DEFAULT_FONT);
         JButton openMapsButton = new JButton("Show on Map");
         openMapsButton.setFont(Settings.DEFAULT_FONT);
@@ -196,13 +155,9 @@ class MenuPanel extends JPanel {
         selectionPanel.add(buttonPanel,c);
 
         selectorList.addListSelectionListener(e -> {
-            if(selectorList.getSelectedIndex() == 0){
+            if(selectorList.getSelectedIndex() == 0 || selectorList.getSelectedIndex() == 1) {
                 openMapsButton.setEnabled(false);
                 openInfoButton.setEnabled(true);
-                app.getDataModel().rebuiltGeneralModel();
-            } else if(selectorList.getSelectedIndex() == 1){
-                openMapsButton.setEnabled(false);
-                openInfoButton.setEnabled(false);
                 app.getDataModel().rebuiltGeneralModel();
             } else{
                 String selectedID = selectorList.getSelectedValue().split(" - ")[0];
@@ -224,14 +179,6 @@ class MenuPanel extends JPanel {
             app.repaint();
         });
 
-        //isOptimizeDisplay.addActionListener(e -> app.repaint());
-
-        //showGrid.addActionListener(e -> app.repaint());
-
-        //showLogMarkers.addActionListener(e -> app.repaint());
-
-        //showLineOnly.addActionListener(e-> app.repaint());
-
         includeRapid.addActionListener(e -> {
             app.getDataModel().rebuiltGeneralModel();
             app.repaint();
@@ -246,7 +193,7 @@ class MenuPanel extends JPanel {
             String id = getSelectedOption().split(":")[0];
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try{
-                    if(id.equals("Show All")){
+                    if(id.equals("Show Aggregate Data") || id.equals("Show Moving Average")){
                         Desktop.getDesktop().browse(new URI("https://polar-network.com/live-map/"));
                     } else {
                         Desktop.getDesktop().browse(new URI("https://polar-network.com/charge-point-information/" + id +"/"));
@@ -259,7 +206,7 @@ class MenuPanel extends JPanel {
 
         openMapsButton.addActionListener(e -> {
             String id = getSelectedOption().split(" - ")[0];
-            if(!id.equals("Show All") && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
+            if(!id.equals("Show Aggregate Data") && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
                 try{
                     Desktop.getDesktop().browse(new URI("https://www.google.com/maps/search/?api=1&query="+
                             URLEncoder.encode(app.getDataModel().getCharger(id).getAddress())));
@@ -301,14 +248,6 @@ class MenuPanel extends JPanel {
         }
     }
 
-    /*public boolean isOptimizeDisplay(){
-        return isOptimizeDisplay.isSelected();
-    }*/
-
-    /*public boolean isShowGrid(){
-        return showGrid.isSelected();
-    }*/
-
     public boolean isShowRapid(){
         return includeRapid.isSelected();
     }
@@ -317,23 +256,15 @@ class MenuPanel extends JPanel {
         return includeFast.isSelected();
     }
 
-    /*public boolean isShowLogMarkers(){
-        return showLogMarkers.isSelected();
-    }*/
-
-    /*public boolean isShowLineOnly(){
-        return showLineOnly.isSelected();
-    }*/
-
     public Integer getMovingAverageWidth(){
         return (Integer) spinnerAverage.getValue();
     }
 
     public void resetSelectedItem(){
-        this.selectorList.setSelectedIndex(0);
+        this.selectorList.setSelectedIndex(1);
         app.getDataModel().rebuiltGeneralModel();
-        app.getDetailsPanel().setAnalysisText("Not Applicable");
-        app.getDetailsPanel().setAnalysisText(app.getDataModel().getInfoString());
+        app.getDetailsPanel().setInfoText(app.getDataModel().getInfoString());
+        app.getDetailsPanel().setAnalysisText(app.getDataModel().getAnalysisString());
     }
 
 }
