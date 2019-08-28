@@ -110,7 +110,7 @@ public class GraphPanel extends InteractivePanel {
             double firstDayWidth = (double)(xStep)*((86400000-(times.get(0) % 86400000.0))/3600000.0 - 1);
             g2.fillRect(0,-yStep*yIncrement,(int)firstDayWidth,yStep*yIncrement);
 
-            for(int i =1; i < 10; i += 2){
+            for(int i =1; i < 100; i += 2){
                 double xPos = firstDayWidth + i* xStep*24;
                 g2.fillRect((int)xPos,-yStep*yIncrement, 24*xStep, yStep*yIncrement);
             }
